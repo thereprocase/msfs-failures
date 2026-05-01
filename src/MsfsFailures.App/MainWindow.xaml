@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:v="clr-namespace:MsfsFailures.App.Views"
         Title="msfs-failures — terminal"
-        Width="1440" Height="900"
-        MinWidth="1100" MinHeight="720"
+        Width="1920" Height="1200"
+        MinWidth="1650" MinHeight="1080"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BgBrush}"
         Foreground="{DynamicResource TextBrush}"
@@ -12,5 +12,10 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         UseLayoutRounding="True">
-    <v:HomeView/>
+    <Grid>
+        <Grid.LayoutTransform>
+            <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+        </Grid.LayoutTransform>
+        <v:HomeView/>
+    </Grid>
 </Window>

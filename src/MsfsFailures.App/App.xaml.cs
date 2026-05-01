@@ -37,6 +37,9 @@ public partial class App : Application
         _host = Host.CreateDefaultBuilder()
             .UseSerilog((ctx, lc) => lc
                 .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
                 .Enrich.FromLogContext()
                 .WriteTo.File(Path.Combine(logRoot, "msfs-failures-.log"),
                               rollingInterval: RollingInterval.Day,

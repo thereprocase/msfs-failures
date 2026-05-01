@@ -10,8 +10,10 @@ public partial class LogView : UserControl
     {
         InitializeComponent();
 
-        // Bind directly to the singleton in-memory sink.
-        DataContext = InMemoryLogSink.Instance;
+        // Bind the ItemsControl directly to the singleton log sink, NOT the UserControl root.
+        // Setting DataContext on the root would shadow the inherited HomeViewModel DataContext
+        // and break the Visibility="{Binding IsLog}" binding set by HomeView.xaml.
+        LogItems.DataContext = InMemoryLogSink.Instance;
 
         // Auto-scroll to bottom when new log lines arrive.
         // ReadOnlyObservableCollection implements INotifyCollectionChanged explicitly.
