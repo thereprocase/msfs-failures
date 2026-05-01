@@ -20,3 +20,9 @@ Thumbs.db
 *.db-wal
 *.db-shm
 fleet.db*
+
+# Build outputs
+publish/
+dist/*.msi
+dist/*.zip
+dist/wix-build.log
