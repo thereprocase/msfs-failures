@@ -28,6 +28,7 @@ public sealed partial class HomeViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsFleet))]
+    [NotifyPropertyChangedFor(nameof(IsInFlight))]
     [NotifyPropertyChangedFor(nameof(IsSquawks))]
     [NotifyPropertyChangedFor(nameof(IsMaintenance))]
     [NotifyPropertyChangedFor(nameof(IsSessions))]
@@ -43,12 +44,15 @@ public sealed partial class HomeViewModel : ObservableObject
     private bool _simOk = true;
 
     public bool IsFleet       => ActiveTab == HomeTab.Fleet;
+    public bool IsInFlight    => ActiveTab == HomeTab.InFlight;
     public bool IsSquawks     => ActiveTab == HomeTab.Squawks;
     public bool IsMaintenance => ActiveTab == HomeTab.Maintenance;
     public bool IsSessions    => ActiveTab == HomeTab.Sessions;
     public bool IsEditor      => ActiveTab == HomeTab.AirframeEditor;
     public bool IsBindings    => ActiveTab == HomeTab.Bindings;
     public bool IsLog         => ActiveTab == HomeTab.Log;
+
+    public InFlightViewModel InFlight { get; } = new();
 
     public AirframeVm? LiveAircraft => Airframes.FirstOrDefault(a => a.Live);
     public bool LiveStripVisible => SimOk && LiveAircraft != null;

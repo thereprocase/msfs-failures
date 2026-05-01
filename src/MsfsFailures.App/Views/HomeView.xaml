@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
              xmlns:vp="clr-namespace:MsfsFailures.App.Views.Parts"
+             xmlns:if="clr-namespace:MsfsFailures.App.Views.InFlight"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance vm:HomeViewModel}"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -31,6 +32,8 @@
 
             <Grid Grid.Column="0">
                 <vp:FleetTable    Visibility="{Binding IsFleet,       Converter={StaticResource BoolVis}}"/>
+                <if:InFlightView  Visibility="{Binding IsInFlight,    Converter={StaticResource BoolVis}}"
+                                  DataContext="{Binding InFlight}"/>
                 <vp:SquawksTable  Visibility="{Binding IsSquawks,     Converter={StaticResource BoolVis}}"/>
                 <vp:MxView        Visibility="{Binding IsMaintenance, Converter={StaticResource BoolVis}}"/>
                 <vp:Placeholder   Visibility="{Binding IsSessions,    Converter={StaticResource BoolVis}}"

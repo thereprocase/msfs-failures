@@ -1,0 +1,601 @@
+<UserControl x:Class="MsfsFailures.App.Views.InFlight.InFlightView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:c="clr-namespace:MsfsFailures.App.Controls"
+             xmlns:if="clr-namespace:MsfsFailures.App.Views.InFlight"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:InFlightViewModel}">
+    <UserControl.Resources>
+
+        <Style x:Key="Lab" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="Foreground" Value="{DynamicResource FaintBrush}"/>
+        </Style>
+        <Style x:Key="LabDim" TargetType="TextBlock" BasedOn="{StaticResource Lab}">
+            <Setter Property="Foreground" Value="{DynamicResource DimBrush}"/>
+        </Style>
+        <Style x:Key="Mono" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        </Style>
+        <Style x:Key="MonoDim" TargetType="TextBlock" BasedOn="{StaticResource Mono}">
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="{DynamicResource DimBrush}"/>
+        </Style>
+        <Style x:Key="MonoFaint" TargetType="TextBlock" BasedOn="{StaticResource Mono}">
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="{DynamicResource FaintBrush}"/>
+        </Style>
+
+        <!-- KV (label/value vertical) -->
+        <DataTemplate x:Key="KvTpl">
+            <StackPanel>
+                <TextBlock Text="{Binding Key}" Style="{StaticResource Lab}"/>
+                <TextBlock Text="{Binding Value}" Style="{StaticResource Mono}" FontSize="13" FontWeight="Bold"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Subsystem health card -->
+        <DataTemplate x:Key="HealthCardTpl" DataType="{x:Type vm:HealthIndex}">
+            <Border Background="{DynamicResource Panel2Brush}"
+                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                    Padding="10" Margin="0,0,12,0">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Label}" Style="{StaticResource LabDim}"/>
+                        <TextBlock Grid.Column="1" FontFamily="{StaticResource MonoFont}" FontSize="14" FontWeight="Bold"
+                                   Foreground="{Binding Value, Converter={StaticResource HealthBrush}}">
+                            <Run Text="{Binding Value, Converter={StaticResource PercentInt}, Mode=OneWay}"/><Run Text="%"/>
+                        </TextBlock>
+                    </Grid>
+                    <c:MarkerBar Margin="0,6,0,4" Height="5"
+                                 Value="{Binding Value}" Min="0" Max="1"
+                                 Fill="{Binding Value, Converter={StaticResource HealthBrush}}"/>
+                    <TextBlock Text="{Binding Sub}" Style="{StaticResource MonoFaint}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Habit row -->
+        <DataTemplate x:Key="HabitRowTpl" DataType="{x:Type vm:HabitItem}">
+            <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,0,0,1" Padding="0,6">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource Mono}"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold"
+                                       Foreground="{Binding Tone, Converter={StaticResource ToneBrush}}"
+                                       Text="{Binding ValueDisplay}"/>
+                            <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="9" Margin="4,0,0,0"
+                                       Foreground="{DynamicResource FaintBrush}" Text="{Binding Unit}"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="{Binding Note}" Style="{StaticResource MonoFaint}"
+                               Foreground="{DynamicResource DimBrush}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Drift row -->
+        <DataTemplate x:Key="DriftRowTpl" DataType="{x:Type vm:DriftItem}">
+            <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,0,0,1" Padding="0,4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.6*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="0.6*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource Mono}" FontWeight="Normal"/>
+                    <TextBlock Grid.Column="1" Style="{StaticResource Mono}">
+                        <Run Text="NOW "/><Run Foreground="{DynamicResource DimBrush}" Text="{Binding Now, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Column="2" Style="{StaticResource MonoDim}">
+                        <Run Text="BASE "/><Run Text="{Binding Base, Mode=OneWay}"/><Run Text=" "/><Run Text="{Binding Unit, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Column="3" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold"
+                               Foreground="{Binding Tone, Converter={StaticResource ToneBrush}}"
+                               Text="{Binding Delta}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Mx debt row -->
+        <DataTemplate x:Key="MxRowTpl" DataType="{x:Type vm:MxDebtItem}">
+            <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,0,0,1" Padding="0,4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource Mono}"/>
+                        <TextBlock Text="{Binding Note}" Style="{StaticResource MonoFaint}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold"
+                               Foreground="{Binding Severity, Converter={StaticResource ToneBrush}}"
+                               Text="{Binding Due}" HorizontalAlignment="Right"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Precursor row -->
+        <DataTemplate x:Key="PrecursorRowTpl" DataType="{x:Type vm:PrecursorItem}">
+            <StackPanel Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource Mono}"/>
+                    <TextBlock Grid.Column="1" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold"
+                               Foreground="{Binding Value, Converter={StaticResource PrecursorBrush}}">
+                        <Run Text="{Binding Value, Converter={StaticResource PercentInt}, Mode=OneWay}"/><Run Text="%"/>
+                    </TextBlock>
+                </Grid>
+                <c:MarkerBar Height="5" Margin="0,4"
+                             Value="{Binding Value}" Min="0" Max="1"
+                             Fill="{Binding Value, Converter={StaticResource PrecursorBrush}}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Scale}" Style="{StaticResource Lab}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Current}" Style="{StaticResource LabDim}"/>
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Projection card -->
+        <DataTemplate x:Key="ProjTpl" DataType="{x:Type vm:ProjectionItem}">
+            <StackPanel Margin="0,4">
+                <TextBlock Text="{Binding Name}" Style="{StaticResource Lab}"/>
+                <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="15" FontWeight="Bold"
+                           Foreground="{Binding Tone, Converter={StaticResource ToneBrush}}"
+                           Text="{Binding Delta}"/>
+                <TextBlock Text="{Binding Detail}" Style="{StaticResource MonoFaint}"
+                           Foreground="{DynamicResource DimBrush}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Event row -->
+        <DataTemplate x:Key="EventRowTpl" DataType="{x:Type vm:FlightEvent}">
+            <Border BorderBrush="{DynamicResource RuleBrush}" BorderThickness="0,0,0,1" Padding="14,7">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="78"/>
+                        <ColumnDefinition Width="56"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Time}" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Kind, Converter={StaticResource UpperCase}}" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="Bold"
+                               Foreground="{Binding Kind, Converter={StaticResource EventKindBrush}}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Message}" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                               Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="10">
+
+            <!-- DISPATCH HERO -->
+            <if:Block Title="DISPATCH POSTURE · HEALTH SURFACE" Margin="0,0,0,10">
+                <if:Block.Right>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="HOBBS" Style="{StaticResource Lab}" Margin="0,0,8,0" VerticalAlignment="Bottom"/>
+                        <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="10"
+                                   Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0" VerticalAlignment="Bottom"
+                                   Text="{Binding HobbsNow, StringFormat=F1}"/>
+                        <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold"
+                                   Foreground="{DynamicResource GreenBrush}" VerticalAlignment="Bottom">
+                            <Run Text="+"/><Run Text="{Binding HobbsDelta, StringFormat=F1, Mode=OneWay}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </if:Block.Right>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.4*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Engine condition donut -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,16,0">
+                        <c:Donut Width="108" Height="108"
+                                 Value="{Binding EngineHealth}"
+                                 Stroke="{Binding EngineHealth, Converter={StaticResource HealthBrush}}"/>
+                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="ENGINE CONDITION INDEX" Style="{StaticResource Lab}"/>
+                            <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="28" FontWeight="Bold" Margin="0,2,0,0"
+                                       Foreground="{Binding EngineHealth, Converter={StaticResource HealthBrush}}">
+                                <Run Text="{Binding EngineHealthPercent, Mode=OneWay}"/><Run FontSize="14" Foreground="{DynamicResource FaintBrush}" Text=" %"/>
+                            </TextBlock>
+                            <TextBlock Text="composite of hot section · compressor · oil · prop"
+                                       FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource DimBrush}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <Border BorderBrush="{DynamicResource AmberBrush}" BorderThickness="1" Padding="6,2" Margin="0,0,6,0">
+                                    <TextBlock Text="WASH DUE" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="Bold"
+                                               Foreground="{DynamicResource AmberBrush}"/>
+                                </Border>
+                                <Border BorderBrush="{DynamicResource DimBrush}" BorderThickness="1" Padding="6,2">
+                                    <TextBlock Text="HSI 1382 h" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="Bold"
+                                               Foreground="{DynamicResource DimBrush}"/>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Thermal margin -->
+                    <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="THERMAL MARGIN · ITT" Style="{StaticResource Lab}"/>
+                            <TextBlock Grid.Column="1" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource GreenBrush}" Text="{Binding ThermalBelowLimit}"/>
+                        </Grid>
+                        <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="26" FontWeight="Bold" Margin="0,4,0,4"
+                                   Foreground="{DynamicResource TextBrush}">
+                            <Run Text="{Binding Itt, Mode=OneWay}"/><Run FontSize="14" Foreground="{DynamicResource FaintBrush}" Text="°C"/>
+                            <Run FontSize="12" Foreground="{DynamicResource FaintBrush}" Text="  / "/>
+                            <Run FontSize="12" Foreground="{DynamicResource FaintBrush}" Text="{Binding IttLimit, Mode=OneWay}"/>
+                            <Run FontSize="12" Foreground="{DynamicResource FaintBrush}" Text=" lim"/>
+                        </TextBlock>
+                        <c:ScaleBar Height="14"
+                                    Value="{Binding Itt}" Min="400" Max="840"
+                                    Caution="{Binding IttCaution}" Redline="{Binding IttLimit}"/>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="BUDGET LEFT" Style="{StaticResource Lab}"/>
+                                <TextBlock Text="{Binding ThermalBudgetPct}" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource GreenBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="OT DEBT" Style="{StaticResource Lab}"/>
+                                <TextBlock Text="+0.4 °C·s" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource AmberBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="EXC TODAY" Style="{StaticResource Lab}"/>
+                                <TextBlock Text="0" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource DimBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Fuel + endurance -->
+                    <StackPanel Grid.Column="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="FUEL · ENDURANCE" Style="{StaticResource Lab}"/>
+                            <TextBlock Grid.Column="1" Text="◇ CLEAN · 4.2 h SINCE SAMPLE" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource GreenBrush}"/>
+                        </Grid>
+                        <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="26" FontWeight="Bold" Margin="0,4,0,4"
+                                   Foreground="{DynamicResource TextBrush}">
+                            <Run Text="{Binding EnduranceHours, Mode=OneWay}"/><Run FontSize="14" Foreground="{DynamicResource FaintBrush}" Text="h"/>
+                        </TextBlock>
+                        <c:MarkerBar Height="5" Value="{Binding FuelLb}" Min="0" Max="{Binding FuelCapLb}"
+                                     Fill="{DynamicResource GreenBrush}"/>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="ON BOARD" Style="{StaticResource Lab}"/>
+                                <TextBlock Text="{Binding FuelLbDisplay}" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="BURN" Style="{StaticResource Lab}"/>
+                                <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}">
+                                    <Run Text="{Binding FuelFlow, Mode=OneWay}"/><Run Text=" pph"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="RES @ ARR" Style="{StaticResource Lab}"/>
+                                <TextBlock Text="{Binding ReserveAtArrival}" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource GreenBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </if:Block>
+
+            <!-- SUBSYSTEM GRID -->
+            <if:Block Title="SUBSYSTEM HEALTH · 8 INDICES" Margin="0,0,0,10">
+                <if:Block.Right>
+                    <TextBlock Text="derived from ledger + live tick" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource DimBrush}"/>
+                </if:Block.Right>
+                <ItemsControl ItemsSource="{Binding Health}" ItemTemplate="{StaticResource HealthCardTpl}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </if:Block>
+
+            <!-- ENGINE + ROUTE -->
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.6*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <if:Block Grid.Column="0" Title="ENGINE · PT6A-140" Margin="0,0,10,0">
+                    <if:Block.Right>
+                        <TextBlock Text="● NOMINAL · 1758 h TO TBO" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource GreenBrush}"/>
+                    </if:Block.Right>
+                    <StackPanel>
+                        <UniformGrid Columns="4">
+                            <if:Gauge Label="ITT"    Value="{Binding Itt}"    Unit="°C"    Max="840"  Caution="{Binding IttCaution}"  Redline="{Binding IttLimit}"/>
+                            <if:Gauge Label="TORQUE" Value="{Binding Torque}" Unit="ft·lb" Max="2230" Caution="{Binding TorqueCaution}" Redline="{Binding TorqueLimit}"/>
+                            <if:Gauge Label="Ng"     Value="{Binding Ng}"     Unit="%"     Max="104"  Caution="101.5" Redline="102"/>
+                            <if:Gauge Label="Np"     Value="{Binding Np}"     Unit="rpm"   Max="2200" Caution="1900"  Redline="2080"/>
+                        </UniformGrid>
+                        <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,1,0,0" Margin="0,12,0,0" Padding="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <if:Trend Grid.Column="0" Title="ITT · last 5 min" Unit="°C"
+                                          Data="{Binding IttTrend}" Now="{Binding Itt}" Caution="{Binding IttCaution}" Redline="{Binding IttLimit}"
+                                          Margin="0,0,8,0"/>
+                                <if:Trend Grid.Column="1" Title="TORQUE · last 5 min" Unit="ft·lb"
+                                          Data="{Binding TorqueTrend}" Now="{Binding Torque}" Caution="{Binding TorqueCaution}" Redline="{Binding TorqueLimit}"
+                                          Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </if:Block>
+
+                <if:Block Grid.Column="1" Title="ROUTE · KAPA → KSEZ">
+                    <StackPanel>
+                        <if:RouteStrip Margin="0,6,0,8"
+                                       Waypoints="{Binding Route}"
+                                       Progress="{Binding RouteProgress}"/>
+                        <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,1,0,0" Padding="0,8,0,0">
+                            <UniformGrid Columns="4">
+                                <StackPanel><TextBlock Text="DTK" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="279°" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                                <StackPanel><TextBlock Text="DIST RMNG" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="148 nm" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                                <StackPanel><TextBlock Text="ETE" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="0:51" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                                <StackPanel><TextBlock Text="ETA" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="15:46Z" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                            </UniformGrid>
+                        </Border>
+                    </StackPanel>
+                </if:Block>
+            </Grid>
+
+            <!-- HABITS + DRIFT -->
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <if:Block Grid.Column="0" Title="PILOT HABITS · 30-DAY ROLLING" Margin="0,0,10,0">
+                    <if:Block.Right>
+                        <TextBlock Text="2 SOFT FLAGS" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AmberBrush}"/>
+                    </if:Block.Right>
+                    <ItemsControl ItemsSource="{Binding Habits}" ItemTemplate="{StaticResource HabitRowTpl}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><UniformGrid Columns="2"/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </if:Block>
+
+                <if:Block Grid.Column="1" Title="PERFORMANCE DRIFT · vs NEW-ENGINE BASELINE">
+                    <if:Block.Right>
+                        <TextBlock Text="QUIETLY DEGRADING" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AmberBrush}"/>
+                    </if:Block.Right>
+                    <ItemsControl ItemsSource="{Binding Drift}" ItemTemplate="{StaticResource DriftRowTpl}"/>
+                </if:Block>
+            </Grid>
+
+            <!-- PRECURSORS + OIL/FUEL -->
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <if:Block Grid.Column="0" Title="LATENT PRECURSORS · SILENT ACCUMULATORS" Margin="0,0,10,0">
+                    <ItemsControl ItemsSource="{Binding Precursors}" ItemTemplate="{StaticResource PrecursorRowTpl}"/>
+                </if:Block>
+                <if:Block Grid.Column="1" Title="OIL + FUEL · CONSUMPTION TREND">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="OIL · last 15 flts (qt at preflight)" Style="{StaticResource Lab}"/>
+                                <TextBlock Grid.Column="1" Text="−1.8 qt / 15 flts" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AmberBrush}"/>
+                            </Grid>
+                            <c:Spark Height="38" Margin="0,6"
+                                     Data="{Binding OilTrend}"
+                                     Stroke="{DynamicResource AmberBrush}"
+                                     Fill="True"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0"><TextBlock Text="NOW" Style="{StaticResource Lab}"/>
+                                    <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}">
+                                        <Run Text="{Binding OilQt, Mode=OneWay}"/><Run Text=" qt"/>
+                                    </TextBlock></StackPanel>
+                                <StackPanel Grid.Column="1"><TextBlock Text="RATE" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="0.12 qt/h" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource AmberBrush}"/></StackPanel>
+                                <StackPanel Grid.Column="2"><TextBlock Text="BASELINE" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="0.08 qt/h" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource DimBrush}"/></StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="FUEL CONTAMINATION RISK" Style="{StaticResource Lab}"/>
+                                <TextBlock Grid.Column="1" Text="LOW" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource GreenBrush}"/>
+                            </Grid>
+                            <c:MarkerBar Height="5" Margin="0,6"
+                                         Value="0.18" Min="0" Max="1"
+                                         Fill="{DynamicResource GreenBrush}"/>
+                            <UniformGrid Columns="2" Rows="2">
+                                <StackPanel><TextBlock Text="SAMPLE" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="4.2 h ago · clean" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                                <StackPanel><TextBlock Text="FILTER ΔP" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="0.8 psi" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                                <StackPanel><TextBlock Text="HEATER" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="auto · ON" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+                                <StackPanel><TextBlock Text="HUMIDITY @ DEP" Style="{StaticResource Lab}"/>
+                                    <TextBlock Text="34%" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource DimBrush}"/></StackPanel>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Grid>
+                </if:Block>
+            </Grid>
+
+            <!-- POST FLIGHT PROJECTION -->
+            <if:Block Title="POST-FLIGHT · WEAR PROJECTION (this leg)" Margin="0,0,0,10">
+                <if:Block.Right>
+                    <TextBlock Text="at touchdown" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource DimBrush}"/>
+                </if:Block.Right>
+                <ItemsControl ItemsSource="{Binding Projection}" ItemTemplate="{StaticResource ProjTpl}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </if:Block>
+
+            <!-- MX DEBT + AIRFRAME + EVENTS -->
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <if:Block Grid.Column="0" Title="MAINTENANCE DEBT" Margin="0,0,10,0">
+                    <if:Block.Right>
+                        <TextBlock Text="1 OVERDUE · 1 MEL" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AmberBrush}"/>
+                    </if:Block.Right>
+                    <ItemsControl ItemsSource="{Binding MxDebt}" ItemTemplate="{StaticResource MxRowTpl}"/>
+                </if:Block>
+
+                <if:Block Grid.Column="1" Title="AIRFRAME · INSPECT" Margin="0,0,10,0">
+                    <if:Block.Right>
+                        <TextBlock Text="● AIRWORTHY" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource GreenBrush}"/>
+                    </if:Block.Right>
+                    <StackPanel>
+                        <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" Text="{Binding Tail}"/>
+                        <TextBlock Text="{Binding Model}" FontFamily="{StaticResource MonoFont}" FontSize="11" Foreground="{DynamicResource DimBrush}" Margin="0,2,0,0"/>
+                        <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,8,0,0">
+                            <UniformGrid Columns="2">
+                                <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MonoFaint}" Foreground="{DynamicResource DimBrush}" Text="airframe_id"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MonoFaint}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Text="AC-208RC-002"/>
+                                </Grid>
+                                <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MonoFaint}" Foreground="{DynamicResource DimBrush}" Text="model_ref"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MonoFaint}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Text="C208B"/>
+                                </Grid>
+                                <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MonoFaint}" Foreground="{DynamicResource DimBrush}" Text="total_hobbs"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MonoFaint}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold">
+                                        <Run Text="{Binding HobbsNow, StringFormat=F1, Mode=OneWay}"/><Run Text=" h"/>
+                                    </TextBlock>
+                                </Grid>
+                                <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MonoFaint}" Foreground="{DynamicResource DimBrush}" Text="cycles"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MonoFaint}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Text="{Binding Cycles, StringFormat=N0, Mode=OneWay}"/>
+                                </Grid>
+                                <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MonoFaint}" Foreground="{DynamicResource DimBrush}" Text="eng TTSN"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MonoFaint}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Text="1842.6 h"/>
+                                </Grid>
+                                <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource MonoFaint}" Foreground="{DynamicResource DimBrush}" Text="prop TTSN"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource MonoFaint}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Text="318.2 h"/>
+                                </Grid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{DynamicResource DashedRuleBrush}" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,8,0,0">
+                            <UniformGrid Columns="3">
+                                <Button Style="{StaticResource GhostButton}" Content="+ SQUAWK" Margin="0,0,2,0"/>
+                                <Button Style="{StaticResource GhostButton}" Content="↳ MARK"   Margin="2,0"/>
+                                <Button Style="{StaticResource GhostButton}" Content="◇ SNAP"   Margin="2,0,0,0"/>
+                            </UniformGrid>
+                        </Border>
+                    </StackPanel>
+                </if:Block>
+
+                <if:Block Grid.Column="2" Title="EVENTS · THIS FLIGHT" BodyPadding="0,0,0,0">
+                    <if:Block.Right>
+                        <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="9" Foreground="{DynamicResource FaintBrush}">
+                            <Run Text="{Binding EventsCount, Mode=OneWay}"/><Run Text=" ENTRIES"/>
+                        </TextBlock>
+                    </if:Block.Right>
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Events}" ItemTemplate="{StaticResource EventRowTpl}"/>
+                        <StackPanel Orientation="Horizontal" Margin="14,8">
+                            <TextBlock Text=">" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource AmberBrush}" Margin="0,0,6,0"/>
+                            <TextBlock Text="tail -f session.log" FontFamily="{StaticResource MonoFont}" FontSize="11" Foreground="{DynamicResource DimBrush}"/>
+                            <Border Width="6" Height="14" Margin="6,0,0,0" Background="{DynamicResource AmberBrush}">
+                                <Border.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                                    <DiscreteDoubleKeyFrame KeyTime="0:0:0"   Value="1"/>
+                                                    <DiscreteDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+                                                    <DiscreteDoubleKeyFrame KeyTime="0:0:1.0" Value="1"/>
+                                                </DoubleAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Border.Triggers>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </if:Block>
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

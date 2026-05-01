@@ -32,10 +32,14 @@
     <Color x:Key="AmberColor">#FFD4A24C</Color>
     <Color x:Key="OrangeColor">#FFD97757</Color>
     <Color x:Key="RedColor">#FFC25450</Color>
+    <Color x:Key="CyanColor">#FF7FB8C4</Color>
+    <Color x:Key="PurpleColor">#FFB59CC4</Color>
     <SolidColorBrush x:Key="GreenBrush"  Color="{StaticResource GreenColor}" />
     <SolidColorBrush x:Key="AmberBrush"  Color="{StaticResource AmberColor}" />
     <SolidColorBrush x:Key="OrangeBrush" Color="{StaticResource OrangeColor}" />
     <SolidColorBrush x:Key="RedBrush"    Color="{StaticResource RedColor}" />
+    <SolidColorBrush x:Key="CyanBrush"   Color="{StaticResource CyanColor}" />
+    <SolidColorBrush x:Key="PurpleBrush" Color="{StaticResource PurpleColor}" />
 
     <!-- Live row tint (green @ 4%) -->
     <SolidColorBrush x:Key="LiveTintBrush" Color="#0AA8C97A" />

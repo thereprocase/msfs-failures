@@ -23,6 +23,13 @@
             <cv:MelToBrushConverter          x:Key="MelBrush"/>
             <cv:IntZeroBrushConverter        x:Key="IntZeroBrush"/>
             <cv:RowBackgroundConverter       x:Key="RowBg"/>
+            <cv:HealthBrushConverter         x:Key="HealthBrush"/>
+            <cv:ToneBrushConverter           x:Key="ToneBrush"/>
+            <cv:EventKindBrushConverter      x:Key="EventKindBrush"/>
+            <cv:PrecursorBrushConverter      x:Key="PrecursorBrush"/>
+            <cv:PercentIntConverter          x:Key="PercentInt"/>
+            <cv:PercentToThicknessConverter  x:Key="PercentLeft"/>
+            <cv:UpperCaseConverter           x:Key="UpperCase"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

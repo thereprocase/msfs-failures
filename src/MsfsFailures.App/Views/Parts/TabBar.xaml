@@ -32,6 +32,35 @@
             </ToggleButton>
 
             <ToggleButton Style="{StaticResource TabButton}"
+                          IsChecked="{Binding IsInFlight, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.InFlight}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="IN FLIGHT"/>
+                    <Ellipse Width="6" Height="6" Margin="6,0,0,0" VerticalAlignment="Center"
+                             Fill="{DynamicResource GreenBrush}">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsInFlight}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                     From="1" To="0.35" Duration="0:0:1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                </StackPanel>
+            </ToggleButton>
+
+            <ToggleButton Style="{StaticResource TabButton}"
                           IsChecked="{Binding IsSquawks, Mode=OneWay}"
                           Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Squawks}">
                 <StackPanel Orientation="Horizontal">

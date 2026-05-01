@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>msfs-failures · In Flight v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  html, body { margin: 0; padding: 0; background: #0a0907; color: #ddd6c4; font-family: "Inter", system-ui, sans-serif; min-height: 100vh; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { display: flex; align-items: center; justify-content: center; padding: 24px; }
+  @keyframes vpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes blink {0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="windows-frame.jsx"></script>
+
+<script type="text/babel">
+const P = {
+  bg:'#0e0d0a', panel:'#15130f', panel2:'#1c1a14',
+  border:'rgba(255,255,255,.06)', rule:'rgba(255,255,255,.04)',
+  text:'#ddd6c4', dim:'#8a8270', faint:'#54503f',
+  green:'#a8c97a', amber:'#d4a24c', orange:'#d97757', red:'#c25450',
+  cyan:'#7fb8c4', purple:'#b59cc4',
+  mono:'"JetBrains Mono", "SF Mono", Consolas, monospace',
+};
+
+// ---- live state -------------------------------------------------------------
+const AC = {
+  tail: 'N208RC',
+  type: 'C208B',
+  model: 'Cessna 208B Grand Caravan EX',
+  binding: 'C208B.default v1.2',
+  engine: 'PT6A-140',
+  hobbsStart: 1842.6,
+  hobbsNow:   1844.1,
+  cycles: 2106,
+};
+
+const S = {
+  phase: 'CRUISE',
+  alt: 9500, vsi: 0, ias: 168, tas: 188, gs: 174, hdg: 281, oat: -4,
+  fuelLb: 1842, fuelFlow: 412,
+  ng: 91.4, np: 1900, itt: 685, torque: 1410, oilT: 79, oilP: 87, oilQt: 11.4,
+};
+
+// Health indices (0..1, derived) — the decision surfaces
+const H = {
+  engine:           { v: 0.74, label: 'ENGINE',           sub: 'condition index'    },
+  hotSection:       { v: 0.82, label: 'HOT SECTION',      sub: '1382 h to HSI'      },
+  compressor:       { v: 0.61, label: 'COMPRESSOR',       sub: 'wash due'           },
+  oilSystem:        { v: 0.88, label: 'OIL SYSTEM',       sub: '11.4 / 14 qt'       },
+  fuelSystem:       { v: 0.94, label: 'FUEL',             sub: 'clean · last sample 4.2 h ago' },
+  prop:             { v: 0.79, label: 'PROPELLER',        sub: 'erosion + governor drift' },
+  gearBrakes:       { v: 0.66, label: 'GEAR · BRAKES',    sub: 'brakes 55% · tires 62%' },
+  electrical:       { v: 0.91, label: 'ELECTRICAL',       sub: 'battery SOH 91%'    },
+};
+
+const ROUTE = [
+  { id: 'KAPA', t: '13:54Z' },
+  { id: 'DBL',  t: '14:14Z' },
+  { id: 'JNC',  t: '14:42Z' },
+  { id: 'LKV',  t: '15:18Z' },
+  { id: 'KSEZ', t: '15:46Z' },
+];
+const ROUTE_PROGRESS = 0.42;
+
+const EVENTS = [
+  { t: '14:08:11', kind: 'phase', msg: 'LIFTOFF · gear/strut wear sample taken (vs 412 fpm, weight 8624 lb)' },
+  { t: '14:08:42', kind: 'wear',  msg: 'Cycle counter → 2106 · landing-gear cycle logged' },
+  { t: '14:14:02', kind: 'warn',  msg: 'ITT peaked 712°C in climb · added 0.4 °C·s to overtemp debt' },
+  { t: '14:18:30', kind: 'phase', msg: 'TOC reached · cruise wear profile engaged' },
+  { t: '14:19:04', kind: 'note',  msg: 'Compressor efficiency held at 87.3% (was 92.0% new)' },
+  { t: '14:31:18', kind: 'wear',  msg: 'Tick · oil consumed 0.18 qt this leg · within trend band' },
+  { t: '15:02:55', kind: 'note',  msg: 'Same-power climb cost +18 fpm fuel for −12 fpm climb vs new-engine baseline' },
+];
+
+const ITT_TREND = [612,634,656,672,684,698,712,706,694,688,684,682,684,685,686,684,683,685,686,685];
+const TQ_TREND  = [880,1100,1320,1540,1700,1820,1865,1820,1690,1560,1480,1420,1410,1408,1410,1412,1410,1411,1410,1410];
+const OIL_TREND_30D = [13.2,13.0,12.8,12.6,12.5,12.3,12.1,12.0,11.9,11.8,11.7,11.6,11.5,11.5,11.4]; // qt at preflight, last 15 flights
+
+// ---- atoms ------------------------------------------------------------------
+const Mono = ({ children, c = P.text, w = 600, s = 11 }) =>
+  <span style={{ fontFamily: P.mono, fontSize: s, color: c, fontWeight: w }}>{children}</span>;
+const Lab = ({ children, c = P.faint }) =>
+  <span style={{ fontFamily: P.mono, fontSize: 9, letterSpacing: '0.16em', color: c }}>{children}</span>;
+
+const Block = ({ title, right, children, pad = 14 }) => (
+  <div style={{ background: P.panel, border: '1px solid ' + P.border, borderRadius: 3, display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+    <div style={{ padding: '8px 12px', borderBottom: '1px solid ' + P.border, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#100e0a' }}>
+      <span style={{ fontFamily: P.mono, fontSize: 9, letterSpacing: '0.16em', color: P.amber, fontWeight: 700 }}>[{title}]</span>
+      {right}
+    </div>
+    <div style={{ padding: pad }}>{children}</div>
+  </div>
+);
+
+const healthColor = (v) => v < 0.4 ? P.red : v < 0.65 ? P.orange : v < 0.85 ? P.amber : P.green;
+
+const Spark = ({ data, color, height = 24, redline, caution, fill = false }) => {
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const w = 100;
+  const pts = data.map((v, i) => `${(i/(data.length-1))*w},${height - ((v-min)/range)*height}`).join(' ');
+  return (
+    <svg width="100%" viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" style={{ display: 'block' }}>
+      {redline != null && <line x1="0" x2={w} y1={height-((redline-min)/range)*height} y2={height-((redline-min)/range)*height} stroke={P.red} strokeWidth="0.4" strokeDasharray="2,1" opacity="0.6"/>}
+      {caution != null && <line x1="0" x2={w} y1={height-((caution-min)/range)*height} y2={height-((caution-min)/range)*height} stroke={P.amber} strokeWidth="0.4" strokeDasharray="2,1" opacity="0.5"/>}
+      {fill && <polygon points={`0,${height} ${pts} ${w},${height}`} fill={color} opacity="0.15"/>}
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1" vectorEffect="non-scaling-stroke"/>
+    </svg>
+  );
+};
+
+const Bar = ({ value, max = 1, min = 0, color, caution, redline }) => {
+  const pct = Math.max(0, Math.min(1, (value - min)/(max - min)));
+  return (
+    <div style={{ position: 'relative', height: 5, background: 'rgba(255,255,255,.04)' }}>
+      <div style={{ width: pct*100 + '%', height: '100%', background: color, transition: 'width .2s' }}/>
+      {caution != null && <div style={{ position: 'absolute', left: ((caution-min)/(max-min))*100 + '%', top: -2, width: 1, height: 9, background: P.amber }}/>}
+      {redline != null && <div style={{ position: 'absolute', left: ((redline-min)/(max-min))*100 + '%', top: -2, width: 1, height: 9, background: P.red }}/>}
+    </div>
+  );
+};
+
+// ---- header strip -----------------------------------------------------------
+const TermHeader = () => (
+  <div style={{ background: '#0a0907', borderBottom: '1px solid ' + P.border, padding: '8px 18px', display: 'flex', alignItems: 'center', gap: 18, fontFamily: P.mono, fontSize: 11, color: P.dim, letterSpacing: '0.04em' }}>
+    <span style={{ color: P.amber, fontWeight: 700 }}>msfs-failures</span>
+    <span style={{ color: P.faint }}>v0.1.0-alpha</span>
+    <span style={{ color: P.faint }}>·</span>
+    <span>2026-04-30 15:25:42Z</span>
+    <span style={{ color: P.faint }}>·</span>
+    <span>UPTIME 02:31:14</span>
+    <span style={{ flex: 1 }}/>
+    <span style={{ color: P.faint }}>BINDING</span>
+    <span>{AC.binding}</span>
+    <span style={{ color: P.faint }}>·</span>
+    <span style={{ color: P.green, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: P.green, animation: 'vpulse 2s infinite' }}/>
+      SIMCONNECT●WASM●
+    </span>
+  </div>
+);
+
+const TabBar = () => (
+  <div style={{ display: 'flex', borderBottom: '1px solid ' + P.border, background: '#100e0a', paddingLeft: 12 }}>
+    {[['FLEET',5,false],['IN FLIGHT',null,true],['SQUAWKS',6,false],['MAINTENANCE',1,false],['SESSIONS',null,false],['AIRFRAME EDITOR',null,false],['BINDINGS',null,false],['LOG',null,false]].map(([l,n,a]) => (
+      <button key={l} style={{ background:'transparent', color: a?P.amber:P.dim, border:'none', borderRight:'1px solid '+P.border, borderBottom: a?'2px solid '+P.amber:'2px solid transparent', padding:'10px 14px', fontFamily:P.mono, fontSize:10, fontWeight:600, letterSpacing:'0.12em', cursor:'pointer', display:'flex', alignItems:'center', gap:6, marginBottom:-1 }}>
+        {l}
+        {a && <span style={{ width:6, height:6, borderRadius:'50%', background:P.green, animation:'vpulse 2s infinite', marginLeft:4 }}/>}
+        {n!=null && <span style={{ color: a?P.amber:P.faint, fontSize:9 }}>[{n}]</span>}
+      </button>
+    ))}
+  </div>
+);
+
+const LiveStrip = () => (
+  <div style={{ background: P.panel, borderBottom: '1px solid '+P.border, padding: '10px 18px', display:'flex', alignItems:'center', gap: 22, fontFamily: P.mono, fontSize: 11 }}>
+    <span style={{ color: P.green, fontWeight:700, letterSpacing:'0.16em', display:'inline-flex', alignItems:'center', gap:6 }}>
+      <span style={{ width:7, height:7, borderRadius:'50%', background:P.green, animation:'vpulse 2s infinite' }}/>
+      LIVE
+    </span>
+    <span style={{ color: P.text, fontWeight: 700 }}>{AC.tail}</span>
+    <span style={{ color: P.dim }}>{AC.type}</span>
+    <span style={{ color: P.faint }}>·</span>
+    <span style={{ color: P.amber, letterSpacing: '0.12em', fontWeight: 600 }}>{S.phase}</span>
+    <span style={{ flex: 1 }}/>
+    {[
+      ['ALT', S.alt.toLocaleString()+' ft'],
+      ['IAS', S.ias+' kt'], ['TAS', S.tas+' kt'], ['GS', S.gs+' kt'],
+      ['HDG', String(S.hdg).padStart(3,'0')+'°'], ['OAT', S.oat+'°C'],
+      ['ITT', S.itt+'°C'], ['TQ', S.torque+' ft·lb'], ['FF', S.fuelFlow+' pph'],
+    ].map(([k,v]) => (
+      <span key={k} style={{ display:'inline-flex', gap:5, alignItems:'baseline' }}>
+        <span style={{ color: P.faint, fontSize: 9, letterSpacing: '0.1em' }}>{k}</span>
+        <span style={{ color: P.text, fontWeight: 600 }}>{v}</span>
+      </span>
+    ))}
+  </div>
+);
+
+// ---- BIG decision surface: dispatch posture --------------------------------
+const DispatchHero = () => {
+  // Engine condition index, hot section margin, thermal budget remaining, dispatch posture
+  const thermalBudget = 0.72; // 72% of allowable thermal damage budget remaining for this leg
+  const fuelClean = true;
+  return (
+    <Block title="DISPATCH POSTURE · HEALTH SURFACE" right={
+      <span style={{ display:'inline-flex', gap: 12, alignItems: 'baseline' }}>
+        <Lab>HOBBS</Lab>
+        <Mono c={P.text} s={10}>{AC.hobbsNow.toFixed(1)}</Mono>
+        <Mono c={P.green} s={10} w={700}>+{(AC.hobbsNow-AC.hobbsStart).toFixed(1)}</Mono>
+      </span>
+    }>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 16 }}>
+        {/* Engine condition donut */}
+        <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+          <Donut value={H.engine.v} size={108} color={healthColor(H.engine.v)}/>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+            <Lab>ENGINE CONDITION INDEX</Lab>
+            <Mono c={healthColor(H.engine.v)} s={28} w={700}>{Math.round(H.engine.v*100)}<span style={{ color: P.faint, fontSize: 14, marginLeft: 3 }}>%</span></Mono>
+            <Mono c={P.dim} s={10} w={500}>composite of hot section · compressor · oil · prop</Mono>
+            <div style={{ marginTop: 4, display: 'flex', gap: 6 }}>
+              <Chip c={P.amber}>WASH DUE</Chip>
+              <Chip c={P.dim}>HSI 1382 h</Chip>
+            </div>
+          </div>
+        </div>
+
+        {/* Thermal margin */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <Lab>THERMAL MARGIN · ITT</Lab>
+            <Mono c={P.green} s={10} w={700}>140°C BELOW LIMIT</Mono>
+          </div>
+          <Mono c={P.text} s={26} w={700}>685<span style={{ color:P.faint, fontSize:14, marginLeft:4 }}>°C</span><span style={{ color:P.faint, fontSize: 12, marginLeft: 8 }}>/ 825 lim</span></Mono>
+          <ScaleBar value={S.itt} min={400} max={840} caution={765} redline={825}/>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div><Lab>BUDGET LEFT</Lab><Mono c={P.green} s={13} w={700}>{Math.round(thermalBudget*100)}%</Mono></div>
+            <div><Lab>OT DEBT</Lab><Mono c={P.amber} s={13} w={700}>+0.4 °C·s</Mono></div>
+            <div><Lab>EXC TODAY</Lab><Mono c={P.dim} s={13} w={700}>0</Mono></div>
+          </div>
+        </div>
+
+        {/* Fuel + endurance */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <Lab>FUEL · ENDURANCE</Lab>
+            <Mono c={fuelClean ? P.green : P.amber} s={10} w={700}>{fuelClean ? '◇ CLEAN · 4.2 h SINCE SAMPLE' : '⚠ CONTAMINATION SUSPECTED'}</Mono>
+          </div>
+          <Mono c={P.text} s={26} w={700}>{(S.fuelLb/S.fuelFlow).toFixed(1)}<span style={{ color: P.faint, fontSize: 14, marginLeft: 4 }}>h</span></Mono>
+          <Bar value={S.fuelLb} max={2240} color={P.green}/>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div><Lab>ON BOARD</Lab><Mono c={P.text} s={13} w={700}>{S.fuelLb.toLocaleString()} lb</Mono></div>
+            <div><Lab>BURN</Lab><Mono c={P.text} s={13} w={700}>{S.fuelFlow} pph</Mono></div>
+            <div><Lab>RES @ ARR</Lab><Mono c={P.green} s={13} w={700}>+{((S.fuelLb/S.fuelFlow)-0.86-0.32).toFixed(1)}h</Mono></div>
+          </div>
+        </div>
+      </div>
+    </Block>
+  );
+};
+
+const Donut = ({ value, size = 100, color }) => {
+  const r = size/2 - 6;
+  const c = 2 * Math.PI * r;
+  const off = c * (1 - value);
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="6"/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="6"
+              strokeDasharray={c} strokeDashoffset={off} strokeLinecap="round"
+              transform={`rotate(-90 ${size/2} ${size/2})`}/>
+      <text x={size/2} y={size/2+1} textAnchor="middle" dominantBaseline="middle"
+            fontFamily={P.mono} fontSize={size*0.26} fontWeight={700} fill={color}>
+        {Math.round(value*100)}
+      </text>
+    </svg>
+  );
+};
+
+const ScaleBar = ({ value, min, max, caution, redline }) => {
+  const pct = (value - min) / (max - min);
+  return (
+    <div style={{ position: 'relative', height: 10, background: 'rgba(255,255,255,.04)', borderRadius: 1 }}>
+      <div style={{
+        position: 'absolute', top: 0, left: 0, height: '100%',
+        width: ((caution - min)/(max-min))*100 + '%', background: 'rgba(168,201,122,.20)',
+      }}/>
+      <div style={{
+        position: 'absolute', top: 0, height: '100%',
+        left: ((caution-min)/(max-min))*100 + '%',
+        width: ((redline-caution)/(max-min))*100 + '%', background: 'rgba(212,162,76,.25)',
+      }}/>
+      <div style={{
+        position: 'absolute', top: 0, height: '100%',
+        left: ((redline-min)/(max-min))*100 + '%',
+        right: 0, background: 'rgba(194,84,80,.25)',
+      }}/>
+      <div style={{ position: 'absolute', left: pct*100 + '%', top: -3, width: 2, height: 16, background: P.text, transform: 'translateX(-1px)' }}/>
+    </div>
+  );
+};
+
+const Chip = ({ children, c }) => (
+  <span style={{ fontFamily: P.mono, fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: c, padding: '2px 6px', border: '1px solid '+c+'55', borderRadius: 2 }}>
+    {children}
+  </span>
+);
+
+// ---- Subsystem health grid (8 systems, decision-surface) -------------------
+const SubsystemGrid = () => (
+  <Block title="SUBSYSTEM HEALTH · 8 INDICES" right={<Mono c={P.dim} s={10}>derived from ledger + live tick</Mono>}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+      {Object.entries(H).map(([k, h]) => (
+        <SubCard key={k} h={h}/>
+      ))}
+    </div>
+  </Block>
+);
+
+const SubCard = ({ h }) => {
+  const c = healthColor(h.v);
+  return (
+    <div style={{ background: P.panel2, border: '1px solid '+P.border, borderRadius: 2, padding: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <Lab c={P.dim}>{h.label}</Lab>
+        <Mono c={c} s={14} w={700}>{Math.round(h.v*100)}%</Mono>
+      </div>
+      <Bar value={h.v} color={c}/>
+      <Mono c={P.faint} s={9} w={500}>{h.sub}</Mono>
+    </div>
+  );
+};
+
+// ---- Engine deep dive (PT6A specific) ---------------------------------------
+const EnginePanel = () => (
+  <Block title={`ENGINE · ${AC.engine}`} right={<Mono c={P.green} s={9} w={700}>● NOMINAL · 1758 h TO TBO</Mono>}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+      <Gauge label="ITT"    value={S.itt}    unit="°C"    max={840}  caution={765}  redline={825}/>
+      <Gauge label="TORQUE" value={S.torque} unit="ft·lb" max={2230} caution={1865} redline={1970}/>
+      <Gauge label="Ng"     value={S.ng}     unit="%"     max={104}  caution={101.5} redline={102}/>
+      <Gauge label="Np"     value={S.np}     unit="rpm"   max={2200} caution={1900} redline={2080}/>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 12, paddingTop: 12, borderTop: '1px dashed '+P.rule }}>
+      <Trend title="ITT · last 5 min"    data={ITT_TREND} unit="°C"    now={S.itt}    caution={765}  redline={825}/>
+      <Trend title="TORQUE · last 5 min" data={TQ_TREND}  unit="ft·lb" now={S.torque} caution={1865} redline={1970}/>
+    </div>
+  </Block>
+);
+
+const Gauge = ({ label, value, unit, max, caution, redline, min = 0 }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Lab>{label}</Lab><Mono c={P.faint} s={9}>{unit}</Mono>
+    </div>
+    <Mono c={redline!=null && value>redline ? P.red : caution!=null && value>caution ? P.amber : P.text} s={20} w={700}>{value}</Mono>
+    <Bar value={value} min={min} max={max} caution={caution} redline={redline} color={P.green}/>
+  </div>
+);
+
+const Trend = ({ title, data, unit, now, caution, redline }) => {
+  const peak = Math.max(...data);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Lab>{title}</Lab><Mono c={P.faint} s={9}>{unit}</Mono>
+      </div>
+      <div style={{ height: 32 }}><Spark data={data} color={P.green} height={32} caution={caution} redline={redline} fill/></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: P.mono, fontSize: 10 }}>
+        <span style={{ color: P.faint }}>NOW <span style={{ color: P.text, fontWeight: 600, marginLeft: 4 }}>{now}</span></span>
+        <span style={{ color: P.faint }}>PEAK <span style={{ color: peak>redline ? P.red : peak>caution ? P.amber : P.text, fontWeight: 600, marginLeft: 4 }}>{peak}</span></span>
+        <span style={{ color: P.faint }}>AVG <span style={{ color: P.text, fontWeight: 600, marginLeft: 4 }}>{Math.round(data.reduce((a,b)=>a+b,0)/data.length)}</span></span>
+      </div>
+    </div>
+  );
+};
+
+// ---- Pilot habits / abuse history (this is the "killing it slowly" surface)
+const HabitsPanel = () => {
+  // 30-day rolling pilot-habit score. Lower is gentler. Each habit has trend.
+  const habits = [
+    { k: 'Hot starts',          v: 0, max: 5, unit: 'last 30 d', tone: 'good',  note: 'streak: 47 starts clean' },
+    { k: 'Torque exceedances',  v: 2, max: 5, unit: 'events',    tone: 'warn',  note: 'last: 14:14 · +95 ft·lb · 4.1 s' },
+    { k: 'ITT overtemp debt',   v: 0.4, max: 30, unit: '°C·s',   tone: 'good',  note: 'this leg only · cleared at TOC' },
+    { k: 'Mean climb torque',   v: 1750, max: 1865, unit: 'ft·lb', tone: 'warn', note: '+8% above book climb · burn cost +1.4%' },
+    { k: 'Hard landings',       v: 0, max: 3, unit: '>500 fpm vs', tone: 'good', note: 'softest 30 d: −198 fpm' },
+    { k: 'Beta on ground only', v: 100, max: 100, unit: '% compliance', tone: 'good', note: 'no in-air reverse detected' },
+    { k: 'Compressor wash',     v: 47, max: 100, unit: 'h since wash', tone: 'warn', note: 'service threshold · efficiency −4.7%' },
+    { k: 'Fuel sample interval',v: 4.2, max: 10, unit: 'h since',  tone: 'good',  note: 'auto-prompt at 10 h' },
+  ];
+  return (
+    <Block title="PILOT HABITS · 30-DAY ROLLING" right={<Mono c={P.amber} s={10} w={700}>2 SOFT FLAGS</Mono>}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px 16px' }}>
+        {habits.map(h => {
+          const c = h.tone === 'warn' ? P.amber : h.tone === 'bad' ? P.red : P.green;
+          return (
+            <div key={h.k} style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '6px 0', borderBottom: '1px dashed '+P.rule }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <Mono c={P.text} s={11} w={600}>{h.k}</Mono>
+                <Mono c={c} s={11} w={700}>{h.v}<span style={{ color: P.faint, fontWeight: 400, marginLeft: 4, fontSize: 9 }}>{h.unit}</span></Mono>
+              </div>
+              <Mono c={P.dim} s={9} w={400}>{h.note}</Mono>
+            </div>
+          );
+        })}
+      </div>
+    </Block>
+  );
+};
+
+// ---- Performance drift: same power → less performance ----------------------
+const PerfDriftPanel = () => (
+  <Block title="PERFORMANCE DRIFT · vs NEW-ENGINE BASELINE" right={<Mono c={P.amber} s={10} w={700}>QUIETLY DEGRADING</Mono>}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {[
+        { k: 'Climb rate · same TQ',    now: 712,  base: 850,  unit: 'fpm', delta: '−16%', tone: 'amber' },
+        { k: 'Cruise TAS · same TQ',    now: 188,  base: 195,  unit: 'kt',  delta: '−3.6%', tone: 'good' },
+        { k: 'Fuel burn · same power',  now: 412,  base: 388,  unit: 'pph', delta: '+6.2%', tone: 'amber' },
+        { k: 'Compressor efficiency',   now: 87.3, base: 92.0, unit: '%',   delta: '−4.7%', tone: 'amber' },
+      ].map(d => {
+        const c = d.tone === 'amber' ? P.amber : P.green;
+        return (
+          <div key={d.k} style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1fr 0.6fr', gap: 10, alignItems: 'center', padding: '4px 0', borderBottom: '1px dashed '+P.rule }}>
+            <Mono c={P.text} s={11} w={500}>{d.k}</Mono>
+            <Mono c={P.text} s={11} w={700}>NOW <span style={{ color: P.dim, fontWeight: 500, marginLeft: 4 }}>{d.now}</span></Mono>
+            <Mono c={P.dim} s={11} w={500}>BASE {d.base} {d.unit}</Mono>
+            <Mono c={c} s={11} w={700}>{d.delta}</Mono>
+          </div>
+        );
+      })}
+    </div>
+  </Block>
+);
+
+// ---- Maintenance debt -------------------------------------------------------
+const MxDebtPanel = () => {
+  const items = [
+    { k: 'Compressor wash',         due: 'OVERDUE', hrs: -47, severity: 'amber',  defer: true,  note: 'efficiency loss accelerates' },
+    { k: 'Fuel sump · L tank',      due: '12 h',    hrs: 12,  severity: 'good',   defer: false, note: 'next preflight prompt' },
+    { k: '100-hr inspection',       due: '85.8 h',  hrs: 85.8,severity: 'good',   defer: false, note: 'phase items unbundled' },
+    { k: 'HSI · hot section',       due: '1382 h',  hrs: 1382,severity: 'good',   defer: false, note: '~1800 h interval reached' },
+    { k: 'Oil change (50 h)',       due: '14 h',    hrs: 14,  severity: 'good',   defer: false, note: 'on schedule' },
+    { k: 'Vacuum filter',           due: 'DEFERRED',hrs: 0,   severity: 'dim',    defer: true,  note: 'MEL · until 2026-05-10' },
+  ];
+  return (
+    <Block title="MAINTENANCE DEBT" right={<Mono c={P.amber} s={10} w={700}>1 OVERDUE · 1 MEL</Mono>}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {items.map(it => {
+          const c = it.severity === 'amber' ? P.amber : it.severity === 'dim' ? P.dim : P.green;
+          return (
+            <div key={it.k} style={{ display: 'grid', gridTemplateColumns: '1fr 80px', gap: 10, alignItems: 'center', padding: '4px 0', borderBottom: '1px dashed '+P.rule }}>
+              <div>
+                <Mono c={P.text} s={11} w={600}>{it.k}</Mono>
+                <div><Mono c={P.faint} s={9} w={400}>{it.note}</Mono></div>
+              </div>
+              <Mono c={c} s={10} w={700}>{it.due}</Mono>
+            </div>
+          );
+        })}
+      </div>
+    </Block>
+  );
+};
+
+// ---- Latent precursors (silent damage accumulators) ------------------------
+const PrecursorsPanel = () => {
+  const p = [
+    { k: 'Compressor fouling',     v: 0.39, scale: 'NEW → FOULED',  current: 'EFFICIENCY 87.3%' },
+    { k: 'Fuel nozzle coking',     v: 0.22, scale: 'CLEAN → COKED', current: 'spray pattern within trend' },
+    { k: 'Bearing condition',      v: 0.18, scale: 'NEW → WEAR',    current: 'oil debris monitor 0.3 ppm' },
+    { k: 'Prop blade erosion',     v: 0.31, scale: 'NEW → ERODED',  current: 'rain·dust flights: 18' },
+    { k: 'Brake thermal load',     v: 0.10, scale: 'COLD → FADE',   current: 'cooled · idle in cruise' },
+    { k: 'Strut packing wear',     v: 0.28, scale: 'NEW → WEEPING', current: 'last hard ldg 30 d ago' },
+  ];
+  return (
+    <Block title="LATENT PRECURSORS · SILENT ACCUMULATORS">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {p.map(x => {
+          const c = x.v < 0.25 ? P.green : x.v < 0.6 ? P.amber : P.red;
+          return (
+            <div key={x.k} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <Mono c={P.text} s={11} w={600}>{x.k}</Mono>
+                <Mono c={c} s={10} w={700}>{Math.round(x.v*100)}%</Mono>
+              </div>
+              <Bar value={x.v} color={c}/>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Mono c={P.faint} s={9} w={500}>{x.scale}</Mono>
+                <Mono c={P.dim} s={9} w={500}>{x.current}</Mono>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Block>
+  );
+};
+
+// ---- Oil + fuel detail ------------------------------------------------------
+const OilFuelPanel = () => (
+  <Block title="OIL + FUEL · CONSUMPTION TREND">
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Lab>OIL · last 15 flts (qt at preflight)</Lab>
+          <Mono c={P.amber} s={10} w={700}>−1.8 qt / 15 flts</Mono>
+        </div>
+        <div style={{ height: 38 }}><Spark data={OIL_TREND_30D} color={P.amber} height={38} fill/></div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div><Lab>NOW</Lab><Mono c={P.text} s={13} w={700}>{S.oilQt} qt</Mono></div>
+          <div><Lab>RATE</Lab><Mono c={P.amber} s={13} w={700}>0.12 qt/h</Mono></div>
+          <div><Lab>BASELINE</Lab><Mono c={P.dim} s={13} w={700}>0.08 qt/h</Mono></div>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Lab>FUEL CONTAMINATION RISK</Lab>
+          <Mono c={P.green} s={10} w={700}>LOW</Mono>
+        </div>
+        <Bar value={0.18} color={P.green}/>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div><Lab>SAMPLE</Lab><Mono c={P.text} s={11} w={700}>4.2 h ago · clean</Mono></div>
+          <div><Lab>FILTER ΔP</Lab><Mono c={P.text} s={11} w={700}>0.8 psi</Mono></div>
+          <div><Lab>HEATER</Lab><Mono c={P.text} s={11} w={700}>auto · ON</Mono></div>
+          <div><Lab>HUMIDITY @ DEP</Lab><Mono c={P.dim} s={11} w={700}>34%</Mono></div>
+        </div>
+      </div>
+    </div>
+  </Block>
+);
+
+// ---- Post-flight projection (what THIS flight will cost the airframe) -------
+const PostFlightProjection = () => (
+  <Block title="POST-FLIGHT · WEAR PROJECTION (this leg)" right={<Mono c={P.dim} s={10}>at touchdown</Mono>}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+      <Proj k="Hot section life" delta="−1.4 h" detail="incl. climb ITT 712°C peak" tone="good"/>
+      <Proj k="Compressor eff."  delta="−0.04%" detail="dust ingestion · cruise alt" tone="amber"/>
+      <Proj k="Oil consumed"     delta="0.31 qt" detail="@ 0.12 qt/h · 2.6 h leg" tone="good"/>
+      <Proj k="Tires"            delta="−0.4%"  detail="proj. 142 kt at touchdown" tone="good"/>
+      <Proj k="Brakes"           delta="−0.6%"  detail="9100 ft rwy · light braking" tone="good"/>
+      <Proj k="Cycles"           delta="+1"     detail="gear · pressurization n/a" tone="good"/>
+    </div>
+  </Block>
+);
+
+const Proj = ({ k, delta, detail, tone }) => {
+  const c = tone === 'amber' ? P.amber : tone === 'red' ? P.red : P.green;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '4px 0' }}>
+      <Lab>{k}</Lab>
+      <Mono c={c} s={15} w={700}>{delta}</Mono>
+      <Mono c={P.dim} s={9} w={500}>{detail}</Mono>
+    </div>
+  );
+};
+
+// ---- Route + airframe + events (compact right column) ---------------------
+const RoutePanel = () => (
+  <Block title="ROUTE · KAPA → KSEZ">
+    <div style={{ position: 'relative', padding: '6px 0 28px' }}>
+      <div style={{ height: 2, background: P.rule, position: 'relative' }}>
+        <div style={{ height: '100%', width: ROUTE_PROGRESS*100 + '%', background: P.green }}/>
+        {ROUTE.map((wp, i) => {
+          const x = (i / (ROUTE.length - 1)) * 100;
+          const passed = x/100 < ROUTE_PROGRESS;
+          const here = Math.abs(x/100 - ROUTE_PROGRESS) < 0.08;
+          return (
+            <div key={wp.id} style={{ position: 'absolute', left: x+'%', top: -4, transform: 'translateX(-50%)', width: 10, height: 10, borderRadius: '50%', background: here ? P.amber : passed ? P.green : P.panel2, border: '2px solid '+(here ? P.amber : passed ? P.green : P.faint), boxShadow: here ? '0 0 0 4px rgba(212,162,76,.15)' : 'none' }}/>
+          );
+        })}
+      </div>
+      <div style={{ position: 'relative', height: 22, marginTop: 4 }}>
+        {ROUTE.map((wp, i) => {
+          const x = (i / (ROUTE.length - 1)) * 100;
+          return (
+            <div key={wp.id} style={{ position: 'absolute', left: x+'%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+              <Mono c={P.text} s={10} w={700}>{wp.id}</Mono>
+              <Mono c={P.faint} s={9}>{wp.t}</Mono>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, paddingTop: 8, borderTop: '1px dashed '+P.rule }}>
+      <KV k="DTK" v="279°"/><KV k="DIST RMNG" v="148 nm"/><KV k="ETE" v="0:51"/><KV k="ETA" v="15:46Z"/>
+    </div>
+  </Block>
+);
+
+const KV = ({ k, v }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Lab>{k}</Lab>
+    <Mono c={P.text} s={13} w={700}>{v}</Mono>
+  </div>
+);
+
+const AirframePanel = () => (
+  <Block title="AIRFRAME · INSPECT" right={<Mono c={P.green} s={9} w={700}>● AIRWORTHY</Mono>}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div>
+        <Mono c={P.text} s={20} w={700}>{AC.tail}</Mono>
+        <div style={{ marginTop: 2 }}><Mono c={P.dim} s={11} w={500}>{AC.model}</Mono></div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6, paddingTop: 8, borderTop: '1px dashed '+P.rule }}>
+        <Row k="airframe_id" v="AC-208RC-002"/>
+        <Row k="model_ref"   v="C208B"/>
+        <Row k="total_hobbs" v={AC.hobbsNow.toFixed(1)+' h'}/>
+        <Row k="cycles"      v={AC.cycles.toLocaleString()}/>
+        <Row k="eng TTSN"    v="1842.6 h"/>
+        <Row k="prop TTSN"   v="318.2 h"/>
+      </div>
+      <div style={{ display: 'flex', gap: 4, paddingTop: 8, borderTop: '1px dashed '+P.rule }}>
+        {[['+ SQUAWK',P.text],['↳ MARK',P.text],['◇ SNAP',P.text]].map(([l,c]) => (
+          <button key={l} style={{ flex:1, background:'transparent', border:'1px solid '+P.border, color:c, padding:'6px 4px', fontFamily:P.mono, fontSize:9, fontWeight:600, letterSpacing:'0.08em', cursor:'pointer' }}>{l}</button>
+        ))}
+      </div>
+    </div>
+  </Block>
+);
+
+const Row = ({ k, v }) => (
+  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: P.mono, fontSize: 10, padding: '2px 0' }}>
+    <span style={{ color: P.dim }}>{k}</span>
+    <span style={{ color: P.text, fontWeight: 600 }}>{v}</span>
+  </div>
+);
+
+const EventsPanel = () => (
+  <Block title="EVENTS · THIS FLIGHT" right={<Mono c={P.faint} s={9}>{EVENTS.length} ENTRIES</Mono>} pad={0}>
+    <div style={{ fontFamily: P.mono, fontSize: 11 }}>
+      {EVENTS.map((e, i) => {
+        const c = e.kind === 'warn' ? P.amber : e.kind === 'phase' ? P.cyan : e.kind === 'wear' ? P.green : e.kind === 'note' ? P.purple : P.dim;
+        return (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '78px 56px 1fr', gap: 10, padding: '7px 14px', borderBottom: '1px solid '+P.rule, background: i%2 ? 'rgba(255,255,255,.012)' : 'transparent' }}>
+            <Mono c={P.faint} s={10}>{e.t}</Mono>
+            <Mono c={c} s={9} w={700}>{e.kind.toUpperCase()}</Mono>
+            <Mono c={P.text} s={11} w={500}>{e.msg}</Mono>
+          </div>
+        );
+      })}
+      <div style={{ padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
+        <Mono c={P.amber} s={10}>{'>'}</Mono>
+        <Mono c={P.dim} s={11}>tail -f session.log</Mono>
+        <span style={{ width: 6, height: 14, background: P.amber, animation: 'blink 1s infinite' }}/>
+      </div>
+    </div>
+  </Block>
+);
+
+const StatusBar = () => (
+  <div style={{ height: 24, flex: '0 0 24px', background: '#0a0907', borderTop: '1px solid '+P.border, display: 'flex', alignItems: 'center', gap: 18, padding: '0 14px', fontFamily: P.mono, fontSize: 10, color: P.faint, letterSpacing: '0.06em' }}>
+    <span style={{ color: P.amber }}>RECORDING</span><span>·</span>
+    <span>TICK 4 Hz</span><span>·</span>
+    <span style={{ color: P.green }}>WEAR-ENGINE OK</span><span>·</span>
+    <span style={{ color: P.green }}>FAILURE-ENGINE OK</span><span>·</span>
+    <span>0 RNG ROLLS PENDING</span>
+    <span style={{ flex: 1 }}/>
+    <span>SESSION 0F1A22 · 36204 SAMPLES · v2 health-surface</span>
+  </div>
+);
+
+// ---- compose ----------------------------------------------------------------
+const App = () => (
+  <window.WindowsFrame title="msfs-failures" subtitle="terminal · in flight · v2 health surface" width={1440} height={1180} bg={P.bg}>
+    <TermHeader/>
+    <TabBar/>
+    <LiveStrip/>
+
+    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 10, padding: 10, overflow: 'auto' }}>
+      <DispatchHero/>
+      <SubsystemGrid/>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 10 }}>
+        <EnginePanel/>
+        <RoutePanel/>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <HabitsPanel/>
+        <PerfDriftPanel/>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <PrecursorsPanel/>
+        <OilFuelPanel/>
+      </div>
+
+      <PostFlightProjection/>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+        <MxDebtPanel/>
+        <AirframePanel/>
+        <EventsPanel/>
+      </div>
+    </div>
+
+    <StatusBar/>
+  </window.WindowsFrame>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

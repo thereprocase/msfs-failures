@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>TBM 950 · Me & My TBM · Pre-Flight</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  html, body { margin: 0; padding: 0; background: #1a1a1f; color: #1f2630; font-family: "Inter", -apple-system, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { display:flex; align-items:center; justify-content:center; min-height: 100vh; padding: 24px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+// Daher EFB palette — light, sunlight-readable; red is the Daher brand mark
+const D = {
+  bg:        '#f4f5f7',
+  panel:     '#ffffff',
+  panelAlt:  '#fafbfc',
+  ink:       '#1f2630',
+  ink2:      '#3d4654',
+  muted:     '#7a8595',
+  faint:     '#aab1bc',
+  hair:      '#e6e8ec',
+  rule:      '#eef0f3',
+  red:       '#d50032',     // Daher red
+  redSoft:   '#fde8ed',
+  redDeep:   '#a3001f',
+  green:     '#2a8f5e',
+  greenSoft: '#e6f3ec',
+  amber:     '#c97a14',
+  amberSoft: '#fbf1de',
+  blue:      '#1f5fa8',
+  blueSoft:  '#e3edf8',
+  navy:      '#0d2236',
+  mono:      '"Roboto Mono", "SF Mono", Consolas, monospace',
+};
+
+// ---------- iPad bezel + status bar ------------------------------------------
+const iPadFrame = ({ children }) => (
+  <div style={{
+    width: 1194, height: 834, borderRadius: 38, padding: 14,
+    background: 'linear-gradient(180deg,#1c1c20 0%, #0f0f12 100%)',
+    boxShadow: '0 30px 80px rgba(0,0,0,.55), 0 0 0 1px #2c2d31',
+    position: 'relative',
+  }}>
+    {/* camera */}
+    <div style={{ position:'absolute', top:14, left:'50%', transform:'translateX(-50%)', width:8, height:8, borderRadius:'50%', background:'#0a0a0c', border:'1px solid #1c1c20' }}/>
+    <div style={{
+      width:'100%', height:'100%', borderRadius:26, overflow:'hidden',
+      background: D.bg, display:'flex', flexDirection:'column',
+      boxShadow:'inset 0 0 0 1px #000'
+    }}>
+      <iOSStatusBar/>
+      {children}
+    </div>
+  </div>
+);
+
+const iOSStatusBar = () => (
+  <div style={{
+    height: 24, background: '#fff', borderBottom: '1px solid '+D.hair,
+    display:'flex', alignItems:'center', padding:'0 22px', flex:'0 0 24px',
+    fontFamily:'-apple-system, "SF Pro Text", system-ui', fontSize:13, fontWeight:600, color:D.ink
+  }}>
+    <span>10:14</span>
+    <span style={{ marginLeft: 14, color: D.muted, fontWeight:500, fontSize:12 }}>Tue Apr 30</span>
+    <span style={{ flex:1 }}/>
+    <span style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:12, color:D.ink }}>
+      <span style={{ color: D.muted }}>FBO_KAPA_GUEST</span>
+      <span>􀙇</span>
+      <span>􀛨</span>
+      <span style={{ marginLeft:2 }}>91%</span>
+      <BatteryIcon/>
+    </span>
+  </div>
+);
+
+const BatteryIcon = () => (
+  <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3" fill="none" stroke={D.ink} strokeOpacity=".6"/><rect x="2" y="2" width="19" height="9" rx="1.5" fill={D.green}/><rect x="23" y="4" width="2" height="5" rx="1" fill={D.ink} fillOpacity=".6"/></svg>
+);
+
+// ---------- App bar (Daher Me & My TBM) --------------------------------------
+const AppBar = () => (
+  <div style={{
+    flex:'0 0 56px', background:'#fff', borderBottom:'1px solid '+D.hair,
+    display:'flex', alignItems:'center', padding:'0 22px', gap: 18,
+  }}>
+    <button style={{ width:32, height:32, borderRadius:8, border:'1px solid '+D.hair, background:'#fff', color:D.ink2, fontSize:16, cursor:'pointer' }}>‹</button>
+    <DaherMark/>
+    <div style={{ display:'flex', flexDirection:'column' }}>
+      <span style={{ fontSize:11, color:D.muted, letterSpacing:'0.04em', fontWeight:500 }}>ME &amp; MY TBM</span>
+      <span style={{ fontSize:14, color:D.ink, fontWeight:700 }}>Pre-Flight Review</span>
+    </div>
+    <div style={{ flex:1 }}/>
+    <SearchBox/>
+    <IconBtn glyph="⟳"/>
+    <IconBtn glyph="☰" badge="3"/>
+    <div style={{
+      display:'flex', alignItems:'center', gap:10, paddingLeft:14, marginLeft: 4, borderLeft:'1px solid '+D.hair,
+    }}>
+      <Avatar/>
+      <div style={{ display:'flex', flexDirection:'column' }}>
+        <span style={{ fontSize:13, color:D.ink, fontWeight:600 }}>M. Becker</span>
+        <span style={{ fontSize:11, color:D.muted }}>PIC · ATP/SE-Turboprop</span>
+      </div>
+    </div>
+  </div>
+);
+
+const DaherMark = () => (
+  <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+    <div style={{ width:30, height:30, background:D.red, color:'#fff', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:13, letterSpacing:'-0.02em' }}>D</div>
+    <div style={{ display:'flex', flexDirection:'column', gap:1 }}>
+      <span style={{ fontSize:13, fontWeight:700, color:D.ink, letterSpacing:'0.02em' }}>DAHER</span>
+      <span style={{ fontSize:9, fontWeight:600, color:D.muted, letterSpacing:'0.16em' }}>TBM 910 · 940 · 960</span>
+    </div>
+  </div>
+);
+
+const SearchBox = () => (
+  <div style={{ display:'flex', alignItems:'center', gap:8, background:D.bg, border:'1px solid '+D.hair, borderRadius:8, padding:'7px 12px', width:240 }}>
+    <span style={{ color:D.faint, fontSize:13 }}>􀊫</span>
+    <span style={{ fontSize:13, color:D.muted }}>Search MEL, AD/SB, parts…</span>
+    <span style={{ flex:1 }}/>
+    <span style={{ fontSize:10, color:D.faint, border:'1px solid '+D.hair, padding:'1px 5px', borderRadius:3 }}>⌘K</span>
+  </div>
+);
+
+const IconBtn = ({ glyph, badge }) => (
+  <button style={{ position:'relative', width:36, height:36, borderRadius:8, border:'1px solid '+D.hair, background:'#fff', color:D.ink2, fontSize:15, cursor:'pointer' }}>
+    {glyph}
+    {badge && <span style={{ position:'absolute', top:-4, right:-4, background:D.red, color:'#fff', fontSize:9, fontWeight:700, padding:'1px 5px', borderRadius:9 }}>{badge}</span>}
+  </button>
+);
+
+const Avatar = () => (
+  <div style={{ width:34, height:34, borderRadius:'50%', background:'linear-gradient(135deg,#446b8e,#1f3550)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:13 }}>MB</div>
+);
+
+// ---------- Aircraft strip (the page header) ---------------------------------
+const AircraftStrip = () => (
+  <div style={{ flex:'0 0 auto', background:'#fff', borderBottom:'1px solid '+D.hair, padding: '14px 22px', display:'flex', alignItems:'center', gap:22 }}>
+    <TBMSilhouette/>
+    <div style={{ display:'flex', flexDirection:'column', gap:2 }}>
+      <div style={{ display:'flex', alignItems:'baseline', gap:10 }}>
+        <span style={{ fontSize:24, fontWeight:800, color:D.ink, letterSpacing:'-0.01em' }}>N950DT</span>
+        <Pill tone="green">AIRWORTHY</Pill>
+        <Pill tone="amber">2 ITEMS DUE ≤10 H</Pill>
+      </div>
+      <div style={{ fontSize:12, color:D.muted, letterSpacing:'0.02em' }}>
+        TBM 950 · MSN 1421 · S/N PT6A-66D / RB-0814 · COA exp 2027-08-31
+      </div>
+    </div>
+    <div style={{ flex:1 }}/>
+    <KPI label="Airframe Time"   value="1,842.6"  unit="hrs"    sub="↑ 312.4 YTD"/>
+    <KPI label="Cycles"          value="2,106"   unit="ldgs"    sub="+184 YTD"/>
+    <KPI label="Engine Time"     value="1,842.6" unit="hrs"     sub="TBO 3,600"/>
+    <KPI label="Hobbs"           value="1,844.1" unit="hrs"    sub="last leg 1.5"/>
+    <button style={{ padding:'10px 16px', background:D.red, color:'#fff', border:'none', borderRadius:8, fontWeight:700, fontSize:13, cursor:'pointer', letterSpacing:'0.02em' }}>RELEASE FOR FLIGHT</button>
+  </div>
+);
+
+const TBMSilhouette = () => (
+  <div style={{ width:96, height:64, background:D.bg, borderRadius:10, border:'1px solid '+D.hair, display:'flex', alignItems:'center', justifyContent:'center' }}>
+    <svg width="80" height="48" viewBox="0 0 80 48">
+      <g fill={D.ink} fillOpacity="0.85">
+        {/* fuselage */}
+        <path d="M6 24 Q10 19 18 18 L60 19 Q72 20 76 24 Q72 28 60 29 L18 30 Q10 29 6 24 Z"/>
+        {/* wing */}
+        <path d="M20 22 L40 12 L52 12 L48 24 Z" opacity="0.65"/>
+        <path d="M20 26 L40 36 L52 36 L48 24 Z" opacity="0.65"/>
+        {/* tail */}
+        <path d="M62 22 L72 10 L74 10 L66 24 Z" opacity="0.7"/>
+        <path d="M62 26 L72 38 L74 38 L66 24 Z" opacity="0.7"/>
+        {/* prop */}
+        <line x1="6" y1="14" x2="6" y2="34" stroke={D.ink} strokeWidth="1.2"/>
+        <circle cx="6" cy="24" r="1.6" fill={D.red}/>
+      </g>
+    </svg>
+  </div>
+);
+
+const KPI = ({ label, value, unit, sub }) => (
+  <div style={{ display:'flex', flexDirection:'column', gap:1, paddingLeft:18, borderLeft:'1px solid '+D.hair, minWidth: 100 }}>
+    <span style={{ fontSize:10, color:D.muted, letterSpacing:'0.08em', fontWeight:600 }}>{label.toUpperCase()}</span>
+    <span style={{ fontFamily:D.mono, fontSize:18, color:D.ink, fontWeight:700, letterSpacing:'-0.01em' }}>
+      {value}<span style={{ fontSize:10, color:D.muted, marginLeft:4, fontWeight:500 }}>{unit}</span>
+    </span>
+    <span style={{ fontSize:10, color:D.muted }}>{sub}</span>
+  </div>
+);
+
+const Pill = ({ tone='green', children }) => {
+  const map = {
+    green: [D.green, D.greenSoft],
+    amber: [D.amber, D.amberSoft],
+    red:   [D.red,   D.redSoft],
+    blue:  [D.blue,  D.blueSoft],
+    grey:  [D.muted, D.bg],
+  }[tone];
+  return (
+    <span style={{
+      display:'inline-flex', alignItems:'center', gap:5, padding:'2px 8px', borderRadius:11,
+      background: map[1], color: map[0], fontSize:10, fontWeight:700, letterSpacing:'0.06em',
+    }}>
+      <span style={{ width:6, height:6, borderRadius:'50%', background:map[0] }}/>
+      {children}
+    </span>
+  );
+};
+
+// ---------- Tab nav ----------------------------------------------------------
+const TabNav = () => {
+  const tabs = [
+    { l: 'Pre-Flight',     active: true,  badge: 2 },
+    { l: 'Logbook',        active: false },
+    { l: 'Limitations',    active: false },
+    { l: 'AD / SB',        active: false, badge: 1 },
+    { l: 'Squawks',        active: false, badge: 4 },
+    { l: 'Inspections',    active: false },
+    { l: 'Fuel & Oil',     active: false },
+    { l: 'Engine Trend',   active: false },
+    { l: 'CAS History',    active: false },
+    { l: 'Documents',      active: false },
+  ];
+  return (
+    <div style={{ flex:'0 0 auto', background:'#fff', borderBottom:'1px solid '+D.hair, paddingLeft: 14, display:'flex' }}>
+      {tabs.map(t => (
+        <button key={t.l} style={{
+          background:'transparent', border:'none', padding:'12px 16px', cursor:'pointer',
+          color: t.active ? D.red : D.ink2, fontSize:13, fontWeight: t.active ? 700 : 500,
+          borderBottom: t.active ? '3px solid '+D.red : '3px solid transparent',
+          marginBottom:-1, display:'flex', alignItems:'center', gap:6, letterSpacing:'0.01em',
+        }}>
+          {t.l}
+          {t.badge && <span style={{ background: t.active?D.red:D.muted, color:'#fff', fontSize:9, fontWeight:700, padding:'1px 5px', borderRadius:8 }}>{t.badge}</span>}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// ---------- Section card with header ---------------------------------------
+const Card = ({ title, sub, action, children, pad = 16, accent }) => (
+  <div style={{ background:'#fff', border:'1px solid '+D.hair, borderRadius:10, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+    {accent && <div style={{ height:3, background: accent }}/>}
+    <div style={{ padding:'12px 16px', borderBottom:'1px solid '+D.rule, display:'flex', alignItems:'center', gap:10 }}>
+      <div style={{ display:'flex', flexDirection:'column', flex:1 }}>
+        <span style={{ fontSize:12, color:D.muted, letterSpacing:'0.08em', fontWeight:600 }}>{title.toUpperCase()}</span>
+        {sub && <span style={{ fontSize:11, color:D.faint, marginTop:1 }}>{sub}</span>}
+      </div>
+      {action}
+    </div>
+    <div style={{ padding: pad }}>{children}</div>
+  </div>
+);
+
+// ---------- Status banner (top of page) -------------------------------------
+const ReleaseBanner = () => (
+  <div style={{
+    background:'#fff', border:'1px solid '+D.hair, borderLeft:'4px solid '+D.amber,
+    borderRadius:10, padding:'14px 18px', display:'flex', alignItems:'center', gap: 18,
+  }}>
+    <div style={{ width:42, height:42, borderRadius:'50%', background:D.amberSoft, color:D.amber, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:700 }}>!</div>
+    <div style={{ display:'flex', flexDirection:'column', gap:2, flex:1 }}>
+      <span style={{ fontSize:14, fontWeight:700, color:D.ink }}>Aircraft is airworthy. Two items require attention before next flight.</span>
+      <span style={{ fontSize:12, color:D.muted }}>SB 70-001 (chip detector inspection) due in 6.4 h · Oxygen pressure below dispatch minimum (1,420 psi vs 1,500 psi). Both flagged below.</span>
+    </div>
+    <button style={{ padding:'8px 14px', background:'#fff', color:D.ink, border:'1px solid '+D.hair, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>Acknowledge</button>
+    <button style={{ padding:'8px 14px', background:D.ink, color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>Defer with MEL…</button>
+  </div>
+);
+
+// ---------- Inspection countdowns -------------------------------------------
+const INSPECTIONS = [
+  { name: '50-hr Phase Check',          due: 14.0, basis: 'h',     last: '@ 1828.6 h',                           tone: 'good',  detail: 'Engine oil & filter, prop track, gear servicing' },
+  { name: '100-hr Inspection',          due: 85.8, basis: 'h',     last: '@ 1756.8 h',                           tone: 'good',  detail: 'Phase 2 of 4 · airframe, controls, ELT' },
+  { name: 'Annual Inspection',          due: 137,  basis: 'days',  last: '2025-12-14',                           tone: 'good',  detail: 'CFR 91.409 · A&P/IA' },
+  { name: 'Pitot/Static & XPDR',        due: 41,   basis: 'days',  last: '2025-06-21',                           tone: 'good',  detail: '24-mo · CFR 91.411/.413' },
+  { name: 'ELT Battery',                due: 218,  basis: 'days',  last: '2025-09-30',                           tone: 'good',  detail: 'AmeriKing AK-451' },
+  { name: 'Hot Section Insp (HSI)',     due: 1758, basis: 'h',     last: 'NEW · S/N PCE-RB0814',                  tone: 'good',  detail: 'PT6A-66D · 1800-h interval' },
+  { name: 'Compressor Wash',            due: -47,  basis: 'h',     last: '@ 1742 h',                              tone: 'amber', detail: '100-h interval · OVERDUE' },
+  { name: 'Oxygen System Hydro',        due: 6.4,  basis: 'h',     last: '2024-08-10',                            tone: 'amber', detail: 'SB 70-001 · 5-yr · service ≤6 h' },
+  { name: 'Landing Gear O/H (3000 c)',  due: 894,  basis: 'cyc',   last: '@ 0 cyc',                               tone: 'good',  detail: 'Daher SB 32-002' },
+];
+
+const InspectionsCard = () => (
+  <Card title="Inspections & Time Limits" sub="9 tracked · ordered by time-to-due" accent={D.red}
+    action={<button style={{ background:'transparent', border:'1px solid '+D.hair, color:D.ink2, fontSize:12, fontWeight:600, padding:'5px 10px', borderRadius:6, cursor:'pointer' }}>View all 24 →</button>}>
+    <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1.4fr 1fr', gap: 0, fontSize:11, color:D.muted, fontWeight:600, letterSpacing:'0.06em', padding:'6px 10px', borderBottom:'1px solid '+D.rule, textTransform:'uppercase' }}>
+      <span>Item</span><span style={{ textAlign:'right' }}>Due in</span><span>Last Compliance</span><span>Detail</span>
+    </div>
+    {INSPECTIONS.map(i => {
+      const overdue = i.due < 0;
+      const c = overdue ? D.red : i.tone === 'amber' ? D.amber : D.ink;
+      const ratio = overdue ? 1 : Math.max(0, Math.min(1, 1 - i.due / (i.basis==='h' ? 100 : i.basis==='cyc' ? 1000 : 365)));
+      return (
+        <div key={i.name} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1.4fr 1fr', alignItems:'center', gap: 0, padding:'10px 10px', borderBottom:'1px solid '+D.rule }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+            <span style={{ fontSize:13, fontWeight:600, color:D.ink }}>{i.name}</span>
+            <div style={{ width:'70%', height:3, background:D.rule, borderRadius:2 }}>
+              <div style={{ width: ratio*100 + '%', height:'100%', background: c, borderRadius:2 }}/>
+            </div>
+          </div>
+          <div style={{ textAlign:'right' }}>
+            <span style={{ fontFamily:D.mono, fontSize:14, fontWeight:700, color:c }}>
+              {overdue ? '−' + Math.abs(i.due).toFixed(0) : i.due % 1 ? i.due.toFixed(1) : i.due}
+            </span>
+            <span style={{ fontSize:10, color:D.muted, marginLeft:3 }}>{overdue ? i.basis + ' OVER' : i.basis}</span>
+          </div>
+          <span style={{ fontFamily:D.mono, fontSize:11, color:D.muted }}>{i.last}</span>
+          <span style={{ fontSize:11, color:D.ink2 }}>{i.detail}</span>
+        </div>
+      );
+    })}
+  </Card>
+);
+
+// ---------- Squawks list ----------------------------------------------------
+const SQUAWKS = [
+  { id: 'SQ-2026-014', sev:'open',  title: 'L generator: intermittent caution on engine start (3rd start cycle)', open:'2026-04-26', tail:'CMP-LOG-0421', mel: false },
+  { id: 'SQ-2026-013', sev:'mel',   title: 'Cabin attendant call light inop (P/N CK-22-A)',                      open:'2026-04-22', tail:'D-MEL §25-32', mel: true,  expires:'2026-05-10' },
+  { id: 'SQ-2026-012', sev:'open',  title: 'Right brake feels soft after extended taxi · pads measured 4.1 mm',  open:'2026-04-19', tail:'WO-2614',     mel: false },
+  { id: 'SQ-2026-011', sev:'mel',   title: 'Co-pilot map light flickers above FL250',                            open:'2026-04-12', tail:'D-MEL §33-04', mel: true,  expires:'2026-05-30' },
+  { id: 'SQ-2026-009', sev:'mon',   title: 'Slight oil weep at fuel control unit boss · monitored',              open:'2026-04-04', tail:'WO-2598',     mel: false },
+];
+
+const SquawksCard = () => (
+  <Card title="Open Squawks · Discrepancies" sub="5 open · 2 deferred under MEL · 1 monitored"
+    action={<button style={{ background:'transparent', border:'1px solid '+D.hair, color:D.ink2, fontSize:12, fontWeight:600, padding:'5px 10px', borderRadius:6, cursor:'pointer' }}>+ New squawk</button>}>
+    <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
+      {SQUAWKS.map((sq, i) => (
+        <div key={sq.id} style={{ display:'grid', gridTemplateColumns:'auto auto 1fr auto auto', alignItems:'center', gap:14, padding:'10px 0', borderBottom: i < SQUAWKS.length-1 ? '1px solid '+D.rule : 'none' }}>
+          <span style={{
+            fontFamily:D.mono, fontSize:10, fontWeight:700, padding:'3px 7px', borderRadius:4,
+            background: sq.sev==='open' ? D.amberSoft : sq.sev==='mel' ? D.blueSoft : D.bg,
+            color: sq.sev==='open' ? D.amber : sq.sev==='mel' ? D.blue : D.muted,
+          }}>{sq.sev==='open'?'OPEN':sq.sev==='mel'?'MEL':'MON'}</span>
+          <span style={{ fontFamily:D.mono, fontSize:11, color:D.muted, fontWeight:600 }}>{sq.id}</span>
+          <span style={{ fontSize:13, color:D.ink, fontWeight:500 }}>{sq.title}</span>
+          <span style={{ fontFamily:D.mono, fontSize:11, color:D.muted }}>opened {sq.open}</span>
+          <span style={{ fontFamily:D.mono, fontSize:11, color: sq.mel ? D.blue : D.muted, fontWeight: sq.mel ? 600 : 500 }}>
+            {sq.mel ? 'expires '+sq.expires : sq.tail}
+          </span>
+        </div>
+      ))}
+    </div>
+  </Card>
+);
+
+// ---------- AD / SB compliance ----------------------------------------------
+const ADSB = [
+  { type:'AD',  num:'2024-13-08', title:'PT6A-66D fuel pump drive shaft',          status:'COMPLIED',  basis:'@ 1812 h',          tone:'good' },
+  { type:'AD',  num:'2023-21-04', title:'Engine fuel hose replacement',             status:'COMPLIED',  basis:'@ 1654 h',          tone:'good' },
+  { type:'SB',  num:'70-001',     title:'Chip detector inspection · recurring',     status:'DUE 6.4 h', basis:'next: 1849.0 h',    tone:'amber' },
+  { type:'SB',  num:'53-018',     title:'Aft pressure bulkhead inspection',         status:'DUE 218 d', basis:'last: 2025-09-30',  tone:'good' },
+  { type:'SB',  num:'25-014 R2',  title:'Crew oxygen mask hose retention',          status:'COMPLIED',  basis:'2024-11-02',        tone:'good' },
+];
+
+const ADSBCard = () => (
+  <Card title="Airworthiness · AD / SB" sub="34 reviewed · 1 due ≤10 h · 0 overdue"
+    action={<button style={{ background:'transparent', border:'1px solid '+D.hair, color:D.ink2, fontSize:12, fontWeight:600, padding:'5px 10px', borderRadius:6, cursor:'pointer' }}>Compliance ledger →</button>}>
+    {ADSB.map((a, i) => (
+      <div key={a.num} style={{ display:'grid', gridTemplateColumns:'auto 100px 1fr auto auto', gap:12, alignItems:'center', padding:'9px 0', borderBottom: i<ADSB.length-1 ? '1px solid '+D.rule : 'none' }}>
+        <span style={{ fontFamily:D.mono, fontSize:10, fontWeight:700, padding:'2px 6px', borderRadius:3, background: a.type==='AD' ? D.redSoft : D.blueSoft, color: a.type==='AD' ? D.red : D.blue }}>{a.type}</span>
+        <span style={{ fontFamily:D.mono, fontSize:12, color:D.ink, fontWeight:600 }}>{a.num}</span>
+        <span style={{ fontSize:13, color:D.ink2 }}>{a.title}</span>
+        <span style={{ fontFamily:D.mono, fontSize:11, color:D.muted }}>{a.basis}</span>
+        <span style={{ fontFamily:D.mono, fontSize:11, fontWeight:700, color: a.tone==='amber' ? D.amber : D.green }}>{a.status}</span>
+      </div>
+    ))}
+  </Card>
+);
+
+// ---------- Engine snapshot card --------------------------------------------
+const EngineCard = () => (
+  <Card title="PT6A-66D · Last Flight Snapshot" sub="2026-04-29 · KAPA → KBJC · 1.5 h · pilot M. Becker">
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:12 }}>
+      {[
+        { l:'Peak ITT',    v:'742', u:'°C',    sub:'limit 825 · climb @1828.7 h',   tone:'good' },
+        { l:'Peak Torque', v:'95.2', u:'%',    sub:'limit 100 · takeoff',           tone:'good' },
+        { l:'Peak Ng',     v:'101.4',u:'%',    sub:'limit 104',                     tone:'good' },
+        { l:'Hottest start', v:'682', u:'°C',  sub:'limit 870 · cleanest in 30 d',  tone:'good' },
+        { l:'Oil consumed',v:'0.18', u:'qt',   sub:'rate 0.12 qt/h · base 0.08',    tone:'amber' },
+        { l:'Fuel burn',   v:'412',  u:'pph',  sub:'+6% vs new-engine baseline',    tone:'amber' },
+        { l:'Compressor η',v:'87.3', u:'%',    sub:'wash overdue · was 92.0',      tone:'amber' },
+        { l:'Cycles +',    v:'1',    u:'',     sub:'gear · ITT cycle logged',       tone:'good' },
+      ].map(m => (
+        <div key={m.l} style={{ background:D.panelAlt, border:'1px solid '+D.rule, borderRadius:8, padding:'10px 12px', display:'flex', flexDirection:'column', gap:3 }}>
+          <span style={{ fontSize:10, color:D.muted, letterSpacing:'0.08em', fontWeight:600 }}>{m.l.toUpperCase()}</span>
+          <span style={{ fontFamily:D.mono, fontSize:18, fontWeight:700, color: m.tone==='amber' ? D.amber : D.ink }}>
+            {m.v}<span style={{ fontSize:11, color:D.muted, marginLeft:3, fontWeight:500 }}>{m.u}</span>
+          </span>
+          <span style={{ fontSize:10, color:D.muted, lineHeight:1.3 }}>{m.sub}</span>
+        </div>
+      ))}
+    </div>
+  </Card>
+);
+
+// ---------- Fluids / Consumables --------------------------------------------
+const FluidsCard = () => (
+  <Card title="Fluids & Consumables" sub="auto-pulled from last quick-turn">
+    <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+      <Fluid label="FUEL · Jet A-1" cur={1842} max={2240} unit="lb" right="84% · 3.7 h endurance @ planned burn" tone="good"/>
+      <Fluid label="ENGINE OIL · AeroShell 560" cur={11.4} max={14} unit="qt" right="Add 0.6 qt to top of green · last add 2.2 h ago" tone="amber"/>
+      <Fluid label="OXYGEN · crew + pax" cur={1420} max={1800} unit="psi" right="below 1500 psi dispatch minimum" tone="red"/>
+      <Fluid label="HYDRAULIC · MIL-PRF-5606" cur={92} max={100} unit="%" right="reservoir level normal" tone="good"/>
+      <Fluid label="WASHER FLUID · windshield" cur={0.4} max={1} unit="L" right="service at next 50-hr" tone="grey"/>
+    </div>
+  </Card>
+);
+
+const Fluid = ({ label, cur, max, unit, right, tone='good' }) => {
+  const c = tone === 'red' ? D.red : tone === 'amber' ? D.amber : tone === 'good' ? D.green : D.muted;
+  const pct = Math.max(0, Math.min(1, cur/max));
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+      <div style={{ display:'flex', alignItems:'baseline', gap:10 }}>
+        <span style={{ fontSize:12, fontWeight:600, color:D.ink }}>{label}</span>
+        <span style={{ flex:1 }}/>
+        <span style={{ fontFamily:D.mono, fontSize:13, fontWeight:700, color:c }}>{cur}<span style={{ color:D.muted, marginLeft:3, fontWeight:500, fontSize:10 }}>/ {max} {unit}</span></span>
+      </div>
+      <div style={{ height:8, background:D.rule, borderRadius:4, position:'relative', overflow:'hidden' }}>
+        <div style={{ width: pct*100+'%', height:'100%', background:c, borderRadius:4 }}/>
+        {tone==='red' && <div style={{ position:'absolute', left: 1500/max*100+'%', top:-2, width:1, height:12, background:D.red, opacity:.4 }}/>}
+      </div>
+      <span style={{ fontSize:11, color: tone==='red' ? D.red : D.muted }}>{right}</span>
+    </div>
+  );
+};
+
+// ---------- Life-limited parts ----------------------------------------------
+const LLP = [
+  { p:'Compressor Turbine Disk',     pn:'3035821', sn:'CTD-9821', life:11000, used:6420, basis:'cyc' },
+  { p:'1st-stage PT Disk',           pn:'3037412', sn:'PTD-1244', life:10800, used:6420, basis:'cyc' },
+  { p:'CT Blades (set)',             pn:'3041088', sn:'CTB-7708', life:8000,  used:6420, basis:'cyc' },
+  { p:'Reduction Gearbox Sun Gear',  pn:'3018990', sn:'RGS-2204', life:9000,  used:2106, basis:'cyc' },
+  { p:'Propeller Hub (5-blade Hartzell)', pn:'D-15173', sn:'HZL-99201', life:6000, used:1842, basis:'h' },
+];
+
+const LLPCard = () => (
+  <Card title="Life-Limited Parts (LLP)" sub="next service: CT Blades · 1,580 cyc remaining">
+    {LLP.map((p,i) => {
+      const pct = p.used / p.life;
+      const c = pct > 0.85 ? D.amber : D.green;
+      return (
+        <div key={p.pn} style={{ padding:'8px 0', borderBottom: i<LLP.length-1 ? '1px solid '+D.rule : 'none', display:'grid', gridTemplateColumns:'1.6fr 1fr auto', gap:10, alignItems:'center' }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:2 }}>
+            <span style={{ fontSize:12, fontWeight:600, color:D.ink }}>{p.p}</span>
+            <span style={{ fontFamily:D.mono, fontSize:10, color:D.muted }}>P/N {p.pn} · S/N {p.sn}</span>
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', fontFamily:D.mono, fontSize:10, color:D.muted }}>
+              <span>{p.used.toLocaleString()} {p.basis}</span>
+              <span>{p.life.toLocaleString()} {p.basis}</span>
+            </div>
+            <div style={{ height:4, background:D.rule, borderRadius:2 }}>
+              <div style={{ width: pct*100+'%', height:'100%', background:c, borderRadius:2 }}/>
+            </div>
+          </div>
+          <span style={{ fontFamily:D.mono, fontSize:12, fontWeight:700, color:c }}>{(p.life - p.used).toLocaleString()}<span style={{ color:D.muted, fontWeight:500, fontSize:9, marginLeft:3 }}>LEFT</span></span>
+        </div>
+      );
+    })}
+  </Card>
+);
+
+// ---------- Recent log entries ----------------------------------------------
+const LOG = [
+  { d:'2026-04-29', t:'18:42Z', kind:'FLT', who:'M. Becker',  msg:'KAPA→KBJC · 1.5 h · 1 ldg · no discrep.' },
+  { d:'2026-04-26', t:'21:14Z', kind:'SQK', who:'M. Becker',  msg:'L generator caution on 3rd start · noted SQ-2026-014' },
+  { d:'2026-04-22', t:'14:01Z', kind:'MX',  who:'J. Tate, A&P', msg:'50-hr phase complete · oil & filter changed · 11.0 qt added' },
+  { d:'2026-04-22', t:'14:01Z', kind:'MX',  who:'J. Tate, A&P', msg:'Compliance: SB 25-014 R2 · crew O₂ hose retention verified' },
+  { d:'2026-04-19', t:'19:55Z', kind:'SQK', who:'M. Becker',  msg:'Right brake soft after extended taxi · pads 4.1 mm' },
+  { d:'2026-04-12', t:'08:30Z', kind:'MX',  who:'J. Tate, A&P', msg:'MEL §33-04 issued · co-pilot map light flickering FL250+' },
+];
+
+const LogbookCard = () => (
+  <Card title="Logbook · Last 10 Entries" sub="full ledger digitally signed via Daher e-Logbook"
+    action={<button style={{ background:'transparent', border:'1px solid '+D.hair, color:D.ink2, fontSize:12, fontWeight:600, padding:'5px 10px', borderRadius:6, cursor:'pointer' }}>Open logbook →</button>}>
+    {LOG.map((e,i) => (
+      <div key={i} style={{ display:'grid', gridTemplateColumns:'90px 60px 110px 1fr', gap:12, padding:'8px 0', borderBottom: i<LOG.length-1 ? '1px solid '+D.rule : 'none', alignItems:'baseline' }}>
+        <span style={{ fontFamily:D.mono, fontSize:11, color:D.muted }}>{e.d}</span>
+        <span style={{ fontFamily:D.mono, fontSize:10, fontWeight:700, color: e.kind==='FLT' ? D.green : e.kind==='SQK' ? D.amber : D.blue, padding:'2px 6px', background: e.kind==='FLT'?D.greenSoft:e.kind==='SQK'?D.amberSoft:D.blueSoft, borderRadius:4, textAlign:'center' }}>{e.kind}</span>
+        <span style={{ fontSize:11, color:D.ink2 }}>{e.who}</span>
+        <span style={{ fontSize:12, color:D.ink }}>{e.msg}</span>
+      </div>
+    ))}
+  </Card>
+);
+
+// ---------- Sidebar (left) — quick status ----------------------------------
+const SideStatus = () => (
+  <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+    <Card title="Dispatch Posture" sub="Daher M&MTBM · auto-evaluated" pad={14}>
+      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
+        <Donut value={0.86} color={D.green} size={68}/>
+        <div style={{ display:'flex', flexDirection:'column', gap:2 }}>
+          <span style={{ fontSize:11, color:D.muted, fontWeight:600, letterSpacing:'0.06em' }}>READINESS</span>
+          <span style={{ fontSize:22, fontWeight:800, color:D.ink }}>86<span style={{ fontSize:13, color:D.muted, fontWeight:500 }}>%</span></span>
+          <span style={{ fontSize:11, color:D.green, fontWeight:600 }}>Cleared for IFR · day/night</span>
+        </div>
+      </div>
+      <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+        <Tick label="Annual + 100-hr current" tone="good"/>
+        <Tick label="No overdue ADs" tone="good"/>
+        <Tick label="MEL items within relief window" tone="good"/>
+        <Tick label="O₂ below dispatch minimum" tone="amber"/>
+        <Tick label="SB 70-001 due ≤10 h" tone="amber"/>
+        <Tick label="Compressor wash overdue" tone="amber"/>
+      </div>
+    </Card>
+
+    <Card title="Quick Actions" pad={10}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
+        {[
+          ['+ Squawk', D.red],
+          ['Defer (MEL)', D.blue],
+          ['Print W&B', D.ink],
+          ['Fuel order', D.ink],
+          ['Call FBO', D.ink],
+          ['Sign release', D.green],
+        ].map(([l,c]) => (
+          <button key={l} style={{ padding:'9px 6px', background:'#fff', border:'1px solid '+D.hair, color:c, fontSize:12, fontWeight:600, borderRadius:7, cursor:'pointer' }}>{l}</button>
+        ))}
+      </div>
+    </Card>
+
+    <Card title="Crew & Currency" pad={12}>
+      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        <Currency label="Medical · 1st class" exp="2026-09-30" days={153} tone="good"/>
+        <Currency label="Flight Review" exp="2026-11-12" days={196} tone="good"/>
+        <Currency label="IPC" exp="2026-07-22" days={83} tone="good"/>
+        <Currency label="TBM 950 type-specific" exp="2026-06-04" days={35} tone="amber"/>
+      </div>
+    </Card>
+
+    <Card title="Insurance" pad={12}>
+      <div style={{ display:'flex', justifyContent:'space-between', fontSize:12 }}>
+        <span style={{ color:D.muted }}>USAIG Hull · CSL</span>
+        <span style={{ fontFamily:D.mono, color:D.ink, fontWeight:600 }}>$3.2M</span>
+      </div>
+      <div style={{ display:'flex', justifyContent:'space-between', fontSize:12, marginTop:5 }}>
+        <span style={{ color:D.muted }}>Policy expires</span>
+        <span style={{ fontFamily:D.mono, color:D.ink, fontWeight:600 }}>2026-08-14</span>
+      </div>
+    </Card>
+  </div>
+);
+
+const Donut = ({ value, color, size = 80 }) => {
+  const r = size/2 - 5;
+  const c = 2 * Math.PI * r;
+  const off = c * (1 - value);
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={D.rule} strokeWidth="6"/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="6" strokeDasharray={c} strokeDashoffset={off} strokeLinecap="round" transform={`rotate(-90 ${size/2} ${size/2})`}/>
+    </svg>
+  );
+};
+
+const Tick = ({ label, tone }) => (
+  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+    <span style={{ width:14, height:14, borderRadius:'50%', background: tone==='good' ? D.greenSoft : D.amberSoft, color: tone==='good' ? D.green : D.amber, fontSize:9, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center' }}>{tone==='good' ? '✓' : '!'}</span>
+    <span style={{ fontSize:12, color: tone==='good' ? D.ink2 : D.amber, fontWeight: tone==='good' ? 500 : 600 }}>{label}</span>
+  </div>
+);
+
+const Currency = ({ label, exp, days, tone }) => (
+  <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+    <div style={{ display:'flex', justifyContent:'space-between', fontSize:12 }}>
+      <span style={{ color:D.ink, fontWeight:500 }}>{label}</span>
+      <span style={{ fontFamily:D.mono, color: tone==='amber' ? D.amber : D.green, fontWeight:600 }}>{days} d</span>
+    </div>
+    <span style={{ fontFamily:D.mono, fontSize:10, color:D.muted }}>exp {exp}</span>
+  </div>
+);
+
+// ---------- Page footer -----------------------------------------------------
+const PageFooter = () => (
+  <div style={{ flex:'0 0 36px', background:'#fff', borderTop:'1px solid '+D.hair, display:'flex', alignItems:'center', padding:'0 22px', gap:18, fontSize:11, color:D.muted }}>
+    <span>Daher Me &amp; My TBM · v4.8.2 · iPad EFB</span>
+    <span>·</span>
+    <span>Data synced 14 s ago via TBM Connect</span>
+    <span>·</span>
+    <span>Aircraft S/N 1421 · Reg. N950DT · United States · FAA</span>
+    <span style={{ flex:1 }}/>
+    <span style={{ color:D.green, display:'inline-flex', gap:6, alignItems:'center' }}><span style={{ width:6, height:6, borderRadius:'50%', background:D.green }}/>Online · last sync KAPA FBO Wi-Fi</span>
+  </div>
+);
+
+// ---------- Compose ---------------------------------------------------------
+const App = () => (
+  <iPadFrame>
+    <AppBar/>
+    <AircraftStrip/>
+    <TabNav/>
+    <div style={{ flex:1, minHeight:0, overflow:'auto', padding: 18, display:'grid', gridTemplateColumns: '260px 1fr', gap: 18, background: D.bg }}>
+      <SideStatus/>
+      <div style={{ display:'flex', flexDirection:'column', gap:14, minWidth:0 }}>
+        <ReleaseBanner/>
+        <InspectionsCard/>
+        <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:14 }}>
+          <SquawksCard/>
+          <FluidsCard/>
+        </div>
+        <ADSBCard/>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
+          <EngineCard/>
+          <LLPCard/>
+        </div>
+        <LogbookCard/>
+      </div>
+    </div>
+    <PageFooter/>
+  </iPadFrame>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
