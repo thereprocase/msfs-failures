@@ -1,26 +1,55 @@
 # msfs-failures
 
-A standalone Windows sidecar app for **Microsoft Flight Simulator** that simulates **realistic per-airframe maintenance, wear, and failures** — the missing layer between MSFS's stock failure toggles and a real maintenance program.
+**The maintenance hangar your sim never had.**
+
+A standalone Windows sidecar for **Microsoft Flight Simulator** that turns every aircraft in your hangar into a *living airframe* — one that ages, wears, breaks, and demands the same respect a real one does. Built for simmers who already fly the real thing, or wish they did, and who are tired of pretending the airplane is brand new every time they hit "Fly."
 
 > Status: design phase. No code yet. See [`PLAN.md`](./PLAN.md) for the v1 architecture and scope.
 
-## What it is
+## The pitch
 
-MSFS ships with crude on/off failure toggles and no notion of accumulated wear. Real airframes age: oil burns down, tires wear, batteries lose capacity, magnetos drift, hard landings stress gear, overtemps cook bearings. Components have MTBF that *changes* based on how the airframe is operated. Squawks get deferred under MEL rules. Maintenance happens between flights, not during them.
+You preflight the same Skyhawk you flew yesterday. The oil's a quart low because you ran it lean over the Sierras last weekend. The right brake feels soft — you logged a squawk after that long taxi at KSFO and deferred it under MEL. Number two mag was rough on the runup three flights ago; you've been meaning to call the shop. Today the weather's marginal, you're heavy, and the cylinders haven't been happy about your climb profile.
 
-This app rides outside the sim, talks to it over SimConnect + the **MobiFlight WASM module** (so it can reach L:Vars on third-party aircraft like FBW, PMDG, Fenix, Working Title, etc.), and maintains a persistent SQLite database of your fleet — every tail, every component, every hour, every cycle.
+That airplane has a *history*. Right now, in your sim, it doesn't.
+
+**msfs-failures** gives it one.
+
+It rides outside MSFS, talks to the sim through SimConnect and the **MobiFlight WASM module** so it can reach into virtually any aircraft — default, FBW, PMDG, Fenix, Working Title, Inibuilds, HJet, you name it — and keeps a persistent SQLite ledger of your fleet. Every tail. Every component. Every hour, every cycle, every overtemp, every hard landing. It models how those things compound, the way they actually do on the ramp.
+
+## What "realistic" actually means here
+
+- **Hours and cycles tracked per component, per tail.** Hobbs and tach, separately. Engine starts, pressurization cycles, gear cycles. Forever, across sessions.
+- **Consumables that actually deplete.** Oil burns down as a function of power, RPM, oil temp, and engine health. Tires wear from groundspeed-at-touchdown. Brake pads from energy dissipated. Battery state-of-health degrades with deep discharges. Hydraulic fluid, O2 — all on the books.
+- **MTBF that *responds to how you fly*.** Every component has a base mean time between failures. Operate it well and it lasts. Run cylinders hot, redline the prop, slam it on at 600 fpm vertical, lean too aggressive — and the dice get loaded against you. Category accelerators are configurable, transparent, and brutally fair.
+- **Squawks and MEL-style deferrals.** Open a squawk, defer it (where rules allow), or ground the airplane. Maintenance happens *between* flights, in an actual interface, not in a menu toggle.
+- **Per-airframe failure injection.** Stock SimConnect events for default aircraft; L:Var writes through MobiFlight for the third-party planes that have their own failure systems (e.g. `A32NX_FAILURE_*`, PMDG `_FAILURES_*`). One engine. One hangar. One source of truth.
+- **An airframe editor.** Bring your own aircraft. Wire up the L:Vars. Define components, MTBFs, wear curves, and failure modes. Ship binding packs to friends.
+
+## Who this is for
+
+- Real pilots who want their sim time to *carry weight* — where neglecting an inspection has consequences three flights from now, and good airmanship pays dividends.
+- Virtual airline ops, study groups, and home-cockpit owners who want a fleet that feels owned, not summoned.
+- Tinkerers who want a transparent, data-driven failure model they can author and audit, not a black box.
+
+## What it isn't
+
+- A career manager (yet). The economy/parts/mechanic-time layer is v2 — the goal there is **Neofly + OnAir + FSE had a baby, and the baby actually models the *aircraft*.**
+- An in-sim mod. It runs as a sidecar so it works across aircraft, updates without breaking the sim, and survives MSFS patches.
+- A toy. The defaults will be conservative and physically grounded; the editor lets you tune everything to your standard of realism.
 
 ## v1 scope
 
-- **Persistent wear / hours / cycles** per component, per tail
-- **Realistic consumables** — oil burn, tire wear, brake pad life, battery SOH, hydraulic fluid
-- **MTBF-driven random failures** with category accelerators (overtemp, overspeed, over-G, hard landing, neglected service)
-- **Maintenance actions & squawks** with MEL-style deferral
-- **Airframe editor UI** so any aircraft (default or third-party) can be wired up via L:Var bindings
+- [x] Project plan locked
+- [ ] Persistent wear / hours / cycles per component, per tail
+- [ ] Realistic consumables — oil, tires, brakes, battery SOH, hydraulics
+- [ ] MTBF-driven random failures with category accelerators
+- [ ] Maintenance actions & MEL-style squawk deferral
+- [ ] Airframe editor with L:Var binding authoring
+- [ ] Seed packs: C172, PA28, BE58, plus one third-party reference profile
 
 ## v2+
 
-Career / economy layer — costs, parts inventory, mechanic time, downtime. The goal is "Neofly + OnAir + FSE had a baby, but the baby actually models the *aircraft*."
+Career and economy — costs, parts inventory, mechanic time, downtime, dispatch reliability targets, fleet planning. Built on the same component ledger so the airplane you've been flying for 200 hours stays the airplane you fly into the career layer.
 
 ## Stack
 
@@ -29,9 +58,9 @@ Career / economy layer — costs, parts inventory, mechanic time, downtime. The 
 - **SQLite** for persistence
 - Optional **FSUIPC7** detection if installed
 
-## Why MobiFlight WASM as the depth layer
+## Why MobiFlight WASM is the depth layer
 
-It's free, actively maintained, widely installed, and exposes **arbitrary L:Vars / A:Vars / H:Events** on any aircraft over a SimConnect client-data area. That's what makes per-airframe failure injection on third-party planes feasible without writing one integration per aircraft.
+It's free, actively maintained, widely installed, and exposes **arbitrary L:Vars / A:Vars / H:Events** on any aircraft over a SimConnect client-data area. That's the only sane way to support per-airframe failure injection on third-party planes without writing one bespoke integration per aircraft. We pay that integration cost once, in the binding format, and the community gets to fill in the rest.
 
 ## Repo layout (planned)
 
@@ -48,8 +77,12 @@ docs/
 
 ## Building
 
-Not yet — design phase. See [`PLAN.md`](./PLAN.md).
+Not yet — design phase. See [`PLAN.md`](./PLAN.md) for the full architecture, data model, and implementation order.
+
+## Contributing
+
+Once v1 lands, the highest-leverage contributions will be **binding packs** for third-party aircraft — the small JSON/SQL payloads that map a model's L:Vars into the engine. If you fly a study-level airplane and know its failure surface, you can teach the app to wear it down.
 
 ## License
 
-TBD.
+TBD before first release.
