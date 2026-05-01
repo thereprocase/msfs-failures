@@ -1,0 +1,9 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.Placeholder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Margin="32" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <TextBlock Text="// PLACEHOLDER" Style="{StaticResource BlockHeading}" Margin="0,0,0,10"/>
+        <TextBlock x:Name="BodyText" FontFamily="{StaticResource MonoFont}" FontSize="12"
+                   Foreground="{DynamicResource DimBrush}" TextWrapping="Wrap" MaxWidth="640"/>
+    </StackPanel>
+</UserControl>

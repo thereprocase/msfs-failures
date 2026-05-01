@@ -1,0 +1,82 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.MxView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ConsumableMini">
+            <!-- DataContext: KeyValuePair<string,double> -->
+            <Grid Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Key}" FontFamily="{StaticResource MonoFont}" FontSize="9"
+                               Foreground="{DynamicResource FaintBrush}"/>
+                    <TextBlock Grid.Column="1" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="SemiBold"
+                               Foreground="{Binding Value, Converter={StaticResource ConsumableBrush}}"
+                               Text="{Binding Value, Converter={StaticResource ConsumablePct}, StringFormat={}{0}%}"/>
+                </Grid>
+                <Border Grid.Row="1" Height="3" Margin="0,3,0,0" Background="{DynamicResource BarTrackBrush}">
+                    <Rectangle HorizontalAlignment="Left"
+                               Width="{Binding Value, Converter={StaticResource ConsumableWidth}, ConverterParameter=80}"
+                               Fill="{Binding Value, Converter={StaticResource ConsumableBrush}}"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding Airframes}" Padding="14">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:AirframeVm}">
+                    <Border BorderBrush="{DynamicResource RuleBrush}" BorderThickness="0,0,0,1" Padding="0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="140"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Tail}" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextBrush}"/>
+                                <TextBlock Text="{Binding Type}" FontFamily="{StaticResource MonoFont}" FontSize="10"
+                                           Foreground="{DynamicResource DimBrush}"/>
+                            </StackPanel>
+
+                            <ItemsControl Grid.Column="1" ItemsSource="{Binding ConsumablePairs}" Margin="16,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="1" Columns="5"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ConsumableMini}" Margin="6,0"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                <TextBlock Text="NEXT INSPECTION" FontFamily="{StaticResource MonoFont}" FontSize="9"
+                                           Foreground="{DynamicResource FaintBrush}" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding NextInspectionStr}" FontFamily="{StaticResource MonoFont}" FontSize="14" FontWeight="Bold"
+                                           HorizontalAlignment="Right" Margin="0,2,0,0"
+                                           Foreground="{Binding InspectionAlert, Converter={StaticResource AlertBrush}}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>

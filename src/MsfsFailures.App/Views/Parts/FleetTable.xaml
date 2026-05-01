@@ -1,0 +1,170 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.FleetTable"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}"
+             Grid.IsSharedSizeScope="True">
+    <UserControl.Resources>
+        <!-- Header / cell text styles -->
+        <Style x:Key="ColHead" TargetType="TextBlock" BasedOn="{StaticResource MonoColumnHeader}">
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="Cell" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="DimCell" TargetType="TextBlock" BasedOn="{StaticResource Cell}">
+            <Setter Property="Foreground" Value="{DynamicResource DimBrush}"/>
+        </Style>
+
+        <DataTemplate x:Key="BarCell">
+            <!-- DataContext: double in [0..1] -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,10">
+                <Border Width="36" Height="4" Background="{DynamicResource BarTrackBrush}">
+                    <Rectangle HorizontalAlignment="Left"
+                               Width="{Binding Converter={StaticResource ConsumableWidth}}"
+                               Fill="{Binding Converter={StaticResource ConsumableBrush}}"/>
+                </Border>
+                <TextBlock Margin="6,0,0,0" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="SemiBold"
+                           Foreground="{Binding Converter={StaticResource ConsumableBrush}}"
+                           Text="{Binding Converter={StaticResource ConsumablePct}}"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{DynamicResource TabBgBrush}"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C0"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C1"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C2"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C3"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C4"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C5"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C6"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C7"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C8"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C9"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C10"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="C11"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"  Style="{StaticResource ColHead}" Text="TAIL"/>
+                <TextBlock Grid.Column="1"  Style="{StaticResource ColHead}" Text="TYPE"/>
+                <TextBlock Grid.Column="2"  Style="{StaticResource ColHead}" Text="STATUS"/>
+                <TextBlock Grid.Column="3"  Style="{StaticResource ColHead}" Text="HOBBS"/>
+                <TextBlock Grid.Column="4"  Style="{StaticResource ColHead}" Text="CYCLES"/>
+                <TextBlock Grid.Column="5"  Style="{StaticResource ColHead}" Text="SINCE MX"/>
+                <TextBlock Grid.Column="6"  Style="{StaticResource ColHead}" Text="NEXT MX"/>
+                <TextBlock Grid.Column="7"  Style="{StaticResource ColHead}" Text="OIL"/>
+                <TextBlock Grid.Column="8"  Style="{StaticResource ColHead}" Text="TIRE"/>
+                <TextBlock Grid.Column="9"  Style="{StaticResource ColHead}" Text="BRK"/>
+                <TextBlock Grid.Column="10" Style="{StaticResource ColHead}" Text="BAT"/>
+                <TextBlock Grid.Column="11" Style="{StaticResource ColHead}" Text="SQ"/>
+                <TextBlock Grid.Column="12" Style="{StaticResource ColHead}" Text="LAST FLT"/>
+            </Grid>
+        </Border>
+
+        <!-- Rows -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Airframes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:AirframeVm}">
+                        <Border BorderBrush="{DynamicResource RuleBrush}" BorderThickness="0,0,0,1" Cursor="Hand">
+                            <Border.Background>
+                                <MultiBinding Converter="{StaticResource RowBg}">
+                                    <Binding Path="Tail"/>
+                                    <Binding RelativeSource="{RelativeSource AncestorType=ItemsControl}" Path="DataContext.SelectedAirframe.Tail"/>
+                                    <Binding Path="Live"/>
+                                </MultiBinding>
+                            </Border.Background>
+
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=DataContext.SelectAirframeCommand}"
+                                              CommandParameter="{Binding}"/>
+                            </Border.InputBindings>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C0"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C1"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C2"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C3"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C4"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C5"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C6"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C7"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C8"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C9"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C10"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C11"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- TAIL with optional live dot -->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="14,10">
+                                    <TextBlock Text="●" Margin="0,0,6,0" Foreground="{DynamicResource GreenBrush}"
+                                               FontFamily="{StaticResource MonoFont}" FontSize="11"
+                                               Visibility="{Binding Live, Converter={StaticResource BoolVis}}"/>
+                                    <TextBlock Text="{Binding Tail}" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                                               FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="1" Style="{StaticResource DimCell}" Text="{Binding Type}"/>
+                                <TextBlock Grid.Column="2" Style="{StaticResource Cell}"
+                                           FontWeight="SemiBold"
+                                           Text="{Binding StatusLabel}"
+                                           Foreground="{Binding Status, Converter={StaticResource StatusBrush}}"/>
+                                <TextBlock Grid.Column="3" Style="{StaticResource Cell}" Text="{Binding HoursStr}"/>
+                                <TextBlock Grid.Column="4" Style="{StaticResource DimCell}" Text="{Binding CyclesStr}"/>
+                                <TextBlock Grid.Column="5" Style="{StaticResource DimCell}" Text="{Binding HobbsSinceMxStr}"/>
+                                <TextBlock Grid.Column="6"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="11" Padding="14,10" VerticalAlignment="Center"
+                                           Text="{Binding NextInspectionStr}"
+                                           Foreground="{Binding InspectionAlert, Converter={StaticResource AlertBrush}}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Normal"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding InspectionAlert}" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <ContentPresenter Grid.Column="7"  Content="{Binding Consumables.Oil}"     ContentTemplate="{StaticResource BarCell}"/>
+                                <ContentPresenter Grid.Column="8"  Content="{Binding Consumables.Tires}"   ContentTemplate="{StaticResource BarCell}"/>
+                                <ContentPresenter Grid.Column="9"  Content="{Binding Consumables.Brakes}"  ContentTemplate="{StaticResource BarCell}"/>
+                                <ContentPresenter Grid.Column="10" Content="{Binding Consumables.Battery}" ContentTemplate="{StaticResource BarCell}"/>
+
+                                <TextBlock Grid.Column="11" Style="{StaticResource Cell}"
+                                           Text="{Binding SquawksDisplay}"
+                                           FontWeight="Bold"
+                                           Foreground="{Binding OpenSquawks, Converter={StaticResource SquawkCountBrush}}"/>
+                                <TextBlock Grid.Column="12" Style="{StaticResource DimCell}" Text="{Binding LastFlightDisplay}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

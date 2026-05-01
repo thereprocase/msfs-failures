@@ -1,0 +1,36 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.StatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}">
+    <Border Background="{DynamicResource HeaderBgBrush}"
+            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0"
+            Padding="14,0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
+                <TextBlock Text="READY" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource AmberBrush}"/>
+                <TextBlock Text="·"     FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}" Margin="10,0"/>
+                <TextBlock Text="TICK 4 Hz" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}"/>
+                <TextBlock Text="·"     FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}" Margin="10,0"/>
+                <TextBlock Text="WEAR-ENGINE OK" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}"/>
+                <TextBlock Text="·"     FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}" Margin="10,0"/>
+                <TextBlock Text="FAILURE-ENGINE OK" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="2">
+                <TextBlock Text="{Binding TotalAirframes, StringFormat={}{0} airframes loaded}" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}"/>
+                <TextBlock Text="·" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}" Margin="10,0"/>
+                <TextBlock Text="{Binding TotalSquawks, StringFormat={}{0} squawks}" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="{DynamicResource FaintBrush}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

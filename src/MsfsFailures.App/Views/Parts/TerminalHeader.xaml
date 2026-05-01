@@ -1,0 +1,97 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.TerminalHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}">
+    <Border Background="{DynamicResource HeaderBgBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="18,8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
+                <TextBlock Text="msfs-failures" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold"
+                           Foreground="{DynamicResource AmberBrush}"/>
+                <TextBlock Text="v0.1.0-alpha" Margin="14,0,0,0" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource FaintBrush}"/>
+                <TextBlock Text="·" Margin="10,0" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource FaintBrush}"/>
+                <TextBlock x:Name="TimestampText" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource DimBrush}"/>
+                <TextBlock Text="·" Margin="10,0" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource FaintBrush}"/>
+                <TextBlock Text="UTC · UPTIME 02:14:08" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource DimBrush}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="FLEET.DB" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource FaintBrush}" Margin="0,0,8,0"/>
+                <TextBlock Text="%LOCALAPPDATA%\MsfsFailures\fleet.db" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource DimBrush}"/>
+                <TextBlock Text="·" Margin="10,0" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{DynamicResource FaintBrush}"/>
+
+                <Button Cursor="Hand" Background="Transparent" BorderThickness="0" Padding="0"
+                        Command="{Binding ToggleSimCommand}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter/>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="6" Height="6" Margin="0,0,6,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="{DynamicResource RedBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SimOk}" Value="True">
+                                            <Setter Property="Fill" Value="{DynamicResource GreenBrush}"/>
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                         From="1" To="0.35" Duration="0:0:1"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                         To="1" Duration="0:0:0.1"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{Binding SimChipText}"
+                                   FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource RedBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SimOk}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource GreenBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

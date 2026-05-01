@@ -1,0 +1,164 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.DetailAside"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}">
+    <UserControl.Resources>
+        <Style x:Key="K" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource DimBrush}"/>
+        </Style>
+        <Style x:Key="V" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="16" DataContext="{Binding SelectedAirframe}">
+
+                <!-- INSPECT -->
+                <StackPanel Margin="0,0,0,14">
+                    <TextBlock Text=">> INSPECT" Style="{StaticResource MonoTiny}" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Tail}" FontFamily="{StaticResource MonoFont}" FontSize="22" FontWeight="Bold"
+                               Foreground="{DynamicResource TextBrush}" Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding Model}" FontFamily="{StaticResource MonoFont}" FontSize="11"
+                               Foreground="{DynamicResource DimBrush}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <TextBlock Text="{Binding StatusLabel}" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold"
+                                   Foreground="{Binding Status, Converter={StaticResource StatusBrush}}"/>
+                        <TextBlock Text="● IN SIM" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold"
+                                   Foreground="{DynamicResource GreenBrush}" Margin="8,0,0,0"
+                                   Visibility="{Binding Live, Converter={StaticResource BoolVis}}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- LEDGER -->
+                <StackPanel Margin="0,0,0,14">
+                    <TextBlock Text="[LEDGER]" Style="{StaticResource BlockHeading}" Margin="0,0,0,6"/>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="airframe_id"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding Id}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="model_ref"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding Type}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="total_hobbs"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding HoursStr, StringFormat={}{0} h}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="total_cycles"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding CyclesStr}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="hobbs_since_mx"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding HobbsSinceMxStr, StringFormat={}{0} h}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="next_inspection"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}"
+                                   Text="{Binding NextInspectionStr}"
+                                   Foreground="{Binding InspectionAlert, Converter={StaticResource AlertBrush}}"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- LAST_SESSION -->
+                <StackPanel Margin="0,0,0,14">
+                    <TextBlock Text="[LAST_SESSION]" Style="{StaticResource BlockHeading}" Margin="0,0,0,6"/>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="date"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding LastFlight.Date}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="dur"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}" Text="{Binding LastFlight.Duration}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="max_g"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}"
+                                   Text="{Binding LastFlight.MaxG, StringFormat=F1}"
+                                   Foreground="{Binding LastFlight.MaxG, Converter={StaticResource IntZeroBrush}, ConverterParameter=2}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="hard_landings"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}"
+                                   Text="{Binding LastFlight.HardLandings}"
+                                   Foreground="{Binding LastFlight.HardLandings, Converter={StaticResource IntZeroBrush}, ConverterParameter=0}"/>
+                    </Grid>
+                    <Grid Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource K}" Text="overtemps"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource V}"
+                                   Text="{Binding LastFlight.Overtemps}"
+                                   Foreground="{Binding LastFlight.Overtemps, Converter={StaticResource IntZeroBrush}, ConverterParameter=0}"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- SQUAWKS for selected airframe -->
+                <StackPanel Margin="0,0,0,14"
+                            DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}">
+                    <TextBlock Style="{StaticResource BlockHeading}" Margin="0,0,0,6">
+                        <Run Text="[SQUAWKS "/><Run Text="{Binding SelectedSquawksCount, Mode=OneWay}"/><Run Text="]"/>
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{Binding SelectedSquawks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:SquawkVm}">
+                                <StackPanel Margin="0,4,0,8" >
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextBrush}" Text="{Binding Component}"/>
+                                        <TextBlock Grid.Column="1" FontFamily="{StaticResource MonoFont}" FontSize="9" FontWeight="Bold"
+                                                   Foreground="{Binding Severity, Converter={StaticResource SeverityBrush}}"
+                                                   Text="{Binding SeverityLabel}"/>
+                                    </Grid>
+                                    <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="10" Margin="0,3,0,0"
+                                               Foreground="{DynamicResource DimBrush}" TextWrapping="Wrap" Text="{Binding Summary}"/>
+                                    <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="9" Margin="0,3,0,0"
+                                               Foreground="{DynamicResource FaintBrush}">
+                                        <Run Text="{Binding Id, Mode=OneTime}"/>
+                                        <Run Text=" · OPENED "/>
+                                        <Run Text="{Binding Opened, Mode=OneTime}"/>
+                                        <Run Text=" @ "/>
+                                        <Run Text="{Binding HoursAtOpen, Mode=OneTime, StringFormat=F1}"/>
+                                        <Run Text="h"/>
+                                    </TextBlock>
+                                    <Border Height="1" Background="{DynamicResource DashedRuleBrush}" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock FontFamily="{StaticResource MonoFont}" FontSize="11" FontStyle="Italic"
+                               Foreground="{DynamicResource DimBrush}" Text="// no open squawks"
+                               Visibility="{Binding HasSelectedSquawks, Converter={StaticResource BoolVisInv}}"/>
+                </StackPanel>
+
+                <!-- ACTIONS -->
+                <StackPanel
+                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}">
+                    <TextBlock Text="[ACTIONS]" Style="{StaticResource BlockHeading}" Margin="0,0,0,6"/>
+                    <UniformGrid Columns="2" Rows="3">
+                        <Button Style="{StaticResource GhostButton}" Content="+ NEW SQUAWK"        Command="{Binding NewSquawkCommand}"        Margin="0,0,4,4"/>
+                        <Button Style="{StaticResource GhostButton}" Content="↳ DEFER (MEL)"       Command="{Binding DeferSquawkCommand}"      Margin="4,0,0,4"/>
+                        <Button Style="{StaticResource GhostButton}" Content="✓ SERVICE COMPONENT" Command="{Binding ServiceComponentCommand}" Margin="0,0,4,4"/>
+                        <Button Style="{StaticResource GhostButton}" Content="! OPEN AIRFRAME"     Command="{Binding OpenAirframeCommand}"     Margin="4,0,0,4"/>
+                        <Button Style="{StaticResource GhostButton}" Content="↻ RESET CYCLE"       Command="{Binding ResetCycleCommand}"       Margin="0,0,4,0"/>
+                        <Button Style="{StaticResource GhostButtonDanger}" Content="⚠ GROUND"      Command="{Binding GroundAircraftCommand}"   Margin="4,0,0,0"/>
+                    </UniformGrid>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

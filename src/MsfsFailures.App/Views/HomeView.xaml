@@ -1,0 +1,51 @@
+<UserControl x:Class="MsfsFailures.App.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:vp="clr-namespace:MsfsFailures.App.Views.Parts"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+    <Grid Background="{DynamicResource BgBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- terminal header -->
+            <RowDefinition Height="Auto"/>  <!-- tabs -->
+            <RowDefinition Height="Auto"/>  <!-- live strip -->
+            <RowDefinition Height="*"/>     <!-- body -->
+            <RowDefinition Height="24"/>    <!-- status -->
+        </Grid.RowDefinitions>
+
+        <vp:TerminalHeader Grid.Row="0"/>
+        <vp:TabBar         Grid.Row="1"/>
+        <vp:LiveStrip      Grid.Row="2"
+                           Visibility="{Binding LiveStripVisible, Converter={StaticResource BoolVis}}"/>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="380"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <vp:FleetTable    Visibility="{Binding IsFleet,       Converter={StaticResource BoolVis}}"/>
+                <vp:SquawksTable  Visibility="{Binding IsSquawks,     Converter={StaticResource BoolVis}}"/>
+                <vp:MxView        Visibility="{Binding IsMaintenance, Converter={StaticResource BoolVis}}"/>
+                <vp:Placeholder   Visibility="{Binding IsSessions,    Converter={StaticResource BoolVis}}"
+                                  Text="No sessions logged yet — fly an airframe to populate the log."/>
+                <vp:Placeholder   Visibility="{Binding IsEditor,      Converter={StaticResource BoolVis}}"
+                                  Text="Airframe editor — define component templates, MTBFs, wear curves, and L:Var bindings."/>
+                <vp:Placeholder   Visibility="{Binding IsBindings,    Converter={StaticResource BoolVis}}"
+                                  Text="Bindings registry — map A/L/K vars per model_ref. 47 bindings across 4 model refs."/>
+                <vp:Placeholder   Visibility="{Binding IsLog,         Converter={StaticResource BoolVis}}"
+                                  Text="Application log — Serilog rolling file, last 24 h."/>
+            </Grid>
+
+            <vp:DetailAside Grid.Column="1"/>
+        </Grid>
+
+        <vp:StatusBar Grid.Row="4"/>
+    </Grid>
+</UserControl>

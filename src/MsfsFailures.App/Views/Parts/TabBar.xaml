@@ -1,0 +1,69 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.TabBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MsfsFailures.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HomeViewModel}">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="TabCount">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource FaintBrush}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Background="{DynamicResource TabBgBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="12,0,0,0">
+        <StackPanel Orientation="Horizontal">
+
+            <ToggleButton Style="{StaticResource TabButton}"
+                          IsChecked="{Binding IsFleet, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Fleet}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="FLEET"/>
+                    <TextBlock Text="{Binding FleetCount, StringFormat=[{0}]}" Style="{StaticResource TabCount}"/>
+                </StackPanel>
+            </ToggleButton>
+
+            <ToggleButton Style="{StaticResource TabButton}"
+                          IsChecked="{Binding IsSquawks, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Squawks}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="SQUAWKS"/>
+                    <TextBlock Text="{Binding OpenSquawksCount, StringFormat=[{0}]}" Style="{StaticResource TabCount}"/>
+                </StackPanel>
+            </ToggleButton>
+
+            <ToggleButton Style="{StaticResource TabButton}"
+                          IsChecked="{Binding IsMaintenance, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Maintenance}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="MAINTENANCE"/>
+                    <TextBlock Text="{Binding MxDueCount, StringFormat=[{0}]}" Style="{StaticResource TabCount}"/>
+                </StackPanel>
+            </ToggleButton>
+
+            <ToggleButton Style="{StaticResource TabButton}" Content="SESSIONS"
+                          IsChecked="{Binding IsSessions, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Sessions}"/>
+
+            <ToggleButton Style="{StaticResource TabButton}" Content="AIRFRAME EDITOR"
+                          IsChecked="{Binding IsEditor, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.AirframeEditor}"/>
+
+            <ToggleButton Style="{StaticResource TabButton}" Content="BINDINGS"
+                          IsChecked="{Binding IsBindings, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Bindings}"/>
+
+            <ToggleButton Style="{StaticResource TabButton}" Content="LOG"
+                          IsChecked="{Binding IsLog, Mode=OneWay}"
+                          Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:HomeTab.Log}"/>
+        </StackPanel>
+    </Border>
+</UserControl>
