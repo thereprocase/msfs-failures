@@ -26,11 +26,28 @@ namespace MsfsFailures.Sim.Internal;
 ///
 /// <para><b>Data definitions</b>:
 /// <list type="bullet">
-///   <item><c>Definitions.FlightData</c> — numeric SimVars polled at ~4 Hz (SIM_FRAME / interval
-///       set to every 4th frame at 16 Hz ≈ 4 Hz).</item>
-///   <item><c>Definitions.AircraftId</c> — string identity block (TITLE + ATC MODEL) polled once
-///       per second, only on change.</item>
+///   <item>Flight-data block — numeric SimVars polled at ~4 Hz (VISUAL_FRAME / interval every
+///       4th frame at 16 Hz ≈ 4 Hz).</item>
+///   <item>AircraftId block — string identity block (TITLE + ATC MODEL) polled once per second,
+///       only on change.</item>
 /// </list>
+/// </para>
+///
+/// <para><b>Self-healing subscription</b>: SimConnect validates SimVar names against the active
+/// aircraft at <c>RequestDataOnSimObject</c> time (not at <c>AddToDataDefinition</c> time).  When
+/// a var is unsupported (e.g. TURB ENG ITT:1 on the piston C172) SimConnect fires an async
+/// exception-7 (NAME_UNRECOGNIZED / DATA_ERROR) and rejects the <em>entire</em> request — zero
+/// samples flow.  We handle this by:
+/// <list type="number">
+///   <item>Recording the offending 1-based active-ordinal from <c>dwIndex</c>.</item>
+///   <item>Mapping it back to the absolute SimVar slot via <see cref="_activeSlotMap"/>.</item>
+///   <item>Adding the slot to <see cref="_skippedSlots"/>.</item>
+///   <item>Calling <c>ClearDataDefinition</c>, incrementing the definition ID, and re-registering
+///       all non-skipped vars.</item>
+/// </list>
+/// The struct always has all 19 fields; un-registered slots stay zero-initialised, which
+/// <see cref="BuildSample"/> maps to -1 (N/A sentinel) for ITT and Torque — correct for
+/// piston aircraft.  Rebuilds are capped at <see cref="MaxRebuildAttempts"/> = 5.
 /// </para>
 ///
 /// <para><b>Fallback</b>: if <c>SimConnect_Open</c> (constructor) throws a <c>COMException</c>
@@ -106,39 +123,80 @@ internal sealed class RealSimConnectClient : ISimConnectClient
     // WM_QUIT = 0x0012 — posted to break the message loop during dispose
     private const uint WM_QUIT = 0x0012;
 
-    // ── Data-definition and request enums ────────────────────────────────────
+    // ── Request and system-event enums ───────────────────────────────────────
 
-    private enum Definitions : uint { FlightData = 1, AircraftId = 2 }
-    private enum Requests    : uint { FlightData = 1, AircraftId = 2 }
-    private enum SysEvents   : uint { AircraftLoaded = 1 }
+    private enum Requests  : uint { FlightData = 1, AircraftId = 2 }
+    private enum SysEvents : uint { AircraftLoaded = 1 }
 
-    // ── Flight-data struct (must match AddToDataDefinition order exactly) ────
+    // Internal enum for dynamic definition IDs.  We never use named members;
+    // we cast uint → SimDefId directly.  This satisfies the SimConnect managed
+    // API which requires an enum parameter.
+    private enum SimDefId : uint { }
+
+    // Fixed IDs for the two definition types:
+    //   FlightData: starts at 100 and increments with each self-healing rebuild.
+    //   AircraftId: fixed at 2.
+    private const uint AircraftIdDefId    = 2;
+    private const uint FlightDataDefIdBase = 100;
+
+    // ── SimVar table ─────────────────────────────────────────────────────────
     //
-    // NOTE: Pack=1 and SequentialLayout are mandatory — SimConnect writes raw
-    // bytes into this struct without any alignment padding.
+    // 19 entries in struct order (slots 1-19, 1-based).  Index into this array
+    // is the "absolute slot index" (0-based) used throughout the self-healing logic.
+
+    private sealed record SimVarDef(string VarName, string Units, string DisplayName);
+
+    private static readonly SimVarDef[] SimVars =
+    {
+        new("AIRSPEED INDICATED",             "knots",           "AIRSPEED INDICATED"),             // slot  1
+        new("AIRSPEED TRUE",                  "knots",           "AIRSPEED TRUE"),                  // slot  2
+        new("GROUND VELOCITY",                "knots",           "GROUND VELOCITY"),                // slot  3
+        new("INDICATED ALTITUDE",             "feet",            "INDICATED ALTITUDE"),             // slot  4
+        new("VERTICAL SPEED",                 "feet per minute", "VERTICAL SPEED"),                 // slot  5
+        new("PLANE HEADING DEGREES MAGNETIC", "degrees",         "PLANE HEADING DEGREES MAGNETIC"), // slot  6
+        new("AMBIENT TEMPERATURE",            "celsius",         "AMBIENT TEMPERATURE"),            // slot  7
+        new("GENERAL ENG RPM:1",              "rpm",             "GENERAL ENG RPM:1"),              // slot  8
+        new("GENERAL ENG PCT MAX RPM:1",      "percent",         "GENERAL ENG PCT MAX RPM:1"),      // slot  9
+        new("TURB ENG ITT:1",                 "rankine",         "TURB ENG ITT:1 (turbine-only)"),  // slot 10
+        new("GENERAL ENG TORQUE:1",           "foot pounds",     "GENERAL ENG TORQUE:1"),           // slot 11
+        new("FUEL TOTAL QUANTITY WEIGHT",     "pounds",          "FUEL TOTAL QUANTITY WEIGHT"),     // slot 12
+        new("ENG FUEL FLOW PPH:1",            "pounds per hour", "ENG FUEL FLOW PPH:1"),            // slot 13
+        new("GENERAL ENG OIL TEMPERATURE:1",  "celsius",         "GENERAL ENG OIL TEMPERATURE:1"), // slot 14
+        new("GENERAL ENG OIL PRESSURE:1",     "psi",             "GENERAL ENG OIL PRESSURE:1"),    // slot 15
+        new("SIM ON GROUND",                  "bool",            "SIM ON GROUND"),                  // slot 16
+        new("G FORCE",                        "gforce",          "G FORCE"),                        // slot 17
+        new("BRAKE LEFT POSITION",            "percent",         "BRAKE LEFT POSITION"),            // slot 18
+        new("BRAKE RIGHT POSITION",           "percent",         "BRAKE RIGHT POSITION"),           // slot 19
+    };
+
+    // ── Flight-data struct (fixed layout — all 19 doubles always present) ────
+    //
+    // Skipped vars simply don't get registered; their struct fields stay at 0.
+    // BuildSample interprets 0 as -1 (N/A) for ITT and Torque (correct for piston).
+    // Pack=1 + SequentialLayout is mandatory — SimConnect writes raw bytes.
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct AircraftDataStruct
     {
-        public double AirspeedIndicatedKt;     // AIRSPEED INDICATED             knots
-        public double AirspeedTrueKt;          // AIRSPEED TRUE                  knots
-        public double GroundVelocityKt;        // GROUND VELOCITY                knots
-        public double AltitudeFt;              // INDICATED ALTITUDE             feet
-        public double VerticalSpeedFpm;        // VERTICAL SPEED                 feet per minute
-        public double HeadingMagnetic;         // PLANE HEADING DEGREES MAGNETIC degrees
-        public double AmbientTemperatureC;     // AMBIENT TEMPERATURE            celsius
-        public double EngineRpm;              // GENERAL ENG RPM:1              rpm
-        public double EnginePctMaxRpm;        // GENERAL ENG PCT MAX RPM:1      percent  (maps to N1)
-        public double TurbEngIttRankine;      // TURB ENG ITT:1                 rankine  (0 on piston)
-        public double EngineTorqueFtLb;       // GENERAL ENG TORQUE:1           foot pounds
-        public double FuelTotalWeightLb;      // FUEL TOTAL QUANTITY WEIGHT     pounds
-        public double FuelFlowPph;            // ENG FUEL FLOW PPH:1            pounds per hour
-        public double OilTemperatureC;        // GENERAL ENG OIL TEMPERATURE:1  celsius
-        public double OilPressurePsi;         // GENERAL ENG OIL PRESSURE:1     psi
-        public double SimOnGround;            // SIM ON GROUND                  bool (0/1 as double)
-        public double GForce;                 // G FORCE                        g
-        public double BrakeLeftPct;           // BRAKE LEFT POSITION            percent over 100
-        public double BrakeRightPct;          // BRAKE RIGHT POSITION           percent over 100
+        public double AirspeedIndicatedKt;     // slot  1
+        public double AirspeedTrueKt;          // slot  2
+        public double GroundVelocityKt;        // slot  3
+        public double AltitudeFt;              // slot  4
+        public double VerticalSpeedFpm;        // slot  5
+        public double HeadingMagnetic;         // slot  6
+        public double AmbientTemperatureC;     // slot  7
+        public double EngineRpm;               // slot  8
+        public double EnginePctMaxRpm;         // slot  9
+        public double TurbEngIttRankine;       // slot 10
+        public double EngineTorqueFtLb;        // slot 11
+        public double FuelTotalWeightLb;       // slot 12
+        public double FuelFlowPph;             // slot 13
+        public double OilTemperatureC;         // slot 14
+        public double OilPressurePsi;          // slot 15
+        public double SimOnGround;             // slot 16
+        public double GForce;                  // slot 17
+        public double BrakeLeftPct;            // slot 18
+        public double BrakeRightPct;           // slot 19
     }
 
     // ── Aircraft-identity struct ─────────────────────────────────────────────
@@ -147,11 +205,38 @@ internal sealed class RealSimConnectClient : ISimConnectClient
     private struct AircraftIdStruct
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string Title;      // TITLE           (max 256)
+        public string Title;      // TITLE     (max 256)
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public string AtcModel;   // ATC MODEL       (max 32)
+        public string AtcModel;   // ATC MODEL (max 32)
     }
+
+    // ── Self-healing subscription state ──────────────────────────────────────
+    //
+    // All fields below are accessed only on the SimConnect pump thread — no locking.
+    //
+    // _skippedSlots: set of 0-based SimVars[] indices blacklisted for this aircraft.
+    //   These are NOT passed to AddToDataDefinition; their struct fields stay zero.
+    //
+    // _activeSlotMap: after each RegisterFlightDataDefinition, maps
+    //   active-call ordinal (0-based) → absolute SimVars[] index (0-based).
+    //   dwIndex in exception 7 is 1-based active ordinal; subtract 1 to index here.
+    //
+    // _flightDataDefId: current definition ID uint (starts at FlightDataDefIdBase,
+    //   incremented on each rebuild to avoid reusing a stale ID).
+    //
+    // _rebuildCount: total rebuilds so far; capped at MaxRebuildAttempts.
+    //
+    // _subscriptionStable: set on first successful data sample, used for the
+    //   "subscription stable; receiving samples" log message.
+
+    private const int MaxRebuildAttempts = 5;
+
+    private readonly HashSet<int> _skippedSlots  = new();
+    private readonly List<int>    _activeSlotMap  = new(19);
+    private uint _flightDataDefId   = FlightDataDefIdBase;
+    private int  _rebuildCount      = 0;
+    private bool _subscriptionStable = false;
 
     // ── Fields ───────────────────────────────────────────────────────────────
 
@@ -170,11 +255,11 @@ internal sealed class RealSimConnectClient : ISimConnectClient
 
     // ── ISimConnectClient events ─────────────────────────────────────────────
 
-    public event EventHandler<SimConnectedEventArgs>?    Connected;
-    public event EventHandler?                           Disconnected;
-    public event EventHandler<SimErrorEventArgs>?        Error;
-    public event EventHandler<AircraftIdentityEventArgs>?AircraftIdentityReceived;
-    public event EventHandler<FlightSampleEventArgs>?    SampleProduced;
+    public event EventHandler<SimConnectedEventArgs>?     Connected;
+    public event EventHandler?                            Disconnected;
+    public event EventHandler<SimErrorEventArgs>?         Error;
+    public event EventHandler<AircraftIdentityEventArgs>? AircraftIdentityReceived;
+    public event EventHandler<FlightSampleEventArgs>?     SampleProduced;
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -258,8 +343,8 @@ internal sealed class RealSimConnectClient : ISimConnectClient
         while (!_disposed)
         {
             bool ok = GetMessage(out MSG msg, IntPtr.Zero, 0, 0);
-            if (!ok) break;         // WM_QUIT received
-            if (msg.message == 0)  break;  // extra safety
+            if (!ok) break;        // WM_QUIT received
+            if (msg.message == 0) break;  // extra safety
             TranslateMessage(ref msg);
             DispatchMessage(ref msg);
         }
@@ -341,53 +426,25 @@ internal sealed class RealSimConnectClient : ISimConnectClient
         _logger.LogInformation(
             "RealSimConnectClient: SimConnect session opened. SimVersion={SimVersion}", simVersion);
 
-        // Register numeric data block.
-        // Each AddToDataDefinition call is wrapped individually so that aircraft-specific
-        // vars (e.g. TURB ENG ITT:1 — turbine only, unsupported on piston C172) can fail
-        // without rejecting the whole definition.  A failed var leaves its struct slot at
-        // 0 / default, which FlightTickSample and BuildSample already tolerate (-1 sentinel
-        // for ITT and Torque signals "not available on this aircraft type").
-        TryAddVar(sc, "AIRSPEED INDICATED",             "knots",           "AIRSPEED INDICATED");
-        TryAddVar(sc, "AIRSPEED TRUE",                  "knots",           "AIRSPEED TRUE");
-        TryAddVar(sc, "GROUND VELOCITY",                "knots",           "GROUND VELOCITY");
-        TryAddVar(sc, "INDICATED ALTITUDE",             "feet",            "INDICATED ALTITUDE");
-        TryAddVar(sc, "VERTICAL SPEED",                 "feet per minute", "VERTICAL SPEED");
-        TryAddVar(sc, "PLANE HEADING DEGREES MAGNETIC", "degrees",         "PLANE HEADING DEGREES MAGNETIC");
-        TryAddVar(sc, "AMBIENT TEMPERATURE",            "celsius",         "AMBIENT TEMPERATURE");
-        TryAddVar(sc, "GENERAL ENG RPM:1",              "rpm",             "GENERAL ENG RPM:1");
-        TryAddVar(sc, "GENERAL ENG PCT MAX RPM:1",      "percent",         "GENERAL ENG PCT MAX RPM:1");
-        TryAddVar(sc, "TURB ENG ITT:1",                 "rankine",         "TURB ENG ITT:1 (turbine-only; 0 on piston)");
-        TryAddVar(sc, "GENERAL ENG TORQUE:1",           "foot pounds",     "GENERAL ENG TORQUE:1 (turboprop/turbojet only)");
-        TryAddVar(sc, "FUEL TOTAL QUANTITY WEIGHT",     "pounds",          "FUEL TOTAL QUANTITY WEIGHT");
-        TryAddVar(sc, "ENG FUEL FLOW PPH:1",            "pounds per hour", "ENG FUEL FLOW PPH:1");
-        TryAddVar(sc, "GENERAL ENG OIL TEMPERATURE:1",  "celsius",         "GENERAL ENG OIL TEMPERATURE:1");
-        TryAddVar(sc, "GENERAL ENG OIL PRESSURE:1",     "psi",             "GENERAL ENG OIL PRESSURE:1");
-        TryAddVar(sc, "SIM ON GROUND",                  "bool",            "SIM ON GROUND");
-        TryAddVar(sc, "G FORCE",                        "gforce",          "G FORCE");
-        TryAddVar(sc, "BRAKE LEFT POSITION",            "percent",         "BRAKE LEFT POSITION");
-        TryAddVar(sc, "BRAKE RIGHT POSITION",           "percent",         "BRAKE RIGHT POSITION");
+        // Reset self-healing state for this connection
+        _skippedSlots.Clear();
+        _activeSlotMap.Clear();
+        _flightDataDefId    = FlightDataDefIdBase;
+        _rebuildCount       = 0;
+        _subscriptionStable = false;
 
-        sc.RegisterDataDefineStruct<AircraftDataStruct>(Definitions.FlightData);
+        // Register the self-healing flight-data subscription
+        RegisterFlightDataDefinition(sc);
 
-        // Poll every 4th visual frame — at 16 Hz target this gives ~4 Hz
-        sc.RequestDataOnSimObject(
-            Requests.FlightData,
-            Definitions.FlightData,
-            SimConnect.SIMCONNECT_OBJECT_ID_USER,
-            SIMCONNECT_PERIOD.VISUAL_FRAME,
-            SIMCONNECT_DATA_REQUEST_FLAG.DEFAULT,
-            origin:   0,
-            interval: 3,   // 0 = every frame, 3 = every 4th frame
-            limit:    0);
-
-        // Register aircraft-identity string block
-        sc.AddToDataDefinition(Definitions.AircraftId, "TITLE",     null, SIMCONNECT_DATATYPE.STRING256, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.AircraftId, "ATC MODEL", null, SIMCONNECT_DATATYPE.STRING32,  0, SimConnect.SIMCONNECT_UNUSED);
-        sc.RegisterDataDefineStruct<AircraftIdStruct>(Definitions.AircraftId);
+        // Register aircraft-identity string block (fixed def ID)
+        var idDef = (SimDefId)AircraftIdDefId;
+        sc.AddToDataDefinition(idDef, "TITLE",     null, SIMCONNECT_DATATYPE.STRING256, 0, SimConnect.SIMCONNECT_UNUSED);
+        sc.AddToDataDefinition(idDef, "ATC MODEL", null, SIMCONNECT_DATATYPE.STRING32,  0, SimConnect.SIMCONNECT_UNUSED);
+        sc.RegisterDataDefineStruct<AircraftIdStruct>(idDef);
 
         sc.RequestDataOnSimObject(
             Requests.AircraftId,
-            Definitions.AircraftId,
+            idDef,
             SimConnect.SIMCONNECT_OBJECT_ID_USER,
             SIMCONNECT_PERIOD.SECOND,
             SIMCONNECT_DATA_REQUEST_FLAG.CHANGED,
@@ -399,34 +456,95 @@ internal sealed class RealSimConnectClient : ISimConnectClient
         Connected?.Invoke(this, new SimConnectedEventArgs { SimVersion = simVersion });
     }
 
-    // ── Per-var subscription helper ───────────────────────────────────────────
+    // ── Self-healing subscription helpers ────────────────────────────────────
 
     /// <summary>
-    /// Wraps <c>AddToDataDefinition</c> in a try/catch so that unsupported SimVars on a
-    /// particular aircraft type (e.g. TURB ENG ITT:1 on piston C172) do not reject the
-    /// entire data definition.  SimConnect delivers an async exception event (OnRecvException)
-    /// rather than throwing synchronously, so catching here is mostly a belt-and-suspenders
-    /// guard against any synchronous COMException the managed wrapper may raise.
+    /// Registers the flight-data data definition (with all non-skipped vars), the
+    /// struct layout, and issues <c>RequestDataOnSimObject</c> for the current
+    /// <see cref="_flightDataDefId"/>.  Also rebuilds <see cref="_activeSlotMap"/>.
     /// </summary>
-    private void TryAddVar(SimConnect sc, string varName, string units, string displayName)
+    private void RegisterFlightDataDefinition(SimConnect sc)
     {
-        try
+        var defId = (SimDefId)_flightDataDefId;
+
+        _activeSlotMap.Clear();
+
+        for (int i = 0; i < SimVars.Length; i++)
         {
+            if (_skippedSlots.Contains(i)) continue;
+
             sc.AddToDataDefinition(
-                Definitions.FlightData,
-                varName,
-                units,
+                defId,
+                SimVars[i].VarName,
+                SimVars[i].Units,
                 SIMCONNECT_DATATYPE.FLOAT64,
                 0,
                 SimConnect.SIMCONNECT_UNUSED);
+
+            // Track: active-call ordinal (0-based) → absolute slot index (0-based)
+            _activeSlotMap.Add(i);
         }
+
+        sc.RegisterDataDefineStruct<AircraftDataStruct>(defId);
+
+        // Poll every 4th visual frame — at 16 Hz target this gives ~4 Hz
+        sc.RequestDataOnSimObject(
+            Requests.FlightData,
+            defId,
+            SimConnect.SIMCONNECT_OBJECT_ID_USER,
+            SIMCONNECT_PERIOD.VISUAL_FRAME,
+            SIMCONNECT_DATA_REQUEST_FLAG.DEFAULT,
+            origin:   0,
+            interval: 3,   // 0 = every frame, 3 = every 4th frame
+            limit:    0);
+
+        int skipped = _skippedSlots.Count;
+        if (skipped == 0)
+            _logger.LogInformation(
+                "RealSimConnectClient: flight-data subscription started ({Count} vars, defId={DefId}).",
+                SimVars.Length, _flightDataDefId);
+        else
+            _logger.LogInformation(
+                "RealSimConnectClient: flight-data subscription rebuilt " +
+                "({Active} vars active, {Skipped} skipped, defId={DefId}).",
+                SimVars.Length - skipped, skipped, _flightDataDefId);
+    }
+
+    /// <summary>
+    /// Tears down the current definition, marks <paramref name="absoluteSlotIndex"/> as
+    /// skipped, increments the definition ID, and re-registers.
+    /// </summary>
+    private void RebuildWithSkippedSlot(SimConnect sc, int absoluteSlotIndex)
+    {
+        if (_rebuildCount >= MaxRebuildAttempts)
+        {
+            _logger.LogError(
+                "RealSimConnectClient: reached max rebuild attempts ({Max}). " +
+                "Samples will NOT flow. Check SimVar compatibility for this aircraft.",
+                MaxRebuildAttempts);
+            return;
+        }
+
+        string varDisplay = absoluteSlotIndex < SimVars.Length
+            ? SimVars[absoluteSlotIndex].DisplayName
+            : $"slot#{absoluteSlotIndex + 1}";
+
+        _skippedSlots.Add(absoluteSlotIndex);
+        _rebuildCount++;
+
+        _logger.LogWarning(
+            "RealSimConnectClient: rebuilding data definition without slot {Slot} ({VarName}). " +
+            "Attempt {Attempt}/{Max}.",
+            absoluteSlotIndex + 1, varDisplay, _rebuildCount, MaxRebuildAttempts);
+
+        try { sc.ClearDataDefinition((SimDefId)_flightDataDefId); }
         catch (Exception ex)
         {
-            _logger.LogWarning(
-                "RealSimConnectClient: could not register SimVar '{DisplayName}' — " +
-                "unsupported on this aircraft type? ({Message}). Slot will read 0.",
-                displayName, ex.Message);
+            _logger.LogWarning(ex, "RealSimConnectClient: ClearDataDefinition failed (non-fatal).");
         }
+
+        _flightDataDefId++;  // always use a fresh ID after clearing
+        RegisterFlightDataDefinition(sc);
     }
 
     private void OnRecvQuit(SimConnect sc, SIMCONNECT_RECV data)
@@ -437,17 +555,65 @@ internal sealed class RealSimConnectClient : ISimConnectClient
 
     private void OnRecvException(SimConnect sc, SIMCONNECT_RECV_EXCEPTION data)
     {
-        // Log but don't crash — many exceptions (e.g. UNKNOWN_SENDID or unsupported-var during
-        // setup on piston aircraft) are transient/benign.  Exception 7 = DATA_ERROR typically
-        // means an A:Var is not supported on the current aircraft type.
-        // index is 1-based; 0xFFFFFFFF means "not applicable to this exception type".
+        const uint ExcDataError = 7;   // SIMCONNECT_EXCEPTION_DATA_ERROR / NAME_UNRECOGNIZED
+
+        if (data.dwException == ExcDataError && data.dwIndex != 0xFFFFFFFF)
+        {
+            // dwIndex is the 1-based ordinal of the failing AddToDataDefinition call
+            // among the *active* (non-skipped) vars in the current definition.
+            int activeIdx = (int)data.dwIndex - 1;  // convert to 0-based
+
+            if (activeIdx >= 0 && activeIdx < _activeSlotMap.Count)
+            {
+                int absoluteSlot = _activeSlotMap[activeIdx];
+                _logger.LogWarning(
+                    "RealSimConnectClient: SimConnect exception 7 (NAME_UNRECOGNIZED) " +
+                    "sendId={SendId} activeOrdinal={Ordinal} → absolute slot {Slot} ({VarName}). " +
+                    "Triggering self-healing rebuild.",
+                    data.dwSendID, data.dwIndex, absoluteSlot + 1,
+                    SimVars[absoluteSlot].DisplayName);
+
+                RebuildWithSkippedSlot(sc, absoluteSlot);
+            }
+            else
+            {
+                // dwIndex does not map into our active var list (could be a different request).
+                // As a conservative fallback, skip both turbine-only vars if not already skipped.
+                _logger.LogWarning(
+                    "RealSimConnectClient: SimConnect exception 7 sendId={SendId} index={Index} " +
+                    "— index out of range (activeMap.Count={Count}). " +
+                    "Fallback: skipping TURB ENG ITT:1 (slot 10) and GENERAL ENG TORQUE:1 (slot 11).",
+                    data.dwSendID, data.dwIndex, _activeSlotMap.Count);
+
+                // 0-based indices: ITT=9, Torque=10
+                bool changed = _skippedSlots.Add(9) | _skippedSlots.Add(10);
+                if (changed && _rebuildCount < MaxRebuildAttempts)
+                {
+                    _rebuildCount++;
+                    try { sc.ClearDataDefinition((SimDefId)_flightDataDefId); }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "RealSimConnectClient: ClearDataDefinition failed (non-fatal).");
+                    }
+                    _flightDataDefId++;
+                    RegisterFlightDataDefinition(sc);
+                }
+            }
+
+            Error?.Invoke(this, new SimErrorEventArgs
+            {
+                Message = $"SimConnect exception 7 (sendId={data.dwSendID}): unsupported SimVar — rebuilding subscription.",
+            });
+            return;
+        }
+
+        // All other exceptions: log and continue — session remains active.
         string indexInfo = data.dwIndex == 0xFFFFFFFF
             ? "(index N/A)"
-            : $"index={data.dwIndex} (this is the 1-based slot in the data definition that failed)";
+            : $"index={data.dwIndex}";
 
         _logger.LogWarning(
-            "RealSimConnectClient: SimConnect exception {Exception} sendId={SendId} {IndexInfo} — " +
-            "likely an unsupported SimVar on this aircraft type; session remains active.",
+            "RealSimConnectClient: SimConnect exception {Exception} sendId={SendId} {IndexInfo}.",
             data.dwException, data.dwSendID, indexInfo);
 
         Error?.Invoke(this, new SimErrorEventArgs
@@ -460,6 +626,15 @@ internal sealed class RealSimConnectClient : ISimConnectClient
     {
         if (data.dwRequestID == (uint)Requests.FlightData)
         {
+            if (!_subscriptionStable)
+            {
+                _subscriptionStable = true;
+                _logger.LogInformation(
+                    "RealSimConnectClient: subscription stable; receiving samples. " +
+                    "({Skipped} var(s) skipped for this aircraft.)",
+                    _skippedSlots.Count);
+            }
+
             var raw = (AircraftDataStruct)data.dwData[0];
             var sample = BuildSample(raw);
             SampleProduced?.Invoke(this, new FlightSampleEventArgs { Sample = sample });
@@ -491,7 +666,7 @@ internal sealed class RealSimConnectClient : ISimConnectClient
             {
                 sc.RequestDataOnSimObject(
                     Requests.AircraftId,
-                    Definitions.AircraftId,
+                    (SimDefId)AircraftIdDefId,
                     SimConnect.SIMCONNECT_OBJECT_ID_USER,
                     SIMCONNECT_PERIOD.ONCE,
                     SIMCONNECT_DATA_REQUEST_FLAG.DEFAULT,
@@ -529,9 +704,9 @@ internal sealed class RealSimConnectClient : ISimConnectClient
         // Rationale: we don't have mass; 50000 is a calibration constant chosen so that a
         // typical C172 landing rollout (GS ~55 kt, both brakes ~70%) yields ~10-15 kJ/tick,
         // which is in the right order of magnitude for light-aircraft brake energy.
-        double avgBrakePct    = (raw.BrakeLeftPct + raw.BrakeRightPct) / 2.0 / 100.0;
-        double gsNorm         = raw.GroundVelocityKt / 100.0;
-        double brakeEnergyJ   = onGround && avgBrakePct > 0.01
+        double avgBrakePct  = (raw.BrakeLeftPct + raw.BrakeRightPct) / 2.0 / 100.0;
+        double gsNorm       = raw.GroundVelocityKt / 100.0;
+        double brakeEnergyJ = onGround && avgBrakePct > 0.01
             ? 0.5 * (raw.BrakeLeftPct + raw.BrakeRightPct) / 100.0 * gsNorm * gsNorm * 50_000.0
             : 0.0;
 
