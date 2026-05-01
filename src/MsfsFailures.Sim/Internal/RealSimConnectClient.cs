@@ -341,26 +341,31 @@ internal sealed class RealSimConnectClient : ISimConnectClient
         _logger.LogInformation(
             "RealSimConnectClient: SimConnect session opened. SimVersion={SimVersion}", simVersion);
 
-        // Register numeric data block
-        sc.AddToDataDefinition(Definitions.FlightData, "AIRSPEED INDICATED",             "knots",           SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "AIRSPEED TRUE",                  "knots",           SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "GROUND VELOCITY",                "knots",           SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "INDICATED ALTITUDE",             "feet",            SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "VERTICAL SPEED",                 "feet per minute", SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "PLANE HEADING DEGREES MAGNETIC", "degrees",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "AMBIENT TEMPERATURE",            "celsius",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "GENERAL ENG RPM:1",              "rpm",             SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "GENERAL ENG PCT MAX RPM:1",      "percent",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "TURB ENG ITT:1",                 "rankine",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "GENERAL ENG TORQUE:1",           "foot pounds",     SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "FUEL TOTAL QUANTITY WEIGHT",     "pounds",          SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "ENG FUEL FLOW PPH:1",            "pounds per hour", SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "GENERAL ENG OIL TEMPERATURE:1",  "celsius",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "GENERAL ENG OIL PRESSURE:1",     "psi",             SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "SIM ON GROUND",                  "bool",            SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "G FORCE",                        "gforce",          SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "BRAKE LEFT POSITION",            "percent",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
-        sc.AddToDataDefinition(Definitions.FlightData, "BRAKE RIGHT POSITION",           "percent",         SIMCONNECT_DATATYPE.FLOAT64, 0, SimConnect.SIMCONNECT_UNUSED);
+        // Register numeric data block.
+        // Each AddToDataDefinition call is wrapped individually so that aircraft-specific
+        // vars (e.g. TURB ENG ITT:1 — turbine only, unsupported on piston C172) can fail
+        // without rejecting the whole definition.  A failed var leaves its struct slot at
+        // 0 / default, which FlightTickSample and BuildSample already tolerate (-1 sentinel
+        // for ITT and Torque signals "not available on this aircraft type").
+        TryAddVar(sc, "AIRSPEED INDICATED",             "knots",           "AIRSPEED INDICATED");
+        TryAddVar(sc, "AIRSPEED TRUE",                  "knots",           "AIRSPEED TRUE");
+        TryAddVar(sc, "GROUND VELOCITY",                "knots",           "GROUND VELOCITY");
+        TryAddVar(sc, "INDICATED ALTITUDE",             "feet",            "INDICATED ALTITUDE");
+        TryAddVar(sc, "VERTICAL SPEED",                 "feet per minute", "VERTICAL SPEED");
+        TryAddVar(sc, "PLANE HEADING DEGREES MAGNETIC", "degrees",         "PLANE HEADING DEGREES MAGNETIC");
+        TryAddVar(sc, "AMBIENT TEMPERATURE",            "celsius",         "AMBIENT TEMPERATURE");
+        TryAddVar(sc, "GENERAL ENG RPM:1",              "rpm",             "GENERAL ENG RPM:1");
+        TryAddVar(sc, "GENERAL ENG PCT MAX RPM:1",      "percent",         "GENERAL ENG PCT MAX RPM:1");
+        TryAddVar(sc, "TURB ENG ITT:1",                 "rankine",         "TURB ENG ITT:1 (turbine-only; 0 on piston)");
+        TryAddVar(sc, "GENERAL ENG TORQUE:1",           "foot pounds",     "GENERAL ENG TORQUE:1 (turboprop/turbojet only)");
+        TryAddVar(sc, "FUEL TOTAL QUANTITY WEIGHT",     "pounds",          "FUEL TOTAL QUANTITY WEIGHT");
+        TryAddVar(sc, "ENG FUEL FLOW PPH:1",            "pounds per hour", "ENG FUEL FLOW PPH:1");
+        TryAddVar(sc, "GENERAL ENG OIL TEMPERATURE:1",  "celsius",         "GENERAL ENG OIL TEMPERATURE:1");
+        TryAddVar(sc, "GENERAL ENG OIL PRESSURE:1",     "psi",             "GENERAL ENG OIL PRESSURE:1");
+        TryAddVar(sc, "SIM ON GROUND",                  "bool",            "SIM ON GROUND");
+        TryAddVar(sc, "G FORCE",                        "gforce",          "G FORCE");
+        TryAddVar(sc, "BRAKE LEFT POSITION",            "percent",         "BRAKE LEFT POSITION");
+        TryAddVar(sc, "BRAKE RIGHT POSITION",           "percent",         "BRAKE RIGHT POSITION");
 
         sc.RegisterDataDefineStruct<AircraftDataStruct>(Definitions.FlightData);
 
@@ -394,6 +399,36 @@ internal sealed class RealSimConnectClient : ISimConnectClient
         Connected?.Invoke(this, new SimConnectedEventArgs { SimVersion = simVersion });
     }
 
+    // ── Per-var subscription helper ───────────────────────────────────────────
+
+    /// <summary>
+    /// Wraps <c>AddToDataDefinition</c> in a try/catch so that unsupported SimVars on a
+    /// particular aircraft type (e.g. TURB ENG ITT:1 on piston C172) do not reject the
+    /// entire data definition.  SimConnect delivers an async exception event (OnRecvException)
+    /// rather than throwing synchronously, so catching here is mostly a belt-and-suspenders
+    /// guard against any synchronous COMException the managed wrapper may raise.
+    /// </summary>
+    private void TryAddVar(SimConnect sc, string varName, string units, string displayName)
+    {
+        try
+        {
+            sc.AddToDataDefinition(
+                Definitions.FlightData,
+                varName,
+                units,
+                SIMCONNECT_DATATYPE.FLOAT64,
+                0,
+                SimConnect.SIMCONNECT_UNUSED);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                "RealSimConnectClient: could not register SimVar '{DisplayName}' — " +
+                "unsupported on this aircraft type? ({Message}). Slot will read 0.",
+                displayName, ex.Message);
+        }
+    }
+
     private void OnRecvQuit(SimConnect sc, SIMCONNECT_RECV data)
     {
         _logger.LogInformation("RealSimConnectClient: SimConnect session quit (MSFS exited).");
@@ -402,10 +437,18 @@ internal sealed class RealSimConnectClient : ISimConnectClient
 
     private void OnRecvException(SimConnect sc, SIMCONNECT_RECV_EXCEPTION data)
     {
-        // Log but don't crash — many exceptions (e.g. UNKNOWN_SENDID during setup) are benign
+        // Log but don't crash — many exceptions (e.g. UNKNOWN_SENDID or unsupported-var during
+        // setup on piston aircraft) are transient/benign.  Exception 7 = DATA_ERROR typically
+        // means an A:Var is not supported on the current aircraft type.
+        // index is 1-based; 0xFFFFFFFF means "not applicable to this exception type".
+        string indexInfo = data.dwIndex == 0xFFFFFFFF
+            ? "(index N/A)"
+            : $"index={data.dwIndex} (this is the 1-based slot in the data definition that failed)";
+
         _logger.LogWarning(
-            "RealSimConnectClient: SimConnect exception {Exception} sendId={SendId} index={Index}",
-            data.dwException, data.dwSendID, data.dwIndex);
+            "RealSimConnectClient: SimConnect exception {Exception} sendId={SendId} {IndexInfo} — " +
+            "likely an unsupported SimVar on this aircraft type; session remains active.",
+            data.dwException, data.dwSendID, indexInfo);
 
         Error?.Invoke(this, new SimErrorEventArgs
         {

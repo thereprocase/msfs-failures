@@ -117,9 +117,20 @@ public sealed class TickHost : BackgroundService
             // Fire-and-forget: open a session asynchronously without blocking the reactive callback.
             _ = StartSessionFireAndForgetAsync(ct);
         }
-        else if (status.State != SimConnectionState.Connected && _currentSessionId.HasValue)
+        else if (status.State == SimConnectionState.Error && _currentSessionId.HasValue)
         {
-            // Disconnected — flush batch and end session.
+            // Transient SimConnect errors (e.g. unsupported A:Var subscription) must NOT end
+            // the session.  Samples may still flow after the error; keep the session alive and
+            // wait for either more samples or a true Offline transition.
+            _log.LogWarning(
+                "TickHost: SimConnect error while session {SessionId} is active — keeping session alive. " +
+                "Error: {ErrorMessage}",
+                _currentSessionId.Value,
+                status.ErrorMessage ?? "(no detail)");
+        }
+        else if (status.State == SimConnectionState.Offline && _currentSessionId.HasValue)
+        {
+            // True disconnect (MSFS exited or SimConnect closed) — flush batch and end session.
             _ = EndSessionFireAndForgetAsync(ct);
         }
     }

@@ -23,7 +23,7 @@
 
   <Package Name="MsfsFailures"
            Manufacturer="thereprocase"
-           Version="0.1.1.0"
+           Version="0.1.2.0"
            UpgradeCode="0E5B50D6-65F8-4FAE-9C7C-F4900629D19E"
            Scope="perMachine"
            InstallerVersion="500">

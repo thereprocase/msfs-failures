@@ -31,7 +31,7 @@ public static class SimMatchRules
             using var doc = JsonDocument.Parse(simMatchRulesJson);
             var root = doc.RootElement;
 
-            // Test "contains" rules (case-insensitive substring match)
+            // Test "contains" rules (case-insensitive substring match against title AND atcModel)
             if (root.TryGetProperty("contains", out var containsElem) && containsElem.ValueKind == JsonValueKind.Array)
             {
                 foreach (var item in containsElem.EnumerateArray())
@@ -40,7 +40,9 @@ public static class SimMatchRules
                     {
                         var pattern = item.GetString();
                         if (!string.IsNullOrWhiteSpace(pattern) &&
-                            aircraftTitle.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                            (aircraftTitle.Contains(pattern, StringComparison.OrdinalIgnoreCase) ||
+                             (!string.IsNullOrWhiteSpace(atcModel) &&
+                              atcModel.Contains(pattern, StringComparison.OrdinalIgnoreCase))))
                         {
                             return true;
                         }
@@ -48,7 +50,7 @@ public static class SimMatchRules
                 }
             }
 
-            // Test "regex" rules (case-insensitive regex match)
+            // Test "regex" rules (case-insensitive regex match against title AND atcModel)
             if (root.TryGetProperty("regex", out var regexElem) && regexElem.ValueKind == JsonValueKind.Array)
             {
                 foreach (var item in regexElem.EnumerateArray())
@@ -61,7 +63,8 @@ public static class SimMatchRules
                             try
                             {
                                 var regex = new Regex(pattern, RegexOptions.IgnoreCase);
-                                if (regex.IsMatch(aircraftTitle))
+                                if (regex.IsMatch(aircraftTitle) ||
+                                    (!string.IsNullOrWhiteSpace(atcModel) && regex.IsMatch(atcModel)))
                                     return true;
                             }
                             catch (ArgumentException)

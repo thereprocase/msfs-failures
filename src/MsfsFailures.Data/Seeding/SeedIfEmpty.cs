@@ -19,6 +19,10 @@ public static class SeedIfEmpty
         ILogger logger,
         CancellationToken ct = default)
     {
+        // Backfill SimMatchRulesJson on existing ModelRef rows (idempotent — only updates
+        // rows where the field is null/empty, so safe to run on every startup).
+        await BackfillMatchRulesAsync(db, logger, ct);
+
         if (await db.Airframes.AnyAsync(ct))
         {
             logger.LogInformation("Fleet already seeded — skipping.");
@@ -140,6 +144,57 @@ public static class SeedIfEmpty
 
         await db.SaveChangesAsync(ct);
         logger.LogInformation("Seed complete — 5 airframes, 7 squawks written to database.");
+    }
+
+    // ── SimMatchRulesJson backfill ────────────────────────────────────────────
+
+    /// <summary>
+    /// Backfills <see cref="ModelRef.SimMatchRulesJson"/> on rows that were created before
+    /// match rules were added to the seed.  Keyed by Name substrings that uniquely identify
+    /// each seeded ModelRef.  Safe to run every startup — only touches rows where the field
+    /// is currently null/empty.
+    /// </summary>
+    private static async Task BackfillMatchRulesAsync(FleetDbContext db, ILogger logger, CancellationToken ct)
+    {
+        // Maps a name-substring that uniquely identifies the ModelRef → canonical JSON.
+        // The substring check is intentionally loose so it survives minor name edits.
+        var canonical = new (string Substring, string Json)[]
+        {
+            ("172",      """{"contains":["172","Skyhawk","Cessna_172","C172","CESSNA 172"]}"""),
+            ("PA-28",    """{"contains":["PA28","Archer","PA-28"]}"""),
+            ("King Air", """{"contains":["350","King Air","KingAir"]}"""),
+            ("Baron",    """{"contains":["58","Baron"]}"""),
+            // "Cessna 210" or "Centurion" — match on "210" or "Centurion" in name
+            ("210",      """{"contains":["210","Centurion"]}"""),
+        };
+
+        var refs = await db.ModelRefs.ToListAsync(ct);
+        var updated = 0;
+        foreach (var r in refs)
+        {
+            // Skip rows that already have meaningful match rules.
+            // Treat null, empty, whitespace, and the bare "{}" stub as "not yet set".
+            if (!string.IsNullOrWhiteSpace(r.SimMatchRulesJson) &&
+                r.SimMatchRulesJson.Trim() != "{}")
+                continue;
+
+            foreach (var (sub, json) in canonical)
+            {
+                if (r.Name.Contains(sub, StringComparison.OrdinalIgnoreCase) ||
+                    r.Manufacturer.Contains(sub, StringComparison.OrdinalIgnoreCase))
+                {
+                    r.SimMatchRulesJson = json;
+                    updated++;
+                    break;
+                }
+            }
+        }
+
+        if (updated > 0)
+        {
+            await db.SaveChangesAsync(ct);
+            logger.LogInformation("SeedIfEmpty: backfilled SimMatchRulesJson on {Count} ModelRef row(s).", updated);
+        }
     }
 
     private static void AddConsumables(
