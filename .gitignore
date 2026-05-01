@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+out/
+*.user
+*.suo
+.vs/
+
+# Rider / VSCode
+.idea/
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local data
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+fleet.db*
