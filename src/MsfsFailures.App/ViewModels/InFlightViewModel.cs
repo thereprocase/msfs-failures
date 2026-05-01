@@ -1,4 +1,8 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
+using MsfsFailures.Core.Wear;
+using MsfsFailures.Sim;
 
 namespace MsfsFailures.App.ViewModels;
 
@@ -18,42 +22,121 @@ public sealed record PrecursorItem(string Name, double Value, string Scale, stri
 
 public sealed record ProjectionItem(string Name, string Delta, string Detail, string Tone);
 
-public sealed class InFlightViewModel : ObservableObject
+/// <summary>
+/// Live IN FLIGHT view model. Subscribes to <see cref="ISimBus.SampleStream"/> and
+/// <see cref="ISimBus.StatusStream"/>; updates observable properties on each 4 Hz tick.
+/// Static analysis surfaces (health indices, habits, drift, precursors, debt, projection,
+/// route, events) remain hardcoded in v1 — those require more plumbing beyond sample data.
+/// </summary>
+public sealed partial class InFlightViewModel : ObservableObject, IDisposable
 {
-    // Aircraft constants
-    public string Tail        { get; } = "N208RC";
-    public string Type        { get; } = "C208B";
-    public string Model       { get; } = "Cessna 208B Grand Caravan EX";
-    public string Binding     { get; } = "C208B.default v1.2";
-    public string Engine      { get; } = "PT6A-140";
-    public double HobbsStart  { get; } = 1842.6;
-    public double HobbsNow    { get; } = 1844.1;
-    public int    Cycles      { get; } = 2106;
-    public double HobbsDelta  => HobbsNow - HobbsStart;
+    private const int TrendBufferSize = 60;
 
-    // Live state
-    public string Phase    { get; } = "CRUISE";
-    public int Altitude    { get; } = 9500;
-    public int Vsi         { get; } = 0;
-    public int Ias         { get; } = 168;
-    public int Tas         { get; } = 188;
-    public int Gs          { get; } = 174;
-    public int Hdg         { get; } = 281;
-    public int Oat         { get; } = -4;
-    public int FuelLb      { get; } = 1842;
-    public int FuelCapLb   { get; } = 2240;
-    public int FuelFlow    { get; } = 412;
-    public double Ng       { get; } = 91.4;
-    public int Np          { get; } = 1900;
-    public int Itt         { get; } = 685;
-    public int IttLimit    { get; } = 825;
-    public int IttCaution  { get; } = 765;
-    public int Torque      { get; } = 1410;
-    public int TorqueLimit { get; } = 1970;
-    public int TorqueCaution { get; } = 1865;
-    public int OilTemp     { get; } = 79;
-    public int OilPress    { get; } = 87;
-    public double OilQt    { get; } = 11.4;
+    private readonly ILogger<InFlightViewModel> _log;
+    private readonly IDisposable _sampleSub;
+    private readonly IDisposable _statusSub;
+
+    // Rolling trend queues — updated on sample thread, read by UI thread via ObservableCollection.
+    private readonly Queue<double> _ittTrendQueue   = new(TrendBufferSize + 1);
+    private readonly Queue<double> _torqueTrendQueue = new(TrendBufferSize + 1);
+
+    public InFlightViewModel(ISimBus bus, ILogger<InFlightViewModel> log)
+    {
+        _log = log;
+
+        // Seed trend buffers with initial static values (replaced by live data on first tick).
+        foreach (var v in new double[] { 612,634,656,672,684,698,712,706,694,688,684,682,684,685,686,684,683,685,686,685 })
+            _ittTrendQueue.Enqueue(v);
+        foreach (var v in new double[] { 880,1100,1320,1540,1700,1820,1865,1820,1690,1560,1480,1420,1410,1408,1410,1412,1410,1411,1410,1410 })
+            _torqueTrendQueue.Enqueue(v);
+
+        IttTrend    = new ObservableCollection<double>(_ittTrendQueue);
+        TorqueTrend = new ObservableCollection<double>(_torqueTrendQueue);
+
+        _sampleSub = bus.SampleStream.Subscribe(OnSample, OnSampleError);
+        _statusSub = bus.StatusStream.Subscribe(OnStatus, OnStatusError);
+    }
+
+    // ── Aircraft constants (fixed for seeded demo aircraft) ──────────────────
+
+    public string Tail       { get; } = "N208RC";
+    public string Type       { get; } = "C208B";
+    public string Model      { get; } = "Cessna 208B Grand Caravan EX";
+    public string Binding    { get; } = "C208B.default v1.2";
+    public string Engine     { get; } = "PT6A-140";
+    public double HobbsStart { get; } = 1842.6;
+    public double HobbsNow   { get; } = 1844.1;
+    public int    Cycles     { get; } = 2106;
+    public double HobbsDelta => HobbsNow - HobbsStart;
+
+    // ── Live state — observable properties updated from SampleStream ─────────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IttDisplay))]
+    [NotifyPropertyChangedFor(nameof(ThermalBelowLimit))]
+    private int _itt = 685;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TqDisplay))]
+    private int _torque = 1410;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IasDisplay))]
+    private int _ias = 168;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TasDisplay))]
+    private int _tas = 188;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GsDisplay))]
+    private int _gs = 174;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HdgDisplay))]
+    private int _hdg = 281;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(OatDisplay))]
+    private int _oat = -4;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FfDisplay))]
+    private int _fuelFlow = 412;
+
+    [ObservableProperty]
+    private int _oilTemp = 79;
+
+    [ObservableProperty]
+    private int _oilPress = 87;
+
+    [ObservableProperty]
+    private double _oilQt = 11.4;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AltDisplay))]
+    private int _altitude = 9500;
+
+    [ObservableProperty]
+    private int _vsi = 0;
+
+    [ObservableProperty]
+    private string _phase = "CRUISE";
+
+    [ObservableProperty]
+    private int _fuelLb = 1842;
+
+    // ── Fixed engine limits (not observable — constant for this airframe) ────
+
+    public int IttLimit       { get; } = 825;
+    public int IttCaution     { get; } = 765;
+    public int TorqueLimit    { get; } = 1970;
+    public int TorqueCaution  { get; } = 1865;
+    public int FuelCapLb      { get; } = 2240;
+    public double Ng          { get; } = 91.4;
+    public int Np             { get; } = 1900;
+
+    // ── Derived display strings ──────────────────────────────────────────────
 
     public string AltDisplay   => Altitude.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " ft";
     public string IasDisplay   => Ias + " kt";
@@ -68,7 +151,8 @@ public sealed class InFlightViewModel : ObservableObject
     public string EnduranceHours => (FuelLb / (double)FuelFlow).ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
     public string ReserveAtArrival => "+" + (((double)FuelLb / FuelFlow) - 0.86 - 0.32).ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "h";
 
-    // Health indices
+    // ── Health indices (hardcoded v1 — derived surface, needs more plumbing) ─
+
     public IReadOnlyList<HealthIndex> Health { get; } =
     [
         new("ENGINE",        "condition index",                          0.74),
@@ -84,12 +168,14 @@ public sealed class InFlightViewModel : ObservableObject
     public double EngineHealth        => Health[0].Value;
     public string EngineHealthPercent => ((int)Math.Round(Health[0].Value * 100)).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-    // Thermal
+    // ── Thermal ──────────────────────────────────────────────────────────────
+
     public double ThermalBudget { get; } = 0.72;
     public string ThermalBudgetPct => ((int)Math.Round(ThermalBudget * 100)).ToString() + "%";
     public string ThermalBelowLimit => (IttLimit - Itt).ToString() + "°C BELOW LIMIT";
 
-    // Route
+    // ── Route (hardcoded v1) ─────────────────────────────────────────────────
+
     public IReadOnlyList<RouteWaypoint> Route { get; } =
     [
         new("KAPA", "13:54Z", 0.00),
@@ -100,7 +186,8 @@ public sealed class InFlightViewModel : ObservableObject
     ];
     public double RouteProgress { get; } = 0.42;
 
-    // Events
+    // ── Events (hardcoded v1) ────────────────────────────────────────────────
+
     public int EventsCount => Events.Count;
 
     public IReadOnlyList<FlightEvent> Events { get; } =
@@ -114,12 +201,16 @@ public sealed class InFlightViewModel : ObservableObject
         new("15:02:55", "note",  "Same-power climb cost +18 fpm fuel for −12 fpm climb vs new-engine baseline"),
     ];
 
-    // Trends
-    public IReadOnlyList<double> IttTrend    { get; } = [612,634,656,672,684,698,712,706,694,688,684,682,684,685,686,684,683,685,686,685];
-    public IReadOnlyList<double> TorqueTrend { get; } = [880,1100,1320,1540,1700,1820,1865,1820,1690,1560,1480,1420,1410,1408,1410,1412,1410,1411,1410,1410];
-    public IReadOnlyList<double> OilTrend    { get; } = [13.2,13.0,12.8,12.6,12.5,12.3,12.1,12.0,11.9,11.8,11.7,11.6,11.5,11.5,11.4];
+    // ── Trends — rolling buffers (live ITT + Torque; OilTrend stubbed TODO) ──
 
-    // Pilot habits
+    public ObservableCollection<double> IttTrend    { get; }
+    public ObservableCollection<double> TorqueTrend { get; }
+
+    // TODO: aggregate to "qt at preflight per flight" per-session once session tracking lands.
+    public IReadOnlyList<double> OilTrend { get; } = [13.2,13.0,12.8,12.6,12.5,12.3,12.1,12.0,11.9,11.8,11.7,11.6,11.5,11.5,11.4];
+
+    // ── Pilot habits (hardcoded v1) ──────────────────────────────────────────
+
     public IReadOnlyList<HabitItem> Habits { get; } =
     [
         new("Hot starts",          "0",    "last 30 d",       "streak: 47 starts clean",                "good"),
@@ -132,7 +223,8 @@ public sealed class InFlightViewModel : ObservableObject
         new("Fuel sample interval","4.2",  "h since",         "auto-prompt at 10 h",                    "good"),
     ];
 
-    // Performance drift
+    // ── Performance drift (hardcoded v1) ─────────────────────────────────────
+
     public IReadOnlyList<DriftItem> Drift { get; } =
     [
         new("Climb rate · same TQ",   "712",  "850",  "fpm", "−16%",  "amber"),
@@ -141,7 +233,8 @@ public sealed class InFlightViewModel : ObservableObject
         new("Compressor efficiency",  "87.3", "92.0", "%",   "−4.7%", "amber"),
     ];
 
-    // Latent precursors
+    // ── Latent precursors (hardcoded v1) ─────────────────────────────────────
+
     public IReadOnlyList<PrecursorItem> Precursors { get; } =
     [
         new("Compressor fouling",  0.39, "NEW → FOULED",  "EFFICIENCY 87.3%"),
@@ -152,7 +245,8 @@ public sealed class InFlightViewModel : ObservableObject
         new("Strut packing wear",  0.28, "NEW → WEEPING", "last hard ldg 30 d ago"),
     ];
 
-    // Maintenance debt
+    // ── Maintenance debt (hardcoded v1) ──────────────────────────────────────
+
     public IReadOnlyList<MxDebtItem> MxDebt { get; } =
     [
         new("Compressor wash",    "OVERDUE", "efficiency loss accelerates", "amber"),
@@ -163,7 +257,8 @@ public sealed class InFlightViewModel : ObservableObject
         new("Vacuum filter",      "DEFERRED","MEL · until 2026-05-10",      "dim"),
     ];
 
-    // Post-flight projection
+    // ── Post-flight projection (hardcoded v1) ────────────────────────────────
+
     public IReadOnlyList<ProjectionItem> Projection { get; } =
     [
         new("Hot section life", "−1.4 h",  "incl. climb ITT 712°C peak",     "good"),
@@ -174,8 +269,9 @@ public sealed class InFlightViewModel : ObservableObject
         new("Cycles",           "+1",      "gear · pressurization n/a",      "good"),
     ];
 
-    // Live strip pairs
-    public IEnumerable<KeyValuePair<string,string>> LiveStripPairs
+    // ── Live strip pairs ─────────────────────────────────────────────────────
+
+    public IEnumerable<KeyValuePair<string, string>> LiveStripPairs
     {
         get
         {
@@ -189,5 +285,82 @@ public sealed class InFlightViewModel : ObservableObject
             yield return new("TQ",  TqDisplay);
             yield return new("FF",  FfDisplay);
         }
+    }
+
+    // ── Reactive subscription handlers ───────────────────────────────────────
+
+    private void OnSample(FlightTickSample s)
+    {
+        // Marshal to UI thread via dispatcher if needed.
+        // CommunityToolkit ObservableProperty setters are thread-safe for notification,
+        // but WPF binding engine expects changes on UI thread for collection updates.
+        // Simple properties update fine from any thread in WPF for scalar bindings.
+
+        Ias      = (int)Math.Round(s.IasKt);
+        Gs       = (int)Math.Round(s.GsKt);
+        Oat      = (int)Math.Round(s.OatC);
+        Vsi      = (int)Math.Round(s.VerticalSpeedFpm);
+        FuelFlow = (int)Math.Round(s.FuelFlowPph);
+        OilTemp  = (int)Math.Round(s.OilTempC);
+        OilPress = (int)Math.Round(s.OilPressurePsi);
+        Itt      = (int)Math.Round(s.IttC > 0 ? s.IttC : Itt); // keep last if -1
+        Torque   = (int)Math.Round(s.TorqueFtLb > 0 ? s.TorqueFtLb : Torque);
+
+        // Derive phase from flight state.
+        Phase = DerivePhase(s);
+
+        // Update rolling trend buffers.
+        PushTrend(_ittTrendQueue, IttTrend, (double)Itt);
+        PushTrend(_torqueTrendQueue, TorqueTrend, (double)Torque);
+    }
+
+    private void OnSampleError(Exception ex)
+    {
+        _log.LogError(ex, "InFlightViewModel: SampleStream error.");
+    }
+
+    private void OnStatus(SimStatus status)
+    {
+        if (status.State == SimConnectionState.Connected)
+            _log.LogDebug("InFlightViewModel: sim connected — live data active.");
+        else if (status.State == SimConnectionState.Offline)
+            _log.LogDebug("InFlightViewModel: sim offline — holding last values.");
+    }
+
+    private void OnStatusError(Exception ex)
+    {
+        _log.LogError(ex, "InFlightViewModel: StatusStream error.");
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private static string DerivePhase(FlightTickSample s)
+    {
+        if (s.OnGround && s.IasKt < 10) return "GROUND";
+        if (s.OnGround) return "TAXI";
+        if (!s.OnGround && s.VerticalSpeedFpm > 200) return "CLIMB";
+        if (!s.OnGround && s.VerticalSpeedFpm < -200) return "DESCENT";
+        return "CRUISE";
+    }
+
+    private static void PushTrend(Queue<double> queue, ObservableCollection<double> collection, double value)
+    {
+        queue.Enqueue(value);
+        if (queue.Count > TrendBufferSize)
+            queue.Dequeue();
+
+        // Sync ObservableCollection to queue contents.
+        // For performance, only append and trim rather than rebuilding.
+        collection.Add(value);
+        while (collection.Count > TrendBufferSize)
+            collection.RemoveAt(0);
+    }
+
+    // ── IDisposable ──────────────────────────────────────────────────────────
+
+    public void Dispose()
+    {
+        _sampleSub.Dispose();
+        _statusSub.Dispose();
     }
 }

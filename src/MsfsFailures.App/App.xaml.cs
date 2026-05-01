@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using MsfsFailures.App.Logging;
 using MsfsFailures.App.Services;
 using MsfsFailures.App.ViewModels;
+using MsfsFailures.Core.Failure;
+using MsfsFailures.Core.Wear;
 using MsfsFailures.Data;
 using MsfsFailures.Data.Seeding;
 using MsfsFailures.Sim;
@@ -47,7 +49,15 @@ public partial class App : Application
                 // MockFleetSource is kept as a fallback for design-time / --mock usage.
                 services.AddSingleton<IFleetSource, RepositoryFleetSource>();
                 services.AddSingleton<HomeViewModel>();
+                services.AddSingleton<InFlightViewModel>();
                 services.AddSingleton<MainWindow>();
+
+                // Core engines — pure functions, no I/O, safe as singletons.
+                services.AddSingleton<IWearEngine, WearEngine>();
+                services.AddSingleton<IFailureEngine>(_ => new FailureEngine(seed: 42));
+
+                // Background tick loop — drives WearEngine + FailureEngine from SampleStream.
+                services.AddHostedService<TickHost>();
 
                 // New layers
                 services.AddMsfsFailuresData(dbPath);   // from MsfsFailures.Data

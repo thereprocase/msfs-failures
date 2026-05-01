@@ -52,4 +52,134 @@ public sealed class FleetRepository : IFleetRepository
             .AsNoTracking()
             .ToListAsync(ct);
     }
+
+    // ── v1 tick-loop extensions ──────────────────────────────────────────────
+
+    public async Task<Airframe?> GetAirframeByTailAsync(string tail, CancellationToken ct = default)
+    {
+        return await _db.Airframes
+            .Include(a => a.ModelRef)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Tail == tail, ct);
+    }
+
+    public async Task<IReadOnlyList<Component>> GetComponentsForAirframeAsync(Guid airframeId, CancellationToken ct = default)
+    {
+        return await _db.Components
+            .Where(c => c.AirframeId == airframeId)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<ComponentTemplate>> GetTemplatesForModelAsync(Guid modelRefId, CancellationToken ct = default)
+    {
+        return await _db.ComponentTemplates
+            .Where(t => t.ModelRefId == modelRefId)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<FailureMode>> GetFailureModesForTemplatesAsync(
+        IReadOnlyList<Guid> templateIds, CancellationToken ct = default)
+    {
+        return await _db.FailureModes
+            .Where(f => templateIds.Contains(f.TemplateId))
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Accelerator>> GetAcceleratorsAsync(CancellationToken ct = default)
+    {
+        return await _db.Accelerators
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Consumable>> GetConsumablesForAirframeAsync(Guid airframeId, CancellationToken ct = default)
+    {
+        return await _db.Consumables
+            .Where(c => c.AirframeId == airframeId)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task ApplyTickResultAsync(
+        Guid airframeId,
+        double hobbsHoursDelta,
+        int cyclesDelta,
+        IReadOnlyDictionary<Guid, double> componentWear,
+        IReadOnlyDictionary<Guid, double> consumableLevels,
+        CancellationToken ct = default)
+    {
+        // Increment airframe cumulative counters
+        var airframe = await _db.Airframes.FindAsync([airframeId], ct);
+        if (airframe is not null)
+        {
+            airframe.TotalHobbsHours += hobbsHoursDelta;
+            airframe.TotalCycles     += cyclesDelta;
+        }
+
+        // Apply component wear deltas — clamp to [0..1]
+        if (componentWear.Count > 0)
+        {
+            var componentIds = componentWear.Keys.ToList();
+            var components = await _db.Components
+                .Where(c => componentIds.Contains(c.Id))
+                .ToListAsync(ct);
+            foreach (var component in components)
+            {
+                if (componentWear.TryGetValue(component.Id, out double delta))
+                    component.Wear = Math.Clamp(component.Wear + delta, 0.0, 1.0);
+            }
+        }
+
+        // Apply consumable level deltas — clamp to [0..1]
+        if (consumableLevels.Count > 0)
+        {
+            var consumableIds = consumableLevels.Keys.ToList();
+            var consumables = await _db.Consumables
+                .Where(c => consumableIds.Contains(c.Id))
+                .ToListAsync(ct);
+            foreach (var consumable in consumables)
+            {
+                if (consumableLevels.TryGetValue(consumable.Id, out double delta))
+                    consumable.Level = Math.Clamp(consumable.Level + delta, 0.0, 1.0);
+            }
+        }
+
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task<Session> StartSessionAsync(Guid airframeId, double hobbsAtStart, CancellationToken ct = default)
+    {
+        var session = new Session
+        {
+            Id               = Guid.NewGuid(),
+            AirframeId       = airframeId,
+            StartedAt        = DateTimeOffset.UtcNow,
+            EndedAt          = null,
+            HobbsStart       = hobbsAtStart,
+            HobbsEnd         = null,
+            MaxG             = 1.0,
+            HardLandings     = 0,
+            OvertempEventsJson = "[]",
+        };
+        _db.Sessions.Add(session);
+        await _db.SaveChangesAsync(ct);
+        return session;
+    }
+
+    public async Task EndSessionAsync(
+        Guid sessionId, double hobbsAtEnd, double maxG, int hardLandings, CancellationToken ct = default)
+    {
+        var session = await _db.Sessions.FindAsync([sessionId], ct);
+        if (session is null) return;
+
+        session.EndedAt      = DateTimeOffset.UtcNow;
+        session.HobbsEnd     = hobbsAtEnd;
+        session.MaxG         = maxG;
+        session.HardLandings = hardLandings;
+
+        await _db.SaveChangesAsync(ct);
+    }
 }

@@ -9,9 +9,10 @@ public sealed partial class HomeViewModel : ObservableObject
 {
     private readonly IFleetSource _fleet;
 
-    public HomeViewModel(IFleetSource fleet)
+    public HomeViewModel(IFleetSource fleet, InFlightViewModel inFlight)
     {
         _fleet = fleet;
+        InFlight = inFlight;
         Airframes = new ObservableCollection<AirframeVm>(_fleet.GetAirframes());
         Squawks = new ObservableCollection<SquawkVm>(_fleet.GetSquawks());
         SelectedAirframe = Airframes.FirstOrDefault(a => a.Tail == "N350KA") ?? Airframes.First();
@@ -52,7 +53,7 @@ public sealed partial class HomeViewModel : ObservableObject
     public bool IsBindings    => ActiveTab == HomeTab.Bindings;
     public bool IsLog         => ActiveTab == HomeTab.Log;
 
-    public InFlightViewModel InFlight { get; } = new();
+    public InFlightViewModel InFlight { get; }
 
     public AirframeVm? LiveAircraft => Airframes.FirstOrDefault(a => a.Live);
     public bool LiveStripVisible => SimOk && LiveAircraft != null;
