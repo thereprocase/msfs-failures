@@ -1,0 +1,1274 @@
+{
+  "couplings": [
+    {
+      "id": "ring_blowby_to_oil_consumption",
+      "from": "ring_set_cyl*",
+      "to": "oil_sump",
+      "kind": "consumes",
+      "transferFunction": "ratio",
+      "params": { "baseConsumption_gph": 0.01, "ringWearToBlowbyFactor": 2.5 },
+      "notes": "Worn piston rings increase blowby; crankcase overpressure forces oil past worn seals into breather."
+    },
+    {
+      "id": "oil_consumption_to_low_level",
+      "from": "oil_sump",
+      "to": "oil_level_dipstick",
+      "kind": "triggers",
+      "transferFunction": "linear",
+      "params": { "depletionRate_qthPerHour": 0.015 },
+      "notes": "Oil consumption reduces sump capacity; low level activates annunciator and starves bearings."
+    },
+    {
+      "id": "low_oil_to_bearing_starvation",
+      "from": "oil_level_dipstick",
+      "to": "bearing_journal_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "threshold",
+      "params": { "criticalLevel_qt": 4.5, "starvationRate_microns_per_hour": 15 },
+      "notes": "Below safe oil level, main bearings suffer film breakdown and scoring accelerates."
+    },
+    {
+      "id": "bearing_scoring_to_oil_pressure_drop",
+      "from": "bearing_journal_cyl*",
+      "to": "oil_pressure_gauge",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "scoringOnset_microns": 100, "maxPressureLoss_psi": 25 },
+      "notes": "Scored bearing journals increase clearance; oil pump must work harder to maintain pressure."
+    },
+    {
+      "id": "ring_wear_to_blow_by",
+      "from": "ring_set_cyl*",
+      "to": "crankcase_pressure",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "wearOnset_microns": 50, "maxPressureIncrease_inH2O": 3.5 },
+      "notes": "Increased ring-to-bore gap allows combustion gas bleed; crankcase pressure rises during power."
+    },
+    {
+      "id": "blow_by_pressure_to_seal_load",
+      "from": "crankcase_pressure",
+      "to": "seal_main_crankshaft",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "pressureFactor": 1.0 },
+      "notes": "Elevated crankcase overpressure forces oil past crankshaft seals faster."
+    },
+    {
+      "id": "oil_temp_to_viscosity",
+      "from": "oil_temperature_sensor",
+      "to": "oil_viscosity_estimate",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "coldVis_cSt": 80, "hotVis_cSt": 8, "refTemp_c": 100 },
+      "notes": "Oil viscosity drops nonlinearly with temperature; cold oil resists flow, hot oil films thin."
+    },
+    {
+      "id": "high_oil_temp_to_oxidation",
+      "from": "oil_temperature_sensor",
+      "to": "oil_acid_number",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "baseOxidationRate_perHour": 0.001, "tempOnset_c": 85, "tempFactor": 1.5 },
+      "notes": "Sustained oil temperature above 210F accelerates oxidation; acid buildup corrodes bearing journals."
+    },
+    {
+      "id": "acid_number_to_corrosion",
+      "from": "oil_acid_number",
+      "to": "bearing_journal_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "corrosionRate_microns_per_hour": 0.5 },
+      "notes": "High TAN (acid number) causes etching corrosion on hard bearing surfaces."
+    },
+    {
+      "id": "power_pct_to_cht",
+      "from": "power_pct",
+      "to": "cht_cyl*",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "idleTemp_c": 250, "redlineTemp_c": 400, "powerThreshold": 0.6 },
+      "notes": "Cylinder head temperature rises nonlinearly with power; higher power = faster combustion and wall heating."
+    },
+    {
+      "id": "shock_cooling_to_valve_stress",
+      "from": "shock_cooling_rate",
+      "to": "valve_stem_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "logistic",
+      "params": { "rateOnset_c_per_minute": 15, "stressMultiplier": 3.0 },
+      "notes": "Rapid CHT drop after high-power flight thermally stresses exhaust valves; stress cracks initiate at guide interface."
+    },
+    {
+      "id": "lean_of_peak_to_cht",
+      "from": "ego_offset_from_peak",
+      "to": "cht_cyl*",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "leanOnset_deg": -5, "chtIncrease": 50 },
+      "notes": "Leaning mixture past peak EGT increases peak cylinder temperature and narrows thermal margin to detonation."
+    },
+    {
+      "id": "over_lean_to_detonation",
+      "from": "ego_offset_from_peak",
+      "to": "combustion_detonation_event",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "triggerThreshold_deg": -10 },
+      "notes": "Excessively lean mixture promotes autoignition after flame front; shock waves damage pistons and rings."
+    },
+    {
+      "id": "detonation_to_piston_scoring",
+      "from": "combustion_detonation_event",
+      "to": "piston_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "damagePerDetonation_microns": 25 },
+      "notes": "Detonation shock loads etch crown and can crack skirt; repeated episodes cause catastrophic failure."
+    },
+    {
+      "id": "high_power_sustained_to_valve_thermal_load",
+      "from": "valve_thermal_load",
+      "to": "valve_exhaust_cyl*",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "thermalStressPerHour": 0.5 },
+      "notes": "Sustained high-power operation thermally cycles exhaust valves; creep and fatigue reduce margin to burnthrough."
+    },
+    {
+      "id": "valve_burnthrough_to_loss_of_compression",
+      "from": "valve_exhaust_cyl*",
+      "to": "compression_ratio_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "threshold",
+      "params": { "burnOnset_mm": 0.5 },
+      "notes": "Burned or warped exhaust valve seated improperly; hot gas escapes during compression, power and efficiency drop."
+    },
+    {
+      "id": "compression_loss_to_rough_idle",
+      "from": "compression_ratio_cyl*",
+      "to": "idle_roughness_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "compressionDropPct": 15 },
+      "notes": "Cylinder with >15pct compression loss misses in idle range; rough running and mag-check drop flag compression loss."
+    },
+    {
+      "id": "ring_blowby_to_mag_fouling",
+      "from": "crankcase_pressure",
+      "to": "spark_plug_fouling_flag",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "pressureOnset_inH2O": 2.0, "foulingRate_per_hour": 0.05 },
+      "notes": "Elevated crankcase pressure blows oil mist past rings onto spark plug electrodes; fouling increases mag-check drop."
+    },
+    {
+      "id": "valve_guide_wear_to_oil_consumption",
+      "from": "valve_guide_cyl*",
+      "to": "oil_sump",
+      "kind": "consumes",
+      "transferFunction": "logistic",
+      "params": { "wearOnset_microns": 50, "baseConsumption_gph": 0.005, "wearFactor": 1.8 },
+      "notes": "Worn intake valve guides leak oil past valve stem into combustion chamber; contributes to oil burn and plug fouling."
+    },
+    {
+      "id": "cht_spike_to_piston_expansion",
+      "from": "piston_thermal_cycle",
+      "to": "piston_cyl*",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "cycleOnset_c": 50, "stressMultiplier": 2.0 },
+      "notes": "Rapid CHT excursions from lean/hot to rich/cool thermally stress piston; micro-cracking initiates in stress concentrators."
+    },
+    {
+      "id": "mag_timing_drift_to_ignition_delay",
+      "from": "mag_timing_drift_proxy",
+      "to": "mag_left_points_gap",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "driftThreshold_deg": 3 },
+      "notes": "Timing drift >3 deg retards spark; combustion deteriorates, roughness increases, power loss becomes noticeable."
+    },
+    {
+      "id": "touchdown_energy_to_oleo_fatigue",
+      "from": "touchdown_energy",
+      "to": "oleo_seal_nose",
+      "kind": "induces_failure",
+      "transferFunction": "logistic",
+      "params": { "energyOnset_ft_lbf": 1200, "fatigueRatePerCycle": 0.2 },
+      "notes": "Hard landings compress oleo shafts beyond design envelope; seal wiper edges fray and extrude; leak path opens."
+    },
+    {
+      "id": "oleo_fluid_loss_to_landing_attitude",
+      "from": "oleo_seal_nose",
+      "to": "landing_gear_compression",
+      "kind": "masks",
+      "transferFunction": "linear",
+      "params": { "fluidLossPercentToCompression": 0.8 },
+      "notes": "Oleo fluid loss reduces shock absorption; subsequent landings transfer more energy to airframe."
+    },
+    {
+      "id": "hard_landing_to_wheel_damage",
+      "from": "hard_landing_event",
+      "to": "tire_tread_mains",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "damagePerHardLanding_microns": 150 },
+      "notes": "High-impact landing loads sidewalls and tread asymmetrically; flat spotting and delamination initiate."
+    },
+    {
+      "id": "braking_energy_to_fade",
+      "from": "brake_thermal_pulse",
+      "to": "brake_pad_lining_left",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "thermalOnset_f": 400, "fadePerHour": 0.8 },
+      "notes": "Sustained high-energy braking raises disk temperature; friction coefficient drops (fade), stopping distance increases."
+    },
+    {
+      "id": "brake_fade_to_runway_overrun",
+      "from": "brake_pad_lining_left",
+      "to": "landing_abort_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "fricCoeffDropPct": 30 },
+      "notes": "Brake fade >30pct reduces stopping power; pilot may overrun runway on short-field landing."
+    },
+    {
+      "id": "crosswind_side_load_to_tire_stress",
+      "from": "crosswind_side_load",
+      "to": "tire_sidewall_mains",
+      "kind": "induces_failure",
+      "transferFunction": "logistic",
+      "params": { "loadOnset_lbf": 500, "stressMultiplier": 2.5 },
+      "notes": "Sideways force at touchdown flexes tire sidewall; thermal stress and abrasion accelerate cracking and chunking."
+    },
+    {
+      "id": "flat_spotted_tire_to_vibration",
+      "from": "tire_tread_mains",
+      "to": "landing_gear_vibration",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "flatSpotMicrons": 500 },
+      "notes": "Flat-spotted tire creates once-per-rotation imbalance; landing gear mounts and fuselage resonate; fasteners loosen."
+    },
+    {
+      "id": "wheel_landing_first_to_oleo_shock",
+      "from": "wheel_landing_event",
+      "to": "oleo_seal_nose",
+      "kind": "induces_failure",
+      "transferFunction": "threshold",
+      "params": { "impactThreshold_g": 1.5 },
+      "notes": "Mains-first landing is nominal; oleo absorbs load within design. Nose-wheel or tail-first landing bypasses oleo."
+    },
+    {
+      "id": "tail_first_landing_to_fuselage_damage",
+      "from": "tail_first_landing_event",
+      "to": "fuselage_skin_aft",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "damagePerTailLanding_microns": 300 },
+      "notes": "Tail-wheel strike loads aft fuselage; skin crumples, longerons may yield, structural integrity compromised."
+    },
+    {
+      "id": "landing_bounce_to_gear_shock",
+      "from": "bounced_landing_event",
+      "to": "landing_gear_compression",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "bounceLoadFactor": 1.8 },
+      "notes": "Bounced landing unloads then reloads gear at higher velocity; second impact energy can exceed design limit."
+    },
+    {
+      "id": "humid_parked_to_corrosion",
+      "from": "corrosion_index",
+      "to": "magnesium_fastener_cyl*",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "corrosionRate_microns_per_day": 1.2, "humidityThreshold_rh": 0.65 },
+      "notes": "Magnesium engine fasteners corrode in humid salt-air environment; white oxide buildup reduces joint preload."
+    },
+    {
+      "id": "fastener_corrosion_to_vibration_loosening",
+      "from": "magnesium_fastener_cyl*",
+      "to": "cylinder_base_stud_preload",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "corrosionDepthPct": 20 },
+      "notes": "Corroded fastener loses preload during vibration; base studs back out, cylinder head gasket lifts, compression loss."
+    },
+    {
+      "id": "alternator_load_to_brush_wear",
+      "from": "alternator_load_factor",
+      "to": "alt_brush_length",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "wearRate_mm_per_hour": 0.0015 },
+      "notes": "Higher sustained alternator load (heavy electrical draw) increases brush-to-commutator friction; brush wear accelerates."
+    },
+    {
+      "id": "low_brush_height_to_charging_dropout",
+      "from": "alt_brush_length",
+      "to": "alternator_voltage_regulation",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "criticalLength_mm": 3 },
+      "notes": "When brush length falls below 3 mm, electrical contact becomes intermittent; voltage regulator output drops."
+    },
+    {
+      "id": "battery_deep_discharge_to_sulfation",
+      "from": "deep_discharge_event",
+      "to": "battery_internal_resistance",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "resistanceIncrease_mohm": 50 },
+      "notes": "Discharging battery below 10.5V for >30 min causes lead-sulfate crystals to harden; resistance rises, capacity falls."
+    },
+    {
+      "id": "battery_resistance_to_start_torque_loss",
+      "from": "battery_internal_resistance",
+      "to": "starter_motor_cranking_torque",
+      "kind": "consumes",
+      "transferFunction": "logistic",
+      "params": { "resistanceOnset_mohm": 200, "torqueLoss_ftlbf": 15 },
+      "notes": "High battery resistance during cold start limits current to starter; cranking torque drops, start speed inadequate."
+    },
+    {
+      "id": "inadequate_start_speed_to_fuel_flood",
+      "from": "starter_motor_cranking_torque",
+      "to": "fuel_flooding_start_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "speedThreshold_rpm": 400 },
+      "notes": "If cranking speed <400 rpm, fuel injection quantity overwhelms combustion; fuel floods cylinders, hard-start."
+    },
+    {
+      "id": "bus_voltage_dip_to_avionics_dropout",
+      "from": "bus_voltage_dip",
+      "to": "avionics_power_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "minimumVoltage": 20 },
+      "notes": "Bus voltage below 20V for >100ms causes avionics reboot; glass-panel flights lose situational awareness."
+    },
+    {
+      "id": "ahrs_g_load_to_gyro_drift",
+      "from": "ahrs_dynamic_load",
+      "to": "ahrs_gyro_bias_estimate",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "gLoadOnset": 1.5, "driftRatePerG_deg_per_hour": 0.5 },
+      "notes": "AHRS gyros experience g-sensitivity; high-g maneuvering or turbulence increases gyro bias; attitude error accumulates."
+    },
+    {
+      "id": "pitot_thermal_cycle_to_heater_fatigue",
+      "from": "pitot_thermal_cycle",
+      "to": "pitot_heating_element",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "thermalCyclesPerHour": 4, "fatigueRatePerCycle": 0.08 },
+      "notes": "Rapid on/off heating cycles in icing conditions thermally stress element leads; resistance increases, heating output fades."
+    },
+    {
+      "id": "pitot_heater_loss_to_icing_risk",
+      "from": "pitot_heating_element",
+      "to": "pitot_blockage_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "heaterFailureVoltage": 22 },
+      "notes": "Failed pitot heater leaves probe vulnerable to ice; static pressure error propagates to altimeter and VSI."
+    },
+    {
+      "id": "moisture_ingestion_to_corrosion",
+      "from": "fuel_water_ingestion_flag",
+      "to": "fuel_system_corrosion",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "corrosionRate_microns_per_day": 2.5 },
+      "notes": "Groundwater in fuel tank accelerates steel tank corrosion; rust particles clog injectors and fuel servo."
+    },
+    {
+      "id": "fuel_system_rust_to_injector_clogging",
+      "from": "fuel_system_corrosion",
+      "to": "fuel_injector_nozzle_clogging_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "corrosionDepthMils": 10 },
+      "notes": "Rust particles and corrosion byproducts lodge in fuel servo inlet screen and injector nozzles; flow restriction."
+    },
+    {
+      "id": "vacuum_loss_to_attitude_error",
+      "from": "vacuum_loss_event",
+      "to": "attitude_indicator_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "vacuumThreshold_inH2O": 4.5 },
+      "notes": "Vacuum system failure below 4.5 in H2O prevents gyro spin-up; attitude indicator tumbles."
+    },
+    {
+      "id": "static_port_blockage_to_altitude_error",
+      "from": "static_block_suspect_event",
+      "to": "static_port_blockage_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "pressureErrorInches": 200 },
+      "notes": "Insect nest or ice in static port introduces fixed pressure offset; altimeter and VSI errors grow with flight profile change."
+    },
+    {
+      "id": "mag_check_drop_to_electrode_gap_increase",
+      "from": "mag_check_drop_excess_event",
+      "to": "spark_plug_electrode_gap",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "gapIncreasePerHour_thou": 0.2 },
+      "notes": "Spark plug gap erodes during high-power operation and shock-cooling; gap exceeds ignition energy budget, misfire risk."
+    },
+    {
+      "id": "misfire_to_uneven_firing",
+      "from": "spark_plug_electrode_gap",
+      "to": "power_pct_cyl*",
+      "kind": "consumes",
+      "transferFunction": "threshold",
+      "params": { "gapThreshold_thou": 35, "powerLossPct": 15 },
+      "notes": "Misfiring cylinder loses power; rough running, increased fuel consumption, uneven mag-check drop."
+    },
+    {
+      "id": "master_off_under_load_to_battery_discharge",
+      "from": "master_off_with_load_event",
+      "to": "battery_state_of_charge",
+      "kind": "consumes",
+      "transferFunction": "linear",
+      "params": { "dischargeRate_amps": 50 },
+      "notes": "Master switch off but electrical load remains (strobes, avionics); battery discharges rapidly, internal resistance rises."
+    },
+    {
+      "id": "sustained_high_fuel_flow_to_economy",
+      "from": "over_rich_long_idle_event",
+      "to": "engine_economy_ratio",
+      "kind": "consumes",
+      "transferFunction": "linear",
+      "params": { "fuelWastePerHour_gph": 3.5 },
+      "notes": "Over-rich mixture at low power increases fuel burn by 35-40%; combustion products condense on cylinder walls."
+    },
+    {
+      "id": "condensed_fuel_to_oil_dilution",
+      "from": "over_rich_long_idle_event",
+      "to": "oil_sump",
+      "kind": "consumes",
+      "transferFunction": "linear",
+      "params": { "dilutionRate_percent_per_hour": 0.8 },
+      "notes": "Unburned fuel condenses in crankcase, mixes with oil, reducing viscosity and film strength."
+    },
+    {
+      "id": "oil_dilution_to_bearing_film_collapse",
+      "from": "oil_sump",
+      "to": "bearing_journal_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "threshold",
+      "params": { "dilutionPct": 8 },
+      "notes": "Oil dilution >8pct reduces viscosity below bearing design threshold; hydrodynamic film collapses, scoring initiates."
+    },
+    {
+      "id": "prop_strike_proxy_to_crankshaft_bend",
+      "from": "prop_strike_proxy_event",
+      "to": "crankshaft_runout_estimate",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "bendPerStrike_mils": 2 },
+      "notes": "Propeller contact with ground imparts bending moment to crankshaft; runout increases, vibration and bearing loads rise."
+    },
+    {
+      "id": "crankshaft_runout_to_vibration",
+      "from": "crankshaft_runout_estimate",
+      "to": "engine_vibration_level",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "runoutOnset_mils": 5, "vibrationMultiplier": 3 },
+      "notes": "Crank runout >5 mils generates harmonic vibration; engine mounts and airframe fasteners resonate, fatigue loads increase."
+    },
+    {
+      "id": "engine_vibration_to_alternator_brush_bounce",
+      "from": "engine_vibration_level",
+      "to": "alt_brush_length",
+      "kind": "amplifies",
+      "transferFunction": "linear",
+      "params": { "vibrationAccelerationFactor": 1.5 },
+      "notes": "Excessive engine vibration causes alternator brush to bounce on commutator; arcing and accelerated wear."
+    },
+    {
+      "id": "high_density_altitude_to_power_loss",
+      "from": "density_altitude",
+      "to": "power_pct",
+      "kind": "consumes",
+      "transferFunction": "linear",
+      "params": { "powerLossPct_per_1000da": 3.5 },
+      "notes": "Density altitude >5000 ft reduces available power 15-20%; climb performance marginal, hot-weather takeoff margin eroded."
+    },
+    {
+      "id": "sustained_high_power_to_ring_wear",
+      "from": "power_pct",
+      "to": "ring_set_cyl*",
+      "kind": "amplifies",
+      "transferFunction": "logistic",
+      "params": { "powerThreshold": 0.75, "wearRate_microns_per_hour": 12 },
+      "notes": "Sustained high-power operation increases combustion temperatures and blowby; ring-to-bore contact forces and wear rate rise."
+    },
+    {
+      "id": "rpm_over_redline_to_rod_stress",
+      "from": "over_speed_vno_event",
+      "to": "connecting_rod_cyl*",
+      "kind": "induces_failure",
+      "transferFunction": "logistic",
+      "params": { "rpmOverRedline": 200, "stressFactor": 4 },
+      "notes": "Overspeed by 200+ rpm produces inertial forces on rod; fatigue cracks can initiate at fillet radii."
+    },
+    {
+      "id": "g_excursion_positive_to_engine_mount_stress",
+      "from": "g_excursion_positive_event",
+      "to": "engine_mount_rubber",
+      "kind": "induces_failure",
+      "transferFunction": "logistic",
+      "params": { "gLoadOnset": 3.0, "stressPerG": 50 },
+      "notes": "Positive g-loading >3G compresses engine mounts; rubber compound degrades, stiffness increases, vibration transmission worsens."
+    },
+    {
+      "id": "negative_g_to_carburetor_float_bowl_slosh",
+      "from": "g_excursion_negative_event",
+      "to": "fuel_starvation_flag",
+      "kind": "triggers",
+      "transferFunction": "threshold",
+      "params": { "negativeGThreshold": -1.5 },
+      "notes": "Negative g-maneuver sloshes fuel away from carburetor outlet; engine stumbles or quits if inverted >2 seconds."
+    },
+    {
+      "id": "over_speed_vfe_to_aileron_binding",
+      "from": "over_speed_vfe_event",
+      "to": "aileron_skin_dimple",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "damagePerOverspeedEvent": 50 },
+      "notes": "VFE overspeed produces flutter loads; aileron skin can dimple or wrinkle; flutter risk and control feel deteriorate."
+    },
+    {
+      "id": "taxi_with_brakes_pegged_to_thermal_shock",
+      "from": "parking_brake_set_at_taxi_event",
+      "to": "brake_pad_lining_left",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "damagePerEvent": 100 },
+      "notes": "Taxiing with parking brake applied generates sustained friction, rapid heating, and pad/disk wear."
+    },
+    {
+      "id": "sharp_taxi_turn_to_tire_scuff",
+      "from": "taxi_turn_sharp_event",
+      "to": "tire_tread_mains",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "scuffPerTurn_microns": 50 },
+      "notes": "Tight turn at taxi speed scrubs tire sidewall across tarmac; rubber ablates, tread lip separates."
+    },
+    {
+      "id": "rudder_pegged_turn_to_tire_overload",
+      "from": "taxi_with_rudder_pegged_event",
+      "to": "tire_sidewall_mains",
+      "kind": "induces_failure",
+      "transferFunction": "linear",
+      "params": { "sidewallStressPerEvent": 80 },
+      "notes": "Sustained rudder pedal at taxi speed overloads tire sidewall; flexing and heat buildup accelerates cracking."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "power_pct",
+      "name": "Power Percentage",
+      "inputs": ["engine_rpm", "manifold_pressure_inHg"],
+      "output": "power_pct",
+      "outputUnit": "percent",
+      "computation": "Estimate engine shaft power as fraction of rated. Compute effective altitude from manifold pressure and OAT; read (RPM, MP) against cruise power chart (65 hp at 2700 rpm, 23.5 inHg sea-level). Interpolate bilinearly. Redline power ~80 hp at 2700 rpm. Clamp to 0-100.",
+      "tier": "fast",
+      "stateful": false,
+      "stateWindowSeconds": 0,
+      "notes": "Used as multiplier for thermal loads and wear rates throughout engine."
+    },
+    {
+      "id": "density_altitude",
+      "name": "Density Altitude",
+      "inputs": ["oat_celsius", "pressure_altitude_ft"],
+      "output": "density_altitude_ft",
+      "outputUnit": "feet",
+      "computation": "DA = PA + 120 * (OAT - ISA_temp_at_PA). ISA lapse rate 2C per 1000 ft. At sea level ISA = 15C. Example: PA 0 ft, OAT 30C => DA = 0 + 120 * (30 - 15) = 1800 ft.",
+      "tier": "fast",
+      "stateful": false,
+      "stateWindowSeconds": 0,
+      "notes": "Inputs to power loss and climb performance calculations."
+    },
+    {
+      "id": "shock_cooling_rate",
+      "name": "Shock Cooling Rate",
+      "inputs": ["cht_cyl1", "cht_cyl2", "cht_cyl3", "cht_cyl4", "power_pct"],
+      "output": "shock_cooling_rate_c_per_min",
+      "outputUnit": "Celsius/minute",
+      "computation": "On power reduction, measure max-to-min CHT drop over 30-second window. Rate = (CHT_max_before - CHT_min_after) / 0.5 min. Detect edge: power_pct drops from >70 to <30 within 10 seconds. During transition, accumulate instantaneous rate. Emit peak rate.",
+      "tier": "event",
+      "stateful": true,
+      "stateWindowSeconds": 60,
+      "notes": "Shock cooling stress event on exhaust valve stems."
+    },
+    {
+      "id": "touchdown_energy",
+      "name": "Touchdown Energy",
+      "inputs": ["vertical_speed_fpm_at_touchdown", "gross_weight_lbs"],
+      "output": "touchdown_energy_ft_lbf",
+      "outputUnit": "foot-pounds",
+      "computation": "E = 0.5 * m * v^2. m in slugs = weight_lbs / 32.174. v in ft/s = v_fpm / 60. Capture v_fpm when touchdown detected (ground contact + airspeed >30 kt). Store peak energy over landing sequence (touchpoint to rollout).",
+      "tier": "event",
+      "stateful": true,
+      "stateWindowSeconds": 30,
+      "notes": "Oleo compression fatigue and wheel damage."
+    },
+    {
+      "id": "braking_energy",
+      "name": "Braking Energy",
+      "inputs": ["brake_pressure_psi_left", "brake_pressure_psi_right", "groundspeed_kt"],
+      "output": "brake_thermal_pulse_btus",
+      "outputUnit": "BTU",
+      "computation": "Power = (brake_psi_left + brake_psi_right) * airflow_constant * airspeed^2. Integrate power over 60-second window after touchdown. Emit peak integral as pulse energy. Constant ~0.08 for disk area and fluid stiffness.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 60,
+      "notes": "Brake fade model relies on accumulated thermal energy per landing."
+    },
+    {
+      "id": "start_kind",
+      "name": "Start Classification",
+      "inputs": ["starter_engaged", "oil_temp_c", "outside_air_temp_c", "rpm_peak"],
+      "output": "start_classification",
+      "outputUnit": "enum: cold_start, warm_start, hot_start, flooded_start",
+      "computation": "Cold: OAT <5C and oil_temp <40C. Warm: 5<=OAT<25 and 40<=oil_temp<60. Hot: oil_temp >=60. Flooded: rpm_peak <400 within 10 sec of starter engagement (insufficient combustion speed). Use simple if-then-else tree.",
+      "tier": "event",
+      "stateful": false,
+      "stateWindowSeconds": 0,
+      "notes": "Categorizes start stress on fuel system, battery, and starter."
+    },
+    {
+      "id": "discharge_cycle",
+      "name": "Battery Discharge Event",
+      "inputs": ["battery_voltage", "battery_current_amps"],
+      "output": "discharge_cycle_flag",
+      "outputUnit": "bool",
+      "computation": "Detect falling edge: voltage drops below 10.5V for >30 minutes during flight. Set flag once, hold for 1 flight. Clear on next engine shutdown with bus_voltage >24V. Track cumulative count of discharge cycles.",
+      "tier": "event",
+      "stateful": true,
+      "stateWindowSeconds": 1800,
+      "notes": "Deep discharge triggers battery sulfation model."
+    },
+    {
+      "id": "oil_burn_basic",
+      "name": "Oil Consumption Estimate",
+      "inputs": ["power_pct", "oil_temp_c", "ring_blowby_proxy"],
+      "output": "oil_gph",
+      "outputUnit": "gallons/hour",
+      "computation": "Base 0.01 gph at idle. Add power term: 0.002 * power_pct. Add temp term (Arrhenius): 0.005 * exp(0.03 * (oil_temp - 100)). Add blowby term: 0.8 * ring_blowby_proxy. Sum all terms.",
+      "tier": "slow",
+      "stateful": false,
+      "stateWindowSeconds": 0,
+      "notes": "Drives oil sump depletion and bearing starvation model."
+    },
+    {
+      "id": "bsfc_estimate",
+      "name": "Brake-Specific Fuel Consumption",
+      "inputs": ["power_pct", "fuel_flow_gph", "manifold_pressure_inHg"],
+      "output": "bsfc_lbs_per_hp_hr",
+      "outputUnit": "lbs/(hp·hr)",
+      "computation": "BSFC = fuel_flow_gph * 6.7 (gal to lbs) / (power_hp). Estimate power from power_pct and 80 hp redline. Typical range 0.35–0.55. Leaner mixtures reduce BSFC; rich mixtures increase it.",
+      "tier": "fast",
+      "stateful": false,
+      "stateWindowSeconds": 0,
+      "notes": "Proxy for combustion efficiency and mixture quality."
+    },
+    {
+      "id": "ego_offset_from_peak",
+      "name": "EGO Offset from Peak",
+      "inputs": ["egt_cyl1", "egt_cyl2", "egt_cyl3", "egt_cyl4", "fuel_mixture_knob_pos"],
+      "output": "ego_offset_deg_f",
+      "outputUnit": "degrees F",
+      "computation": "Peak EGT is mixture-dependent; occurs ~50F rich of stoichiometric. Estimate peak from knob position and power setting (chart lookup). Measure live avg EGT. Offset = peak_egt_estimate - live_egt_avg. Negative offset = lean of peak (risk of detonation). Debounce to 10-sec window.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 10,
+      "notes": "Lean-of-peak indication for thermal stress and detonation risk."
+    },
+    {
+      "id": "valve_thermal_load",
+      "name": "Valve Thermal Load Accumulator",
+      "inputs": ["cht_cyl*", "power_pct", "engine_runtime_hours"],
+      "output": "valve_thermal_load_index",
+      "outputUnit": "dimensionless",
+      "computation": "Accumulate whenever power_pct > 70 and CHT > 350F. Increment = (CHT - 350) / 50 * dt_hours. Thermal load index is cumulative sum over engine life. Periodically (every inspection) reset if valve service completed.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 0,
+      "notes": "Exhaust valve creep and burnthrough model."
+    },
+    {
+      "id": "piston_thermal_cycle",
+      "name": "Piston Thermal Cycling Stress",
+      "inputs": ["cht_cyl*", "power_pct"],
+      "output": "thermal_cycle_amplitude_c",
+      "outputUnit": "Celsius",
+      "computation": "Track max and min CHT during each power change cycle (climb to cruise, cruise to descent, descent to idle). Amplitude = max_cht - min_cht. Cycle count increments when power changes >30 pct. Emit as rolling 10-cycle average.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 0,
+      "notes": "Piston stress from rapid thermal cycling."
+    },
+    {
+      "id": "ring_blowby_proxy",
+      "name": "Ring Blowby Proxy",
+      "inputs": ["oil_temp_c", "oil_pressure_psi"],
+      "output": "ring_blowby_proxy",
+      "outputUnit": "dimensionless",
+      "computation": "During power changes, measure oil pressure droop (drop from baseline). Droop correlates to increased crankcase venting. Proxy = 1.0 + (baseline_psi - current_psi) / 10. Baseline 50 psi at cruise. Cap to [1.0, 5.0]. Also correlates oil temp rise during climb.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 30,
+      "notes": "Oil consumption multiplier; also feeds spark plug fouling model."
+    },
+    {
+      "id": "mag_timing_drift_proxy",
+      "name": "Mag Timing Drift Indicator",
+      "inputs": ["mag_drop_left_rpm", "mag_drop_right_rpm", "engine_runtime_hours"],
+      "output": "timing_drift_estimate_deg",
+      "outputUnit": "degrees",
+      "computation": "Timing drift correlates to mag point wear and gap increase. Estimate from mag drop differential: if right mag drop > left by >100 rpm, assume right mag drifting retard. Proxy = mag_drop_delta / 100 * 2 degrees. Clamp to ±5 degrees.",
+      "tier": "event",
+      "stateful": true,
+      "stateWindowSeconds": 0,
+      "notes": "Ignition timing variation drives power loss and rough running."
+    },
+    {
+      "id": "fuel_water_ingestion",
+      "name": "Fuel Water Ingestion Flag",
+      "inputs": ["rain_detected_flag", "fuel_sump_screen_clogging_count", "outside_humidity_pct", "parked_outdoors_days"],
+      "output": "water_ingestion_risk_flag",
+      "outputUnit": "bool",
+      "computation": "Flag if (rain_detected AND sump_screen_clogs >0 during this flight) OR (humidity >80 pct AND parked_outdoors_days >2 without fuel check). Reset after fuel sump drain and inspection.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 0,
+      "notes": "Fuel system corrosion and injector clogging model."
+    },
+    {
+      "id": "corrosion_index",
+      "name": "Environmental Corrosion Index",
+      "inputs": ["outside_humidity_pct", "outside_air_temp_c", "parked_outdoors_flag", "days_parked"],
+      "output": "corrosion_index_score",
+      "outputUnit": "dimensionless",
+      "computation": "Score = humidity_pct * (1 + temp_c / 100) * parked_multiplier * sqrt(days_parked + 1). Parked multiplier 2.0 if outdoors, 0.2 if hangar. Emit daily. Resets on aircraft wash or engine dehumidification.",
+      "tier": "slow",
+      "stateful": true,
+      "stateWindowSeconds": 0,
+      "notes": "Magnesium fastener and steel tank corrosion accumulator."
+    },
+    {
+      "id": "alternator_load_factor",
+      "name": "Alternator Load Factor",
+      "inputs": ["battery_charge_current_amps", "alternator_rated_amps"],
+      "output": "load_factor",
+      "outputUnit": "dimensionless",
+      "computation": "Load_factor = battery_charge_current / 60 (rated). Clamp to [0, 1.2]. Sustained >0.8 accelerates brush wear. Rolling 10-minute average.",
+      "tier": "fast",
+      "stateful": true,
+      "stateWindowSeconds": 600,
+      "notes": "Alternator brush wear model."
+    },
+    {
+      "id": "bus_voltage_dip",
+      "name": "Bus Voltage Dip Detection",
+      "inputs": ["main_bus_voltage"],
+      "output": "min_bus_voltage_5sec",
+      "outputUnit": "volts",
+      "computation": "Capture minimum bus voltage over rolling 5-second window. Flag if min <20V. Emit as event (bus dip detected) with min value.",
+      "tier": "event",
+      "stateful": true,
+      "stateWindowSeconds": 5,
+      "notes": "Avionics power integrity during start and electrical transients."
+    },
+    {
+      "id": "ahrs_dynamic_load",
+      "name": "AHRS G-Load EWMA",
+      "inputs": ["total_g_load"],
+      "output": "g_load_ewma",
+      "outputUnit": "g",
+      "computation": "Exponential-weighted moving average. Alpha = 0.1 (10-second effective window). ewma_new = alpha * g_load + (1 - alpha) * ewma_old. Emit rolling estimate.",
+      "tier": "fast",
+      "stateful": true,
+      "stateWindowSeconds": 10,
+      "notes": "AHRS gyro bias accumulation from sustained g-loading."
+    },
+    {
+      "id": "pitot_thermal_cycle",
+      "name": "Pitot Thermal Cycle Counter",
+      "inputs": ["pitot_heat_on_flag", "icing_conditions_flag"],
+      "output": "pitot_thermal_cycles",
+      "outputUnit": "count",
+      "computation": "Increment on each rising and falling edge of pitot_heat signal during icing. Emit rolling count. Reset after pitot element replacement.",
+      "tier": "event",
+      "stateful": true,
+      "stateWindowSeconds": 0,
+      "notes": "Pitot heater element fatigue from thermal cycling."
+    }
+  ],
+  "events": [
+    {
+      "id": "cold_start",
+      "displayName": "Cold Start",
+      "trigger": "OAT < 5C and oil_temp < 40C and starter engaged",
+      "inputs": ["oat_celsius", "oil_temp_c", "starter_engagement_flag"],
+      "thresholds": { "oat_max": 5, "oil_temp_max": 40 },
+      "debounceSeconds": 0,
+      "cooldownSeconds": 600,
+      "severity": "stress",
+      "notes": "Cold starts increase magneto point arcing and fuel flooding risk; starter and battery heavily loaded."
+    },
+    {
+      "id": "hot_start",
+      "displayName": "Hot Start",
+      "trigger": "Engine shutdown <5 min prior and starter engaged",
+      "inputs": ["engine_off_time_sec", "starter_engagement_flag"],
+      "thresholds": { "max_soak_time_sec": 300 },
+      "debounceSeconds": 0,
+      "cooldownSeconds": 3600,
+      "severity": "stress",
+      "notes": "Hot soak vaporizes fuel in lines; engine may flood if fuel flow not leaned aggressively."
+    },
+    {
+      "id": "flooded_start",
+      "displayName": "Flooded Start Attempt",
+      "trigger": "Starter engaged >2 times without engine light-off, rpm_peak stays <400",
+      "inputs": ["starter_engagement_count", "engine_rpm_peak", "fuel_flow_gph"],
+      "thresholds": { "rpm_threshold": 400, "max_attempts": 2 },
+      "debounceSeconds": 10,
+      "cooldownSeconds": 300,
+      "severity": "abuse",
+      "notes": "Excessive starter cycling with inadequate combustion speed floods cylinders; fuel washes past rings."
+    },
+    {
+      "id": "shock_cooling",
+      "displayName": "Shock Cooling (Power Off)",
+      "trigger": "Power drops from >70% to <30% in <10 sec; CHT drop >15C/min",
+      "inputs": ["power_pct", "shock_cooling_rate"],
+      "thresholds": { "powerDrop": 40, "coolRate": 15 },
+      "debounceSeconds": 10,
+      "cooldownSeconds": 600,
+      "severity": "abuse",
+      "notes": "Rapid descent or power-off landing stresses exhaust valve metallurgy; crack initiation risk high."
+    },
+    {
+      "id": "lean_of_peak",
+      "displayName": "Lean of Peak EGT",
+      "trigger": "ego_offset_from_peak < -5 and power_pct > 50",
+      "inputs": ["ego_offset_from_peak", "power_pct"],
+      "thresholds": { "lean_threshold_deg": -5 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 300,
+      "severity": "stress",
+      "notes": "Operating lean of peak at high power increases CHT margin to autoignition; detonation risk."
+    },
+    {
+      "id": "over_lean_at_high_da",
+      "displayName": "Over-Lean at High Density Altitude",
+      "trigger": "ego_offset < -10 and density_altitude > 5000 ft and power_pct > 60",
+      "inputs": ["ego_offset_from_peak", "density_altitude", "power_pct"],
+      "thresholds": { "leanOffset": -10, "da_threshold": 5000 },
+      "debounceSeconds": 10,
+      "cooldownSeconds": 900,
+      "severity": "abuse",
+      "notes": "Combined lean mixture and high-DA performance margins shrink; detonation likely on high-power climb."
+    },
+    {
+      "id": "over_rich_long_idle",
+      "displayName": "Over-Rich at Long Idle",
+      "trigger": "Mixture full rich AND power < 20% AND duration > 5 min",
+      "inputs": ["mixture_knob_position", "power_pct", "idle_duration_sec"],
+      "thresholds": { "idlePower": 20, "minDuration": 300 },
+      "debounceSeconds": 30,
+      "cooldownSeconds": 600,
+      "severity": "stress",
+      "notes": "Over-rich idle loads cylinders with unburned fuel; oil dilution and spark fouling."
+    },
+    {
+      "id": "over_temp_oil",
+      "displayName": "Over-Temperature Oil",
+      "trigger": "oil_temp_c > 115",
+      "inputs": ["oil_temp_c"],
+      "thresholds": { "maxTemp": 115 },
+      "debounceSeconds": 30,
+      "cooldownSeconds": 600,
+      "severity": "stress",
+      "notes": "Oil temp above 240F (115C) accelerates oxidation and film collapse; bearing starvation risk."
+    },
+    {
+      "id": "over_temp_cht",
+      "displayName": "Over-Temperature CHT",
+      "trigger": "cht_cyl_max > 220",
+      "inputs": ["cht_cyl1", "cht_cyl2", "cht_cyl3", "cht_cyl4"],
+      "thresholds": { "maxCHT": 220 },
+      "debounceSeconds": 10,
+      "cooldownSeconds": 600,
+      "severity": "stress",
+      "notes": "CHT above 220C (430F) risks valve margin; combustion knock and preignition."
+    },
+    {
+      "id": "over_speed_vfe",
+      "displayName": "Overspeed VFE",
+      "trigger": "airspeed > vfe_limit + 10 kt in landing gear down config",
+      "inputs": ["airspeed_kt", "landing_gear_position", "flap_position"],
+      "thresholds": { "vfeOverage": 10 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 300,
+      "severity": "abuse",
+      "notes": "VFE overspeed loads control surfaces beyond design envelope; flutter and skin damage risk."
+    },
+    {
+      "id": "over_speed_vno",
+      "displayName": "Overspeed VNO",
+      "trigger": "airspeed > vno_limit (90 kt estimated cruise)",
+      "inputs": ["airspeed_kt"],
+      "thresholds": { "vnoLimit": 90 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 300,
+      "severity": "abuse",
+      "notes": "Cruise overspeed stresses airframe and engine limits; fatigue loading on wing and fuselage."
+    },
+    {
+      "id": "g_excursion_positive",
+      "displayName": "Positive G Excursion",
+      "trigger": "total_g > 3.5 (acrobatic entry or hard pull-up)",
+      "inputs": ["total_g_load"],
+      "thresholds": { "g_threshold": 3.5 },
+      "debounceSeconds": 1,
+      "cooldownSeconds": 60,
+      "severity": "abuse",
+      "notes": "High-g maneuver compresses engine mounts and airframe joints; structural fatigue and vibration spike."
+    },
+    {
+      "id": "g_excursion_negative",
+      "displayName": "Negative G Excursion",
+      "trigger": "total_g < -1.5 (inverted or pitch-down maneuver)",
+      "inputs": ["total_g_load"],
+      "thresholds": { "g_threshold": -1.5 },
+      "debounceSeconds": 1,
+      "cooldownSeconds": 60,
+      "severity": "abuse",
+      "notes": "Negative g sloshes fuel away from carb; fuel starvation risk if sustained >2 sec."
+    },
+    {
+      "id": "hard_landing",
+      "displayName": "Hard Landing",
+      "trigger": "touchdown_energy > 2500 ft-lbf",
+      "inputs": ["touchdown_energy"],
+      "thresholds": { "energyThreshold": 2500 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 3600,
+      "severity": "abuse",
+      "notes": "High-energy landing compresses oleo beyond comfort; wheel and tire damage, airframe shock loads."
+    },
+    {
+      "id": "wheel_landing",
+      "displayName": "Mains-First Landing (Normal)",
+      "trigger": "Main gear ground contact before nose gear by >0.5 sec AND touchdown_energy < 2500",
+      "inputs": ["main_gear_contact_flag", "nose_gear_contact_flag", "touchdown_energy"],
+      "thresholds": { "normalEnergy": 2500 },
+      "debounceSeconds": 3,
+      "cooldownSeconds": 3600,
+      "severity": "info",
+      "notes": "Proper mains-first landing allows oleo to absorb energy; normal wear progression."
+    },
+    {
+      "id": "tail_first_landing",
+      "displayName": "Tail-Wheel Strike Landing",
+      "trigger": "Tail contact (aft fuselage y-accel spike) before main gear contact OR nose gear first by >1 sec",
+      "inputs": ["fuselage_aft_acceleration", "main_gear_contact_flag", "nose_gear_contact_flag"],
+      "thresholds": { "tailAccelThreshold": 2.0 },
+      "debounceSeconds": 2,
+      "cooldownSeconds": 3600,
+      "severity": "abuse",
+      "notes": "Tail-first or nose-wheel-first landing bypasses oleo shock absorption; structural damage to fuselage."
+    },
+    {
+      "id": "crosswind_landing",
+      "displayName": "Crosswind Landing",
+      "trigger": "crosswind_side_load > 500 lbf at touchdown",
+      "inputs": ["crosswind_side_load"],
+      "thresholds": { "loadThreshold": 500 },
+      "debounceSeconds": 2,
+      "cooldownSeconds": 3600,
+      "severity": "stress",
+      "notes": "High crosswind load flexes tire sidewall; thermal stress accelerates cracking and chunking."
+    },
+    {
+      "id": "bounced_landing",
+      "displayName": "Bounced Landing",
+      "trigger": "Gear unload during landing roll (vertical_accel spike to <-0.5g), then reload within 3 sec",
+      "inputs": ["landing_gear_compression", "vertical_acceleration"],
+      "thresholds": { "reloadTime": 3 },
+      "debounceSeconds": 2,
+      "cooldownSeconds": 3600,
+      "severity": "stress",
+      "notes": "Bounce unloads then reloads gear at higher velocity; second impact energy may exceed design limit."
+    },
+    {
+      "id": "flat_spot_brake",
+      "displayName": "Flat-Spotted Tire from Braking",
+      "trigger": "Sustained brake pressure >1200 psi AND skid marks detected AND touchdown_energy > 1500",
+      "inputs": ["brake_pressure_psi_left", "brake_pressure_psi_right", "touchdown_energy"],
+      "thresholds": { "brakeThreshold": 1200, "energyThreshold": 1500 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 3600,
+      "severity": "stress",
+      "notes": "Heavy braking on hard landing can lock wheels; tire skids flat, tread ablates unevenly."
+    },
+    {
+      "id": "parking_brake_set_at_taxi",
+      "displayName": "Parking Brake Set During Taxi",
+      "trigger": "Parking brake applied while groundspeed > 3 kt",
+      "inputs": ["parking_brake_flag", "groundspeed_kt"],
+      "thresholds": { "maxSpeed": 3 },
+      "debounceSeconds": 0,
+      "cooldownSeconds": 300,
+      "severity": "abuse",
+      "notes": "Dragging parking brake generates sustained friction; brake pad and disk overheat rapidly."
+    },
+    {
+      "id": "taxi_turn_sharp",
+      "displayName": "Sharp Turn During Taxi",
+      "trigger": "Rudder control deflection > 25 deg at groundspeed > 10 kt, turn radius < 100 ft",
+      "inputs": ["rudder_deflection_deg", "groundspeed_kt", "turn_radius_ft"],
+      "thresholds": { "deflection": 25, "speedThreshold": 10, "radiusThreshold": 100 },
+      "debounceSeconds": 2,
+      "cooldownSeconds": 300,
+      "severity": "stress",
+      "notes": "Tight taxi turn scrubs tire sidewall; rubber ablates, tread edge separates."
+    },
+    {
+      "id": "taxi_with_rudder_pegged",
+      "displayName": "Rudder Pegged During Taxi",
+      "trigger": "Rudder control at extremum (>90% deflection) AND groundspeed > 5 kt for >5 sec",
+      "inputs": ["rudder_deflection_normalized", "groundspeed_kt", "pedal_hold_duration_sec"],
+      "thresholds": { "deflectionPct": 90, "duration": 5 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 300,
+      "severity": "stress",
+      "notes": "Sustained rudder override at taxi speed overloads nosewheel; tire sidewall stress and heat."
+    },
+    {
+      "id": "prop_strike_proxy",
+      "displayName": "Propeller Strike Suspected",
+      "trigger": "Ground contact (altitude = 0, vertical_v > -300 fpm) AND CHT rise <20C over next 10 sec",
+      "inputs": ["altitude_ft", "vertical_speed_fpm", "cht_cyl*"],
+      "thresholds": { "chtRiseMin": 20, "windowSeconds": 10 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 3600,
+      "severity": "abuse",
+      "notes": "Propeller contact with ground imparts bending moment to crankshaft; post-strike CHT rise delayed if power low."
+    },
+    {
+      "id": "lightning_proximity",
+      "displayName": "Lightning Proximity (Electrical Noise)",
+      "trigger": "Static noise floor >threshold on radio (stub for future implementation)",
+      "inputs": ["radio_noise_floor_db"],
+      "thresholds": { "noiseThreshold": 120 },
+      "debounceSeconds": 10,
+      "cooldownSeconds": 600,
+      "severity": "abnormal",
+      "notes": "Placeholder for atmospheric electrical activity; used to correlate avionics anomalies."
+    },
+    {
+      "id": "master_off_with_load",
+      "displayName": "Master Switch Off Under Electrical Load",
+      "trigger": "Master switch off AND battery_current_amps > 10 A in prior 10 sec",
+      "inputs": ["master_switch_flag", "battery_current_amps"],
+      "thresholds": { "currentThreshold": 10 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 600,
+      "severity": "stress",
+      "notes": "Master off with active loads forces battery to discharge; sulfation and capacity loss."
+    },
+    {
+      "id": "deep_discharge",
+      "displayName": "Deep Battery Discharge",
+      "trigger": "Battery voltage falls below 10.5V for >30 min during flight",
+      "inputs": ["battery_voltage", "discharge_duration_sec"],
+      "thresholds": { "voltageMin": 10.5, "duration": 1800 },
+      "debounceSeconds": 60,
+      "cooldownSeconds": 86400,
+      "severity": "abuse",
+      "notes": "Deep discharge causes lead-sulfate crystal hardening; battery capacity and performance degrade."
+    },
+    {
+      "id": "engine_overspeed",
+      "displayName": "Engine Overspeed (RPM Redline)",
+      "trigger": "Engine rpm > 2800 (redline ~2700 nominal)",
+      "inputs": ["engine_rpm"],
+      "thresholds": { "rpmRedline": 2800 },
+      "debounceSeconds": 3,
+      "cooldownSeconds": 300,
+      "severity": "abuse",
+      "notes": "RPM overspeed stresses connecting rods and crankshaft; fatigue cracks can initiate."
+    },
+    {
+      "id": "mag_check_drop_excess",
+      "displayName": "Mag-Check Drop Excessive",
+      "trigger": "Mag-check differential >150 rpm or single-mag rpm <1100 rpm on run-up",
+      "inputs": ["mag_drop_left_rpm", "mag_drop_right_rpm"],
+      "thresholds": { "dropDifferential": 150, "singleMagMin": 1100 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 86400,
+      "severity": "abnormal",
+      "notes": "Excessive mag drop indicates worn points, gap increase, or timing drift; ignition reliability compromised."
+    },
+    {
+      "id": "vacuum_loss_event",
+      "displayName": "Vacuum System Loss",
+      "trigger": "Vacuum pressure falls below 4.5 inH2O for >10 sec during flight",
+      "inputs": ["vacuum_pressure_inH2O"],
+      "thresholds": { "minVacuum": 4.5, "duration": 10 },
+      "debounceSeconds": 5,
+      "cooldownSeconds": 600,
+      "severity": "abnormal",
+      "notes": "Vacuum pump failure prevents gyro spin-up; attitude indicator tumbles, navigation unreliable."
+    },
+    {
+      "id": "static_block_suspect",
+      "displayName": "Static Port Blockage Suspected",
+      "trigger": "Altitude or VSI trend inconsistent with pitch/power changes; pressure sensor diff >200 inH2O from baseline",
+      "inputs": ["pressure_altitude_ft", "vertical_speed_fpm", "power_pct"],
+      "thresholds": { "pressureErrorMax": 200 },
+      "debounceSeconds": 30,
+      "cooldownSeconds": 3600,
+      "severity": "abnormal",
+      "notes": "Static port ice or insect blockage introduces fixed pressure offset; altimeter and VSI unreliable."
+    },
+    {
+      "id": "pitot_block_suspect",
+      "displayName": "Pitot Tube Blockage Suspected",
+      "trigger": "Airspeed inconsistent with control input OR airspeed <20 kt in climb (impossible)",
+      "inputs": ["airspeed_kt", "power_pct", "pitch_attitude_deg"],
+      "thresholds": { "lowSpeedThreshold": 20 },
+      "debounceSeconds": 20,
+      "cooldownSeconds": 3600,
+      "severity": "abnormal",
+      "notes": "Pitot ice or blockage freezes airspeed; pilot loses primary airspeed reference."
+    },
+    {
+      "id": "parked_outdoors_24h",
+      "displayName": "Parked Outdoors >24 Hours",
+      "trigger": "Aircraft position static (groundspeed ~0) AND outdoors_flag = true for >86400 sec",
+      "inputs": ["groundspeed_kt", "outdoors_flag", "parked_duration_sec"],
+      "thresholds": { "minDuration": 86400 },
+      "debounceSeconds": 600,
+      "cooldownSeconds": 0,
+      "severity": "info",
+      "notes": "Extended outdoor parking enables corrosion and moisture ingestion; increases maintenance risk."
+    }
+  ],
+  "inspections": [
+    {
+      "id": "25h_oil_change",
+      "displayName": "25-Hour Oil and Filter Change",
+      "interval": { "hours": 25, "calendarMonths": 0, "cycles": 0 },
+      "scope": ["oil_sump", "oil_filter", "dipstick_inspection"],
+      "actions": ["fluid_replace", "replace_consumable", "measure_only"],
+      "notes": "Replace oil and filter; check sump for metal particles and water; reset oil burn baseline."
+    },
+    {
+      "id": "50h_oil_change_alternate",
+      "displayName": "50-Hour Oil and Filter (Extended)",
+      "interval": { "hours": 50, "calendarMonths": 0, "cycles": 0 },
+      "scope": ["oil_sump", "oil_filter"],
+      "actions": ["fluid_replace", "replace_consumable"],
+      "notes": "Alternative extended interval; preferred only if oil analysis shows acceptable acid number."
+    },
+    {
+      "id": "100h_inspection",
+      "displayName": "100-Hour Inspection",
+      "interval": { "hours": 100, "calendarMonths": 0, "cycles": 0 },
+      "scope": ["engine_cyl*", "crankshaft_*", "connecting_rod_*", "spark_plug*", "valve_*", "mag_*", "alternator_*", "battery_*", "brake_pad_*", "tire_*", "oleo_*", "landing_gear_*"],
+      "actions": ["measure_only", "torque_check", "replace_consumable", "fluid_replace"],
+      "notes": "Comprehensive engine and systems inspection per FAR 43 Appendix D; includes compression check, spark plug replacement, mag timing, brake fluid, brake pads."
+    },
+    {
+      "id": "annual_inspection",
+      "displayName": "Annual Inspection",
+      "interval": { "hours": 0, "calendarMonths": 12, "cycles": 0 },
+      "scope": ["airframe_skin", "fuselage_structure", "wing_structure", "landing_gear_*", "brake_system", "fuel_system", "electrical_system", "engine_mount_*", "propeller_*"],
+      "actions": ["measure_only", "fluid_replace", "torque_check", "calibrate"],
+      "notes": "Annual IA/AP airworthiness check; includes weight and balance, airworthiness directives compliance, flutter inspection."
+    },
+    {
+      "id": "500h_mag_iran",
+      "displayName": "500-Hour Magneto IRAN",
+      "interval": { "hours": 500, "calendarMonths": 0, "cycles": 0 },
+      "scope": ["mag_left_*", "mag_right_*"],
+      "actions": ["measure_only", "torque_check"],
+      "notes": "Magneto Inspect-and-Repair-as-Needed (IRAN) per Textron spec; disassemble, clean, gap points, time mags, run test cell."
+    },
+    {
+      "id": "1000h_prop_inspection",
+      "displayName": "1000-Hour Propeller Inspection",
+      "interval": { "hours": 1000, "calendarMonths": 0, "cycles": 0 },
+      "scope": ["propeller_blade_*", "prop_hub_*", "prop_governor_*"],
+      "actions": ["measure_only", "torque_check"],
+      "notes": "Propeller blade dressing and hub inspection; check for cracks, corrosion, and oil seal condition."
+    },
+    {
+      "id": "elt_battery_cert",
+      "displayName": "ELT Battery Replacement",
+      "interval": { "hours": 0, "calendarMonths": 12, "cycles": 0 },
+      "scope": ["elt_battery"],
+      "actions": ["replace_consumable"],
+      "notes": "FAR 91.207; ELT battery must be replaced when expired or when 50% of shelf life consumed, whichever first."
+    },
+    {
+      "id": "pitot_static_cert",
+      "displayName": "Pitot-Static System Certification (FAR 91.411)",
+      "interval": { "hours": 0, "calendarMonths": 24, "cycles": 0 },
+      "scope": ["pitot_tube", "static_port", "altimeter", "vertical_speed_indicator"],
+      "actions": ["calibrate", "measure_only"],
+      "notes": "FAR 91.411 certification every 24 calendar months; includes pitot-static system test, altimeter system test, and RVSM check if applicable."
+    },
+    {
+      "id": "transponder_cert",
+      "displayName": "Transponder Certification (FAR 91.413)",
+      "interval": { "hours": 0, "calendarMonths": 24, "cycles": 0 },
+      "scope": ["transponder_*", "altimeter"],
+      "actions": ["calibrate"],
+      "notes": "FAR 91.413 certification every 24 calendar months; includes altitude accuracy check and frequency calibration."
+    },
+    {
+      "id": "brake_fluid_replacement",
+      "displayName": "Brake Fluid Replacement",
+      "interval": { "hours": 0, "calendarMonths": 60, "cycles": 0 },
+      "scope": ["brake_fluid_system"],
+      "actions": ["fluid_replace"],
+      "notes": "Hydraulic brake fluid hygroscopic; replace every 5 years to prevent moisture absorption and corrosion."
+    },
+    {
+      "id": "battery_capacity_test",
+      "displayName": "Battery Capacity Test (Annual)",
+      "interval": { "hours": 0, "calendarMonths": 12, "cycles": 0 },
+      "scope": ["battery_internal_resistance"],
+      "actions": ["measure_only"],
+      "notes": "Load-test battery under cold-start condition (50A draw); verify voltage >21V at 25C ambient."
+    },
+    {
+      "id": "engine_tbo",
+      "displayName": "Engine TBO (Time Between Overhaul)",
+      "interval": { "hours": 2000, "calendarMonths": 0, "cycles": 0 },
+      "scope": ["crankshaft_*", "connecting_rod_*", "engine_cyl*", "piston_*", "valve_*", "bearing_*"],
+      "actions": ["measure_only"],
+      "notes": "Lycoming O-360-A2D TBO 2000 SMOH (Shaft Mean Operating Hours); engines approaching TBO require major overhaul planning."
+    }
+  ]
+}
