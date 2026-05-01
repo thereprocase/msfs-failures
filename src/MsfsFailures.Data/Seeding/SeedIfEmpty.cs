@@ -28,11 +28,11 @@ public static class SeedIfEmpty
         var now = DateTimeOffset.UtcNow;
 
         // ── ModelRefs ────────────────────────────────────────────────────
-        var refC172  = new ModelRef { Id = Guid.NewGuid(), Name = "Cessna 172S Skyhawk",         Manufacturer = "Cessna",   SimMatchRulesJson = "{}" };
-        var refPa28  = new ModelRef { Id = Guid.NewGuid(), Name = "Piper PA-28-181 Archer III",  Manufacturer = "Piper",    SimMatchRulesJson = "{}" };
-        var refBe350 = new ModelRef { Id = Guid.NewGuid(), Name = "Beechcraft King Air 350",     Manufacturer = "Beechcraft", SimMatchRulesJson = "{}" };
-        var refBe58  = new ModelRef { Id = Guid.NewGuid(), Name = "Black Square Baron 58",       Manufacturer = "Beechcraft", SimMatchRulesJson = "{}" };
-        var refC210  = new ModelRef { Id = Guid.NewGuid(), Name = "Black Square Cessna 210",     Manufacturer = "Cessna",   SimMatchRulesJson = "{}" };
+        var refC172  = new ModelRef { Id = Guid.NewGuid(), Name = "Cessna 172S Skyhawk",         Manufacturer = "Cessna",   SimMatchRulesJson = """{"contains":["172","Skyhawk"]}""" };
+        var refPa28  = new ModelRef { Id = Guid.NewGuid(), Name = "Piper PA-28-181 Archer III",  Manufacturer = "Piper",    SimMatchRulesJson = """{"contains":["PA28","Archer"]}""" };
+        var refBe350 = new ModelRef { Id = Guid.NewGuid(), Name = "Beechcraft King Air 350",     Manufacturer = "Beechcraft", SimMatchRulesJson = """{"contains":["350","King Air"]}""" };
+        var refBe58  = new ModelRef { Id = Guid.NewGuid(), Name = "Black Square Baron 58",       Manufacturer = "Beechcraft", SimMatchRulesJson = """{"contains":["58","Baron"]}""" };
+        var refC210  = new ModelRef { Id = Guid.NewGuid(), Name = "Black Square Cessna 210",     Manufacturer = "Cessna",   SimMatchRulesJson = """{"contains":["210","Centurion"]}""" };
 
         db.ModelRefs.AddRange(refC172, refPa28, refBe350, refBe58, refC210);
 

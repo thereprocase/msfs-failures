@@ -31,6 +31,8 @@ public sealed class ActiveAirframeProvider : IActiveAirframeProvider, IDisposabl
         _log = log;
 
         // Subscribe to sim status changes to re-resolve airframe.
+        // This subscription triggers on every status update, including aircraft identity changes,
+        // which are merged into SimStatus by SimBus.
         _statusSub = _bus.StatusStream.Subscribe(
             status => OnSimStatusChanged(status),
             ex => _log.LogError(ex, "ActiveAirframeProvider: StatusStream error."));
@@ -61,14 +63,11 @@ public sealed class ActiveAirframeProvider : IActiveAirframeProvider, IDisposabl
 
     private void OnSimStatusChanged(SimStatus status)
     {
-        // Re-resolve airframe when sim connects or disconnects.
-        if (status.State == SimConnectionState.Connected || status.State == SimConnectionState.Offline)
+        // Re-resolve airframe when status changes (including aircraft identity changes).
+        // Fire and forget — clear cache and let next caller resolve.
+        lock (_lock)
         {
-            // Fire and forget — clear cache and let next caller resolve.
-            lock (_lock)
-            {
-                _cachedAirframeId = null;
-            }
+            _cachedAirframeId = null;
         }
     }
 
@@ -79,15 +78,46 @@ public sealed class ActiveAirframeProvider : IActiveAirframeProvider, IDisposabl
             using var scope = _scopeFactory.CreateScope();
             var repo = scope.ServiceProvider.GetRequiredService<IFleetRepository>();
 
-            // Try N208RC first (seeded demo aircraft).
+            // Priority 1: Match aircraft title against ModelRef sim match rules.
+            var simStatus = _bus.CurrentStatus;
+            if (!string.IsNullOrWhiteSpace(simStatus?.AircraftTitle))
+            {
+                _log.LogInformation("ActiveAirframeProvider: resolving by aircraft title '{AircraftTitle}'.", simStatus.AircraftTitle);
+
+                var modelRefs = await repo.GetAllModelRefsAsync(ct);
+                foreach (var modelRef in modelRefs)
+                {
+                    if (SimMatchRules.Matches(modelRef.SimMatchRulesJson, simStatus.AircraftTitle, simStatus.AtcModel ?? ""))
+                    {
+                        _log.LogInformation("ActiveAirframeProvider: matched ModelRef '{ModelRefName}' (ID: {ModelRefId}).", modelRef.Name, modelRef.Id);
+
+                        var airframe = await repo.GetAirframeByModelRefAsync(modelRef.Id, ct);
+                        if (airframe is not null)
+                        {
+                            _log.LogInformation("ActiveAirframeProvider: resolved to airframe '{Tail}' (ID: {AirframeId}).", airframe.Tail, airframe.Id);
+                            return airframe.Id;
+                        }
+                    }
+                }
+
+                _log.LogInformation("ActiveAirframeProvider: no matching ModelRef found for title '{AircraftTitle}'.", simStatus.AircraftTitle);
+            }
+
+            // Priority 2: Try N208RC (seeded demo aircraft).
             var byTail = await repo.GetAirframeByTailAsync("N208RC", ct);
             if (byTail is not null)
+            {
+                _log.LogInformation("ActiveAirframeProvider: resolved to seeded demo tail N208RC (ID: {AirframeId}).", byTail.Id);
                 return byTail.Id;
+            }
 
-            // Fall back to first airframe in DB.
+            // Priority 3: Fall back to first airframe in DB.
             var all = await repo.GetAllAirframesAsync(ct);
             if (all.Count > 0)
+            {
+                _log.LogInformation("ActiveAirframeProvider: resolved to first airframe in DB: '{Tail}' (ID: {AirframeId}).", all[0].Tail, all[0].Id);
                 return all[0].Id;
+            }
 
             _log.LogInformation("ActiveAirframeProvider: no airframes found in DB.");
             return null;

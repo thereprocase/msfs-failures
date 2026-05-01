@@ -1,6 +1,5 @@
 // TODO (future passes — synthetic / cosmetic fields not yet populated from DB):
 //   - AirframeVm.Nickname       → populate from a future airframes.nickname column or separate metadata table
-//   - AirframeVm.Live / LiveState→ once SessionService exists, set Live = airframe has open session.
 
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +54,10 @@ public sealed class RepositoryFleetSource : IFleetSource
                           .AsNoTracking()
                           .ToList();
 
-        return airframes.Select(a => MapAirframe(a, repo)).ToList();
+        // Get the airframe with an active (open) session to mark as Live
+        var liveAirframeId = repo.GetAirframeIdWithOpenSessionAsync().GetAwaiter().GetResult();
+
+        return airframes.Select(a => MapAirframe(a, repo, liveAirframeId)).ToList();
     }
 
     private IReadOnlyList<SquawkVm> LoadSquawksSync()
@@ -73,7 +75,7 @@ public sealed class RepositoryFleetSource : IFleetSource
 
     // ── Mapping helpers ──────────────────────────────────────────────────
 
-    private AirframeVm MapAirframe(Entities.Airframe a, IFleetRepository repo)
+    private AirframeVm MapAirframe(Entities.Airframe a, IFleetRepository repo, Guid? liveAirframeId)
     {
         var consumables = BuildConsumables(a.Consumables);
 
@@ -111,8 +113,7 @@ public sealed class RepositoryFleetSource : IFleetSource
             Deferred         = deferredCount,
             Consumables      = consumables,
             LastFlight       = lastFlight,
-            // TODO: once SessionService exists, set Live = airframe has open session.
-            Live             = false,
+            Live             = (a.Id == liveAirframeId),
             LiveState        = null,
         };
     }

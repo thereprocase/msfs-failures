@@ -62,4 +62,21 @@ public interface IFleetRepository
     /// Gets all squawks for an airframe (regardless of status).
     /// </summary>
     Task<IReadOnlyList<Entities.Squawk>> GetSquawksForAirframeAsync(Guid airframeId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets the airframe ID with the currently open (in-flight) session.
+    /// Sessions with EndedAt == null are considered active. Returns the most recent by StartedAt.
+    /// </summary>
+    Task<Guid?> GetAirframeIdWithOpenSessionAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets all ModelRefs from the database.
+    /// </summary>
+    Task<IReadOnlyList<Entities.ModelRef>> GetAllModelRefsAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets an airframe by ModelRefId, preferring the one with the most hours (most recently flown).
+    /// Returns null if no airframe is found for the given ModelRefId.
+    /// </summary>
+    Task<Entities.Airframe?> GetAirframeByModelRefAsync(Guid modelRefId, CancellationToken ct = default);
 }

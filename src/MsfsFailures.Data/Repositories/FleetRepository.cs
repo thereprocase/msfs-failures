@@ -188,20 +188,24 @@ public sealed class FleetRepository : IFleetRepository
     public async Task<IReadOnlyList<Entities.MaintenanceAction>> GetMaintenanceActionsForAirframeAsync(
         Guid airframeId, CancellationToken ct = default)
     {
-        return await _db.MaintenanceActions
+        // SQLite can't ORDER BY DateTimeOffset — sort client-side after pulling.
+        var actions = await _db.MaintenanceActions
             .Where(m => m.AirframeId == airframeId)
-            .OrderByDescending(m => m.PerformedAt)
             .AsNoTracking()
             .ToListAsync(ct);
+        return actions.OrderByDescending(m => m.PerformedAt).ToList();
     }
 
     public async Task<Entities.Session?> GetMostRecentSessionAsync(Guid airframeId, CancellationToken ct = default)
     {
-        return await _db.Sessions
+        // SQLite can't ORDER BY DateTimeOffset — sort client-side after pulling.
+        var sessions = await _db.Sessions
             .Where(s => s.AirframeId == airframeId)
-            .OrderByDescending(s => s.EndedAt ?? s.StartedAt)
             .AsNoTracking()
-            .FirstOrDefaultAsync(ct);
+            .ToListAsync(ct);
+        return sessions
+            .OrderByDescending(s => s.EndedAt ?? s.StartedAt)
+            .FirstOrDefault();
     }
 
     public async Task<int> CountSquawksAsync(Guid airframeId, CoreSquawkStatus status, CancellationToken ct = default)
@@ -217,5 +221,35 @@ public sealed class FleetRepository : IFleetRepository
             .Where(s => s.AirframeId == airframeId)
             .AsNoTracking()
             .ToListAsync(ct);
+    }
+
+    public async Task<Guid?> GetAirframeIdWithOpenSessionAsync(CancellationToken ct = default)
+    {
+        // SQLite can't ORDER BY DateTimeOffset — sort client-side after pulling.
+        var open = await _db.Sessions
+            .Where(s => s.EndedAt == null)
+            .AsNoTracking()
+            .ToListAsync(ct);
+        return open
+            .OrderByDescending(s => s.StartedAt)
+            .Select(s => (Guid?)s.AirframeId)
+            .FirstOrDefault();
+    }
+
+    public async Task<IReadOnlyList<Entities.ModelRef>> GetAllModelRefsAsync(CancellationToken ct = default)
+    {
+        return await _db.ModelRefs
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<Entities.Airframe?> GetAirframeByModelRefAsync(Guid modelRefId, CancellationToken ct = default)
+    {
+        return await _db.Airframes
+            .Where(a => a.ModelRefId == modelRefId)
+            .Include(a => a.ModelRef)
+            .AsNoTracking()
+            .OrderByDescending(a => a.TotalHobbsHours)
+            .FirstOrDefaultAsync(ct);
     }
 }
