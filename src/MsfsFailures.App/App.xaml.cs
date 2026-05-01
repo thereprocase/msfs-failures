@@ -1,11 +1,14 @@
 using System.IO;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MsfsFailures.App.Logging;
 using MsfsFailures.App.Services;
 using MsfsFailures.App.ViewModels;
 using MsfsFailures.Data;
+using MsfsFailures.Data.Seeding;
 using MsfsFailures.Sim;
 using Serilog;
 
@@ -40,8 +43,9 @@ public partial class App : Application
                 .WriteTo.Sink(InMemoryLogSink.Instance))
             .ConfigureServices(services =>
             {
-                // Existing
-                services.AddSingleton<IFleetSource, MockFleetSource>();
+                // Existing — RepositoryFleetSource reads from SQLite after migrations+seed;
+                // MockFleetSource is kept as a fallback for design-time / --mock usage.
+                services.AddSingleton<IFleetSource, RepositoryFleetSource>();
                 services.AddSingleton<HomeViewModel>();
                 services.AddSingleton<MainWindow>();
 
@@ -52,6 +56,16 @@ public partial class App : Application
             .Build();
 
         await _host.StartAsync();
+
+        // Migrate schema and seed demo data on first run.
+        using (var scope = _host.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<FleetDbContext>();
+            db.Database.Migrate();
+            await SeedIfEmpty.ApplyAsync(
+                db,
+                scope.ServiceProvider.GetRequiredService<ILogger<App>>());
+        }
 
         var window = _host.Services.GetRequiredService<MainWindow>();
         window.DataContext = _host.Services.GetRequiredService<HomeViewModel>();
