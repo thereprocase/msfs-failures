@@ -14,6 +14,44 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.*" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.*" />
     <PackageReference Include="System.Reactive" Version="6.0.*" />
+
+    <!--
+      SimConnect SDK access strategy (Task 1 — priority 2):
+        No first-party NuGet for net8.0-windows exists (Microsoft.FlightSimulator.SimConnect.NuGet
+        returned 404; search for net8.0-compatible packages returns 0 results).
+        We take CTrue.FsConnect (net461) purely to pull the two bundled binaries into the NuGet
+        cache, then reference the managed DLL from the extracted package path and copy the native
+        SimConnect.dll to the output directory.  We do NOT use the FsConnect API surface.
+
+        Runtime note: users do NOT need the MSFS SDK installed.  The SimConnect.dll bundled in
+        the NuGet package (SDK 0.24.3.0) covers runtime on any Windows machine that has MSFS
+        2020/2024 installed (the sim registers the COM server).  If the sim is not running,
+        RealSimConnectClient catches the COMException and falls back to the mock path.
+
+        Env-var override: set MSFS_FAILURES_SIM=mock|real|auto before launching to force
+        a mode; default is Auto (try real, fall back to mock on failure).
+    -->
+    <PackageReference Include="CTrue.FsConnect" Version="1.4.0" GeneratePathProperty="true">
+      <ExcludeAssets>all</ExcludeAssets>
+      <IncludeAssets>none</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Reference the managed SimConnect wrapper extracted from the CTrue.FsConnect package -->
+  <ItemGroup>
+    <Reference Include="Microsoft.FlightSimulator.SimConnect">
+      <HintPath>$(PkgCTrue_FsConnect)\lib\net461\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Copy the native SimConnect.dll (x64) to the output directory -->
+  <ItemGroup>
+    <None Include="$(PkgCTrue_FsConnect)\build\simconnect.dll" Condition="Exists('$(PkgCTrue_FsConnect)\build\simconnect.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>simconnect.dll</Link>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -28,7 +28,9 @@ public static class SeedIfEmpty
         var now = DateTimeOffset.UtcNow;
 
         // ── ModelRefs ────────────────────────────────────────────────────
-        var refC172  = new ModelRef { Id = Guid.NewGuid(), Name = "Cessna 172S Skyhawk",         Manufacturer = "Cessna",   SimMatchRulesJson = """{"contains":["172","Skyhawk"]}""" };
+        // Widened to catch all Asobo C172 variants: "Asobo Cessna 172 G1000", "Cessna_172",
+        // "CESSNA 172 SKYHAWK", "C172" ATC MODEL codes, etc.
+        var refC172  = new ModelRef { Id = Guid.NewGuid(), Name = "Cessna 172S Skyhawk",         Manufacturer = "Cessna",   SimMatchRulesJson = """{"contains":["172","Skyhawk","Cessna_172","C172","CESSNA 172"]}""" };
         var refPa28  = new ModelRef { Id = Guid.NewGuid(), Name = "Piper PA-28-181 Archer III",  Manufacturer = "Piper",    SimMatchRulesJson = """{"contains":["PA28","Archer"]}""" };
         var refBe350 = new ModelRef { Id = Guid.NewGuid(), Name = "Beechcraft King Air 350",     Manufacturer = "Beechcraft", SimMatchRulesJson = """{"contains":["350","King Air"]}""" };
         var refBe58  = new ModelRef { Id = Guid.NewGuid(), Name = "Black Square Baron 58",       Manufacturer = "Beechcraft", SimMatchRulesJson = """{"contains":["58","Baron"]}""" };
