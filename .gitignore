@@ -26,3 +26,5 @@ publish/
 dist/*.msi
 dist/*.zip
 dist/wix-build.log
+
+dist/*.wixpdb
