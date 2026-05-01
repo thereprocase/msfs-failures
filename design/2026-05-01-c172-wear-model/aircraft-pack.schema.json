@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://msfsfailures.dev/schema/aircraft-pack.v1.json",
+  "title": "MsfsFailures Aircraft Pack",
+  "description": "Portable single-file aircraft configuration (.msfail) for the MsfsFailures wear/failure engine.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "pack", "signals", "components"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "integer", "const": 1 },
+
+    "pack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "packVersion", "match"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+        "name": { "type": "string" },
+        "author": { "type": "string" },
+        "packVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "match": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title":    { "type": "array", "items": { "type": "string" } },
+            "atcModel": { "type": "array", "items": { "type": "string" } },
+            "icaoType": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "source", "expression", "unit", "tier"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "source": { "enum": ["AVar", "LVar", "KEvent", "SimConnectVar"] },
+          "expression": { "type": "string" },
+          "unit": { "type": "string" },
+          "tier": { "enum": ["fast", "slow", "event"] },
+          "fallback": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "derived": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "recipe", "inputs"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "recipe": {
+            "enum": [
+              "touchdown_energy",
+              "shock_cooling_rate",
+              "density_altitude",
+              "power_pct",
+              "braking_energy",
+              "start_kind",
+              "discharge_cycle",
+              "oil_burn_basic"
+            ]
+          },
+          "inputs": {
+            "type": "object",
+            "additionalProperties": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": { "const": { "type": "number" } },
+                  "required": ["const"]
+                }
+              ]
+            }
+          },
+          "params": { "type": "object" }
+        }
+      }
+    },
+
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "name", "mtbfHours", "wearCurve"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "category": {
+            "enum": ["Engine", "HotSection", "Compressor", "OilSystem", "FuelSystem",
+                     "Propeller", "GearBrakes", "Tires", "Battery", "Hydraulic",
+                     "Avionics", "Other"]
+          },
+          "name": { "type": "string" },
+          "mtbfHours": { "type": "number", "minimum": 0 },
+          "wearCurve": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": { "enum": ["linear", "exponential", "weibull"] },
+              "shape": { "type": "number" },
+              "scale": { "type": "number" },
+              "rate":  { "type": "number" }
+            }
+          },
+          "stress": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "signal": { "type": "string" },
+                "event":  { "type": "string" },
+                "above":  { "type": "number" },
+                "below":  { "type": "number" },
+                "equals": { "type": ["string", "number", "boolean"] },
+                "factor": { "type": "number" },
+                "addCycles": { "type": "number" }
+              }
+            }
+          },
+          "failureModes": { "type": "array", "items": { "type": "string" } },
+          "consumables":  { "type": "array", "items": { "type": "string" } },
+          "requires":     { "type": "array", "items": { "type": "string" } },
+          "optional":     { "type": "array", "items": { "type": "string" } },
+          "replaceIntervalHours":  { "type": "number", "minimum": 0 },
+          "replaceIntervalCycles": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+
+    "consumables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "kind": { "enum": ["None", "Oil", "HydraulicFluid", "BrakePad", "Tire", "BatterySoh"] },
+          "capacity": { "type": "number" },
+          "burnRateRecipe": { "type": "string" },
+          "burnRateParams": { "type": "object" },
+          "minOperating": { "type": "number" },
+          "topUpTo": { "type": "number" }
+        }
+      }
+    },
+
+    "failureModes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "displayName", "severity"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "displayName": { "type": "string" },
+          "severity": { "enum": ["Annunciator", "Warning", "Caution", "Grounding"] },
+          "symptoms": { "type": "array", "items": { "type": "string" } },
+          "mtbfHours": { "type": "number", "minimum": 0 },
+          "blocksDispatch": { "type": "boolean" }
+        }
+      }
+    },
+
+    "injection": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["failureMode", "kind", "expression"],
+        "properties": {
+          "failureMode": { "type": "string" },
+          "kind": { "enum": ["SimConnectEvent", "LVarWrite", "KEventWrite", "InternalOnly"] },
+          "expression": { "type": "string" },
+          "value": { "type": ["number", "string", "boolean"] }
+        }
+      }
+    },
+
+    "support": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "covered":     { "type": "array", "items": { "type": "string" } },
+        "partial":     { "type": "array", "items": { "$ref": "#/$defs/supportNote" } },
+        "unsupported": { "type": "array", "items": { "$ref": "#/$defs/supportNote" } }
+      }
+    }
+  },
+
+  "$defs": {
+    "supportNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature", "reason"],
+      "properties": {
+        "feature":    { "type": "string" },
+        "reason":     { "type": "string" },
+        "mitigation": { "type": "string" },
+        "workaround": { "type": "string" }
+      }
+    }
+  }
+}

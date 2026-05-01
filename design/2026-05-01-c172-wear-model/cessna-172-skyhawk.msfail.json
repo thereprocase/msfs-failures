@@ -1,0 +1,378 @@
+{
+  "$schema": "https://msfsfailures.dev/schema/aircraft-pack.v1.json",
+  "schemaVersion": 1,
+
+  "pack": {
+    "id": "com.msfsfailures.c172-default",
+    "name": "Cessna 172 Skyhawk (default Asobo)",
+    "author": "msfs-failures",
+    "packVersion": "1.0.0",
+    "match": {
+      "title": ["Cessna Skyhawk G1000", "Cessna 172 Skyhawk"],
+      "atcModel": ["C172"],
+      "icaoType": ["C172"]
+    },
+    "tags": ["piston", "ga", "fixed-gear", "default-asobo", "lycoming-o320"]
+  },
+
+  "signals": [
+    { "name": "engine_elapsed_s",     "source": "AVar", "expression": "GENERAL ENG ELAPSED TIME:1",        "unit": "seconds", "tier": "slow"  },
+    { "name": "total_aircraft_hours", "source": "AVar", "expression": "TOTAL AIRCRAFT HOURS",              "unit": "hours",   "tier": "slow"  },
+
+    { "name": "on_ground",            "source": "AVar", "expression": "SIM ON GROUND",                     "unit": "bool",    "tier": "fast"  },
+    { "name": "g_force",              "source": "AVar", "expression": "G FORCE",                           "unit": "g",       "tier": "fast"  },
+    { "name": "vertical_speed_fpm",   "source": "AVar", "expression": "VERTICAL SPEED",                    "unit": "fpm",     "tier": "fast"  },
+    { "name": "touchdown_v_fpm",      "source": "AVar", "expression": "PLANE TOUCHDOWN NORMAL VELOCITY",   "unit": "fpm",     "tier": "event" },
+    { "name": "ground_speed_kts",     "source": "AVar", "expression": "GROUND VELOCITY",                   "unit": "knots",   "tier": "fast"  },
+    { "name": "airspeed_indicated",   "source": "AVar", "expression": "AIRSPEED INDICATED",                "unit": "knots",   "tier": "fast"  },
+    { "name": "airspeed_true",        "source": "AVar", "expression": "AIRSPEED TRUE",                     "unit": "knots",   "tier": "slow"  },
+
+    { "name": "engine_rpm",           "source": "AVar", "expression": "GENERAL ENG RPM:1",                 "unit": "rpm",     "tier": "fast"  },
+    { "name": "manifold_pressure",    "source": "AVar", "expression": "GENERAL ENG MANIFOLD PRESSURE:1",   "unit": "inHg",    "tier": "slow"  },
+    { "name": "throttle_pct",         "source": "AVar", "expression": "GENERAL ENG THROTTLE LEVER POSITION:1", "unit": "percent", "tier": "slow" },
+    { "name": "mixture_pct",          "source": "AVar", "expression": "GENERAL ENG MIXTURE LEVER POSITION:1",  "unit": "percent", "tier": "slow" },
+    { "name": "fuel_flow_gph",        "source": "AVar", "expression": "GENERAL ENG FUEL FLOW:1",           "unit": "gph",     "tier": "slow"  },
+    { "name": "combustion",           "source": "AVar", "expression": "GENERAL ENG COMBUSTION:1",          "unit": "bool",    "tier": "event" },
+    { "name": "starter",              "source": "AVar", "expression": "GENERAL ENG STARTER:1",             "unit": "bool",    "tier": "event" },
+
+    { "name": "oil_temp_c",           "source": "AVar", "expression": "GENERAL ENG OIL TEMPERATURE:1",     "unit": "celsius", "tier": "slow"  },
+    { "name": "oil_pressure_psi",     "source": "AVar", "expression": "GENERAL ENG OIL PRESSURE:1",        "unit": "psi",     "tier": "slow"  },
+    { "name": "cht_c",                "source": "AVar", "expression": "RECIP ENG CYLINDER HEAD TEMPERATURE:1", "unit": "celsius", "tier": "slow", "fallback": null },
+    { "name": "egt_c",                "source": "AVar", "expression": "GENERAL ENG EGT:1",                 "unit": "celsius", "tier": "slow", "fallback": null },
+
+    { "name": "fuel_total_gal",       "source": "AVar", "expression": "FUEL TOTAL QUANTITY",               "unit": "gallons", "tier": "slow"  },
+    { "name": "fuel_left_gal",        "source": "AVar", "expression": "FUEL LEFT QUANTITY",                "unit": "gallons", "tier": "slow"  },
+    { "name": "fuel_right_gal",       "source": "AVar", "expression": "FUEL RIGHT QUANTITY",               "unit": "gallons", "tier": "slow"  },
+    { "name": "fuel_selector",        "source": "AVar", "expression": "FUEL TANK SELECTOR:1",              "unit": "enum",    "tier": "event" },
+
+    { "name": "battery_v",            "source": "AVar", "expression": "ELECTRICAL BATTERY VOLTAGE",        "unit": "volts",   "tier": "slow"  },
+    { "name": "battery_load_a",       "source": "AVar", "expression": "ELECTRICAL BATTERY LOAD",           "unit": "amperes", "tier": "slow"  },
+    { "name": "master_battery",       "source": "AVar", "expression": "ELECTRICAL MASTER BATTERY",         "unit": "bool",    "tier": "event" },
+    { "name": "alternator_active",    "source": "AVar", "expression": "GENERAL ENG ALTERNATOR ACTIVE:1",   "unit": "bool",    "tier": "slow"  },
+    { "name": "bus_v",                "source": "AVar", "expression": "BUS VOLTAGE:1",                     "unit": "volts",   "tier": "slow"  },
+
+    { "name": "brake_left",           "source": "AVar", "expression": "BRAKE LEFT POSITION",               "unit": "percent", "tier": "fast"  },
+    { "name": "brake_right",          "source": "AVar", "expression": "BRAKE RIGHT POSITION",              "unit": "percent", "tier": "fast"  },
+    { "name": "parking_brake",        "source": "AVar", "expression": "BRAKE PARKING POSITION",            "unit": "bool",    "tier": "event" },
+    { "name": "flaps_handle_pct",     "source": "AVar", "expression": "FLAPS HANDLE PERCENT",              "unit": "percent", "tier": "event" },
+
+    { "name": "ambient_temp_c",       "source": "AVar", "expression": "AMBIENT TEMPERATURE",               "unit": "celsius", "tier": "slow"  },
+    { "name": "ambient_pressure",     "source": "AVar", "expression": "AMBIENT PRESSURE",                  "unit": "inHg",    "tier": "slow"  },
+    { "name": "pressure_alt",         "source": "AVar", "expression": "PRESSURE ALTITUDE",                 "unit": "feet",    "tier": "slow"  }
+  ],
+
+  "derived": [
+    {
+      "name": "power_pct",
+      "recipe": "power_pct",
+      "inputs": { "rpm": "engine_rpm", "manifoldPressure": "manifold_pressure", "redlineRpm": { "const": 2700 } }
+    },
+    {
+      "name": "touchdown_energy_j",
+      "recipe": "touchdown_energy",
+      "inputs": { "verticalSpeed": "touchdown_v_fpm", "groundSpeed": "ground_speed_kts", "mass": { "const": 1157 } }
+    },
+    {
+      "name": "shock_cooling_rate",
+      "recipe": "shock_cooling_rate",
+      "inputs": { "cht": "cht_c" }
+    },
+    {
+      "name": "density_alt_ft",
+      "recipe": "density_altitude",
+      "inputs": { "pressureAlt": "pressure_alt", "oat": "ambient_temp_c" }
+    },
+    {
+      "name": "braking_power",
+      "recipe": "braking_energy",
+      "inputs": { "brakeL": "brake_left", "brakeR": "brake_right", "groundSpeed": "ground_speed_kts" }
+    },
+    {
+      "name": "start_kind",
+      "recipe": "start_kind",
+      "inputs": { "oilTemp": "oil_temp_c", "oat": "ambient_temp_c" }
+    },
+    {
+      "name": "battery_discharge_edge",
+      "recipe": "discharge_cycle",
+      "inputs": { "batteryV": "battery_v", "alternatorActive": "alternator_active" }
+    }
+  ],
+
+  "components": [
+    {
+      "id": "engine_1",
+      "category": "Engine",
+      "name": "Lycoming O-320-H2AD",
+      "mtbfHours": 2000,
+      "replaceIntervalHours": 2000,
+      "wearCurve": { "type": "weibull", "shape": 2.4, "scale": 2200 },
+      "stress": {
+        "highPower":     { "signal": "power_pct",         "above": 0.75, "factor": 1.6 },
+        "chtHot":        { "signal": "cht_c",             "above": 232,  "factor": 3.0 },
+        "shockCooling":  { "signal": "shock_cooling_rate","above": 28,   "factor": 2.5 },
+        "oilHot":        { "signal": "oil_temp_c",        "above": 118,  "factor": 2.0 },
+        "oilCold":       { "signal": "oil_temp_c",        "below": 24,   "factor": 1.5 },
+        "highDA":        { "signal": "density_alt_ft",    "above": 8000, "factor": 1.2 },
+        "hotStart":      { "event":  "start_kind",        "equals": "hot", "addCycles": 1 }
+      },
+      "failureModes": ["mag_drop_left", "mag_drop_right", "low_oil_pressure", "rough_running", "carb_ice"],
+      "consumables": ["oil_engine_1"],
+      "requires": ["engine_rpm", "manifold_pressure", "oil_temp_c", "oil_pressure_psi"],
+      "optional": ["cht_c", "egt_c"]
+    },
+    {
+      "id": "starter_1",
+      "category": "Engine",
+      "name": "Starter motor",
+      "mtbfHours": 1500,
+      "wearCurve": { "type": "linear", "rate": 0.0007 },
+      "stress": {
+        "longCrank":  { "signal": "starter", "above": 0.5, "factor": 4.0 },
+        "lowVoltage": { "signal": "battery_v", "below": 10.5, "factor": 2.5 }
+      },
+      "failureModes": ["starter_slow", "starter_no_crank"],
+      "requires": ["starter", "battery_v"]
+    },
+    {
+      "id": "battery_main",
+      "category": "Battery",
+      "name": "Main battery (12V lead-acid)",
+      "mtbfHours": 1200,
+      "replaceIntervalCycles": 800,
+      "wearCurve": { "type": "exponential", "rate": 0.0009 },
+      "stress": {
+        "deepDischarge":   { "signal": "battery_v",      "below": 11.0, "factor": 4.0 },
+        "altOff":          { "signal": "alternator_active", "equals": false, "factor": 1.5 },
+        "dischargeCycle":  { "event":  "battery_discharge_edge", "equals": true, "addCycles": 1 }
+      },
+      "consumables": ["battery_soh_main"],
+      "failureModes": ["battery_low_capacity", "battery_dead_cell"],
+      "requires": ["battery_v", "master_battery", "alternator_active"]
+    },
+    {
+      "id": "alternator_1",
+      "category": "Battery",
+      "name": "60A alternator",
+      "mtbfHours": 1800,
+      "wearCurve": { "type": "linear", "rate": 0.00055 },
+      "failureModes": ["alternator_fail", "alternator_low_output"],
+      "requires": ["alternator_active", "bus_v"]
+    },
+    {
+      "id": "gear_main_left",
+      "category": "GearBrakes",
+      "name": "Left main gear",
+      "mtbfHours": 5000,
+      "wearCurve": { "type": "weibull", "shape": 1.8, "scale": 5500 },
+      "stress": {
+        "hardLanding": { "signal": "touchdown_energy_j", "above": 35000, "factor": 6.0 }
+      },
+      "failureModes": ["oleo_leak", "strut_bottomed"],
+      "requires": ["touchdown_v_fpm", "ground_speed_kts", "on_ground"]
+    },
+    {
+      "id": "gear_main_right",
+      "category": "GearBrakes",
+      "name": "Right main gear",
+      "mtbfHours": 5000,
+      "wearCurve": { "type": "weibull", "shape": 1.8, "scale": 5500 },
+      "stress": {
+        "hardLanding": { "signal": "touchdown_energy_j", "above": 35000, "factor": 6.0 }
+      },
+      "failureModes": ["oleo_leak", "strut_bottomed"],
+      "requires": ["touchdown_v_fpm", "ground_speed_kts", "on_ground"]
+    },
+    {
+      "id": "gear_nose",
+      "category": "GearBrakes",
+      "name": "Nose gear",
+      "mtbfHours": 3500,
+      "wearCurve": { "type": "weibull", "shape": 1.6, "scale": 3800 },
+      "stress": {
+        "hardLanding":  { "signal": "touchdown_energy_j", "above": 30000, "factor": 5.0 },
+        "wheelbarrow":  { "signal": "brake_left",         "above": 0.6,   "factor": 1.4 }
+      },
+      "failureModes": ["shimmy_damper_worn", "oleo_leak"],
+      "requires": ["touchdown_v_fpm", "ground_speed_kts"]
+    },
+    {
+      "id": "tire_left",
+      "category": "Tires",
+      "name": "Left main tire",
+      "mtbfHours": 0,
+      "replaceIntervalCycles": 350,
+      "wearCurve": { "type": "linear", "rate": 0.0028 },
+      "stress": {
+        "hardBrake":   { "signal": "brake_left",          "above": 0.85, "factor": 5.0 },
+        "highSpeedTd": { "signal": "touchdown_energy_j",  "above": 25000, "factor": 2.0 }
+      },
+      "consumables": ["tire_left_tread"],
+      "failureModes": ["tire_flat_spot", "tire_blowout"],
+      "requires": ["brake_left", "ground_speed_kts"]
+    },
+    {
+      "id": "tire_right",
+      "category": "Tires",
+      "name": "Right main tire",
+      "mtbfHours": 0,
+      "replaceIntervalCycles": 350,
+      "wearCurve": { "type": "linear", "rate": 0.0028 },
+      "stress": {
+        "hardBrake":   { "signal": "brake_right",         "above": 0.85, "factor": 5.0 },
+        "highSpeedTd": { "signal": "touchdown_energy_j",  "above": 25000, "factor": 2.0 }
+      },
+      "consumables": ["tire_right_tread"],
+      "failureModes": ["tire_flat_spot", "tire_blowout"],
+      "requires": ["brake_right", "ground_speed_kts"]
+    },
+    {
+      "id": "brake_left",
+      "category": "GearBrakes",
+      "name": "Left brake assembly",
+      "mtbfHours": 0,
+      "replaceIntervalHours": 600,
+      "wearCurve": { "type": "linear", "rate": 0.0017 },
+      "stress": {
+        "highEnergy": { "signal": "braking_power", "above": 35000, "factor": 4.0 }
+      },
+      "consumables": ["brake_pad_left"],
+      "failureModes": ["pad_worn", "brake_fade", "master_cyl_leak"],
+      "requires": ["brake_left", "ground_speed_kts"]
+    },
+    {
+      "id": "brake_right",
+      "category": "GearBrakes",
+      "name": "Right brake assembly",
+      "mtbfHours": 0,
+      "replaceIntervalHours": 600,
+      "wearCurve": { "type": "linear", "rate": 0.0017 },
+      "stress": {
+        "highEnergy": { "signal": "braking_power", "above": 35000, "factor": 4.0 }
+      },
+      "consumables": ["brake_pad_right"],
+      "failureModes": ["pad_worn", "brake_fade", "master_cyl_leak"],
+      "requires": ["brake_right", "ground_speed_kts"]
+    },
+    {
+      "id": "fuel_system",
+      "category": "FuelSystem",
+      "name": "Fuel system",
+      "mtbfHours": 4000,
+      "wearCurve": { "type": "linear", "rate": 0.00025 },
+      "stress": {
+        "imbalance": { "signal": "fuel_left_gal", "below": 2.0, "factor": 1.5 }
+      },
+      "failureModes": ["fuel_starvation", "selector_stiff", "gascolator_leak"],
+      "requires": ["fuel_total_gal", "fuel_flow_gph", "fuel_selector"]
+    },
+    {
+      "id": "pitot_static",
+      "category": "Avionics",
+      "name": "Pitot/static system",
+      "mtbfHours": 6000,
+      "wearCurve": { "type": "linear", "rate": 0.000167 },
+      "failureModes": ["pitot_blocked", "static_blocked"],
+      "requires": ["airspeed_indicated", "ambient_pressure"]
+    }
+  ],
+
+  "consumables": [
+    {
+      "id": "oil_engine_1",
+      "kind": "Oil",
+      "capacity": 8,
+      "burnRateRecipe": "oil_burn_basic",
+      "burnRateParams": { "qtPerHour": 0.05, "highPowerMultiplier": 2.0, "wearMultiplier": 1.5 },
+      "minOperating": 5,
+      "topUpTo": 7
+    },
+    { "id": "battery_soh_main",  "kind": "BatterySoh", "capacity": 1.0, "minOperating": 0.55, "topUpTo": 1.0 },
+    { "id": "tire_left_tread",   "kind": "Tire",       "capacity": 1.0, "minOperating": 0.20, "topUpTo": 1.0 },
+    { "id": "tire_right_tread",  "kind": "Tire",       "capacity": 1.0, "minOperating": 0.20, "topUpTo": 1.0 },
+    { "id": "brake_pad_left",    "kind": "BrakePad",   "capacity": 1.0, "minOperating": 0.15, "topUpTo": 1.0 },
+    { "id": "brake_pad_right",   "kind": "BrakePad",   "capacity": 1.0, "minOperating": 0.15, "topUpTo": 1.0 }
+  ],
+
+  "failureModes": [
+    { "id": "mag_drop_left",      "displayName": "Left magneto rough",       "severity": "Caution",     "mtbfHours": 1500, "blocksDispatch": false, "symptoms": ["RPM drop > 175 on L mag check", "rough running"] },
+    { "id": "mag_drop_right",     "displayName": "Right magneto rough",      "severity": "Caution",     "mtbfHours": 1500, "blocksDispatch": false, "symptoms": ["RPM drop > 175 on R mag check"] },
+    { "id": "low_oil_pressure",   "displayName": "Low oil pressure",         "severity": "Grounding",   "mtbfHours": 4000, "blocksDispatch": true,  "symptoms": ["oil pressure < green arc"] },
+    { "id": "rough_running",      "displayName": "Rough running engine",     "severity": "Warning",     "mtbfHours": 1800, "blocksDispatch": false, "symptoms": ["vibration", "RPM hunt"] },
+    { "id": "carb_ice",           "displayName": "Carburetor ice",           "severity": "Caution",     "mtbfHours": 0,    "blocksDispatch": false, "symptoms": ["RPM decay in cruise", "rough idle"] },
+    { "id": "starter_slow",       "displayName": "Slow cranking starter",    "severity": "Annunciator", "mtbfHours": 1500, "blocksDispatch": false },
+    { "id": "starter_no_crank",   "displayName": "Starter no crank",         "severity": "Grounding",   "mtbfHours": 2500, "blocksDispatch": true  },
+    { "id": "battery_low_capacity","displayName": "Battery low capacity",    "severity": "Warning",     "mtbfHours": 1200, "blocksDispatch": false },
+    { "id": "battery_dead_cell",  "displayName": "Battery dead cell",        "severity": "Grounding",   "mtbfHours": 1800, "blocksDispatch": true  },
+    { "id": "alternator_fail",    "displayName": "Alternator failure",       "severity": "Warning",     "mtbfHours": 1800, "blocksDispatch": false },
+    { "id": "alternator_low_output","displayName": "Alternator low output",  "severity": "Caution",     "mtbfHours": 2200, "blocksDispatch": false },
+    { "id": "oleo_leak",          "displayName": "Oleo strut leak",          "severity": "Caution",     "mtbfHours": 5000, "blocksDispatch": false },
+    { "id": "strut_bottomed",     "displayName": "Strut bottomed",           "severity": "Warning",     "mtbfHours": 8000, "blocksDispatch": false },
+    { "id": "shimmy_damper_worn", "displayName": "Nose shimmy damper worn",  "severity": "Caution",     "mtbfHours": 3500, "blocksDispatch": false },
+    { "id": "tire_flat_spot",     "displayName": "Tire flat spot",           "severity": "Caution",     "mtbfHours": 0,    "blocksDispatch": false },
+    { "id": "tire_blowout",       "displayName": "Tire blowout",             "severity": "Grounding",   "mtbfHours": 0,    "blocksDispatch": true  },
+    { "id": "pad_worn",           "displayName": "Brake pads worn",          "severity": "Caution",     "mtbfHours": 600,  "blocksDispatch": false },
+    { "id": "brake_fade",         "displayName": "Brake fade",               "severity": "Warning",     "mtbfHours": 0,    "blocksDispatch": false },
+    { "id": "master_cyl_leak",    "displayName": "Brake master cyl leak",    "severity": "Grounding",   "mtbfHours": 4000, "blocksDispatch": true  },
+    { "id": "fuel_starvation",    "displayName": "Fuel starvation",          "severity": "Grounding",   "mtbfHours": 0,    "blocksDispatch": true  },
+    { "id": "selector_stiff",     "displayName": "Fuel selector stiff",      "severity": "Annunciator", "mtbfHours": 4000, "blocksDispatch": false },
+    { "id": "gascolator_leak",    "displayName": "Gascolator leak",          "severity": "Grounding",   "mtbfHours": 6000, "blocksDispatch": true  },
+    { "id": "pitot_blocked",      "displayName": "Pitot blocked",            "severity": "Warning",     "mtbfHours": 6000, "blocksDispatch": false },
+    { "id": "static_blocked",     "displayName": "Static port blocked",      "severity": "Warning",     "mtbfHours": 6000, "blocksDispatch": false }
+  ],
+
+  "injection": [
+    { "failureMode": "mag_drop_left",     "kind": "SimConnectEvent", "expression": "TOGGLE_MAGNETO_1_FAILURE" },
+    { "failureMode": "mag_drop_right",    "kind": "SimConnectEvent", "expression": "TOGGLE_MAGNETO_2_FAILURE" },
+    { "failureMode": "low_oil_pressure",  "kind": "InternalOnly",    "expression": "" },
+    { "failureMode": "rough_running",     "kind": "InternalOnly",    "expression": "" },
+    { "failureMode": "carb_ice",          "kind": "InternalOnly",    "expression": "" },
+    { "failureMode": "starter_no_crank",  "kind": "InternalOnly",    "expression": "" },
+    { "failureMode": "alternator_fail",   "kind": "SimConnectEvent", "expression": "TOGGLE_ALTERNATOR1" },
+    { "failureMode": "pitot_blocked",     "kind": "SimConnectEvent", "expression": "PITOT_HEAT_OFF" },
+    { "failureMode": "tire_flat_spot",    "kind": "InternalOnly",    "expression": "" },
+    { "failureMode": "tire_blowout",      "kind": "InternalOnly",    "expression": "" }
+  ],
+
+  "support": {
+    "covered": [
+      "engine wear (RPM/MAP/oil-driven)",
+      "oil consumption + leak modeling",
+      "starter abuse",
+      "battery state-of-health and discharge cycles",
+      "alternator failure",
+      "hard-landing detection (per gear leg)",
+      "brake/tire wear and flat-spot risk",
+      "fuel mismanagement (starvation, imbalance)",
+      "pitot/static blockage"
+    ],
+    "partial": [
+      {
+        "feature": "CHT exceedance / shock cooling",
+        "reason": "Default Asobo C172 exposes only bulk RECIP ENG CYLINDER HEAD TEMPERATURE:1, not per-cylinder.",
+        "mitigation": "Install a study-level C172 (A2A, BlackBox) and a pack that overrides cht_c with L:Vars."
+      },
+      {
+        "feature": "EGT-based leaning quality",
+        "reason": "GENERAL ENG EGT:1 may read zero on default C172; declared optional.",
+        "mitigation": "Disabled when signal absent; engine wear falls back to RPM/MAP/oil-only stressors."
+      }
+    ],
+    "unsupported": [
+      {
+        "feature": "vacuum / gyro failure",
+        "reason": "SUCTION PRESSURE not exposed by the default C172 in MSFS 2024.",
+        "workaround": "Failure modes hidden from MEL list; not modeled."
+      },
+      {
+        "feature": "alternator field current / load split",
+        "reason": "No SimVar exposed.",
+        "workaround": "Battery model uses voltage sag heuristic instead."
+      },
+      {
+        "feature": "carb heat position read-back",
+        "reason": "Not reliably exposed; carb ice fires as scheduled internal event."
+      }
+    ]
+  }
+}
