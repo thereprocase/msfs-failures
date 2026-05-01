@@ -56,6 +56,9 @@ public partial class App : Application
                 services.AddSingleton<IWearEngine, WearEngine>();
                 services.AddSingleton<IFailureEngine>(_ => new FailureEngine(seed: 42));
 
+                // Active airframe provider — singleton so all consumers share cache.
+                services.AddSingleton<IActiveAirframeProvider, ActiveAirframeProvider>();
+
                 // Background tick loop — drives WearEngine + FailureEngine from SampleStream.
                 services.AddHostedService<TickHost>();
 

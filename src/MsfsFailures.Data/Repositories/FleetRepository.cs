@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using MsfsFailures.Data.Entities;
+using MsfsFailures.Core;
+using Entities = MsfsFailures.Data.Entities;
+using CoreSquawkStatus = MsfsFailures.Core.SquawkStatus;
 
 namespace MsfsFailures.Data.Repositories;
 
@@ -19,7 +21,7 @@ public sealed class FleetRepository : IFleetRepository
         _db = db;
     }
 
-    public async Task<IReadOnlyList<Airframe>> GetAllAirframesAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<Entities.Airframe>> GetAllAirframesAsync(CancellationToken ct = default)
     {
         return await _db.Airframes
             .Include(a => a.ModelRef)
@@ -27,7 +29,7 @@ public sealed class FleetRepository : IFleetRepository
             .ToListAsync(ct);
     }
 
-    public async Task<Airframe?> GetAirframeAsync(Guid id, CancellationToken ct = default)
+    public async Task<Entities.Airframe?> GetAirframeAsync(Guid id, CancellationToken ct = default)
     {
         return await _db.Airframes
             .Include(a => a.ModelRef)
@@ -37,13 +39,13 @@ public sealed class FleetRepository : IFleetRepository
             .FirstOrDefaultAsync(a => a.Id == id, ct);
     }
 
-    public async Task AddSessionAsync(Session session, CancellationToken ct = default)
+    public async Task AddSessionAsync(Entities.Session session, CancellationToken ct = default)
     {
         _db.Sessions.Add(session);
         await _db.SaveChangesAsync(ct);
     }
 
-    public async Task<IReadOnlyList<Squawk>> GetOpenSquawksAsync(Guid airframeId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Entities.Squawk>> GetOpenSquawksAsync(Guid airframeId, CancellationToken ct = default)
     {
         // Status == 0 maps to Core.SquawkStatus.Open (int enum, no coupling needed here)
         return await _db.Squawks
@@ -55,7 +57,7 @@ public sealed class FleetRepository : IFleetRepository
 
     // ── v1 tick-loop extensions ──────────────────────────────────────────────
 
-    public async Task<Airframe?> GetAirframeByTailAsync(string tail, CancellationToken ct = default)
+    public async Task<Entities.Airframe?> GetAirframeByTailAsync(string tail, CancellationToken ct = default)
     {
         return await _db.Airframes
             .Include(a => a.ModelRef)
@@ -63,7 +65,7 @@ public sealed class FleetRepository : IFleetRepository
             .FirstOrDefaultAsync(a => a.Tail == tail, ct);
     }
 
-    public async Task<IReadOnlyList<Component>> GetComponentsForAirframeAsync(Guid airframeId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Entities.Component>> GetComponentsForAirframeAsync(Guid airframeId, CancellationToken ct = default)
     {
         return await _db.Components
             .Where(c => c.AirframeId == airframeId)
@@ -71,7 +73,7 @@ public sealed class FleetRepository : IFleetRepository
             .ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<ComponentTemplate>> GetTemplatesForModelAsync(Guid modelRefId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Entities.ComponentTemplate>> GetTemplatesForModelAsync(Guid modelRefId, CancellationToken ct = default)
     {
         return await _db.ComponentTemplates
             .Where(t => t.ModelRefId == modelRefId)
@@ -79,7 +81,7 @@ public sealed class FleetRepository : IFleetRepository
             .ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<FailureMode>> GetFailureModesForTemplatesAsync(
+    public async Task<IReadOnlyList<Entities.FailureMode>> GetFailureModesForTemplatesAsync(
         IReadOnlyList<Guid> templateIds, CancellationToken ct = default)
     {
         return await _db.FailureModes
@@ -88,14 +90,14 @@ public sealed class FleetRepository : IFleetRepository
             .ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<Accelerator>> GetAcceleratorsAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<Entities.Accelerator>> GetAcceleratorsAsync(CancellationToken ct = default)
     {
         return await _db.Accelerators
             .AsNoTracking()
             .ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<Consumable>> GetConsumablesForAirframeAsync(Guid airframeId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Entities.Consumable>> GetConsumablesForAirframeAsync(Guid airframeId, CancellationToken ct = default)
     {
         return await _db.Consumables
             .Where(c => c.AirframeId == airframeId)
@@ -150,9 +152,9 @@ public sealed class FleetRepository : IFleetRepository
         await _db.SaveChangesAsync(ct);
     }
 
-    public async Task<Session> StartSessionAsync(Guid airframeId, double hobbsAtStart, CancellationToken ct = default)
+    public async Task<Entities.Session> StartSessionAsync(Guid airframeId, double hobbsAtStart, CancellationToken ct = default)
     {
-        var session = new Session
+        var session = new Entities.Session
         {
             Id               = Guid.NewGuid(),
             AirframeId       = airframeId,
@@ -181,5 +183,39 @@ public sealed class FleetRepository : IFleetRepository
         session.HardLandings = hardLandings;
 
         await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Entities.MaintenanceAction>> GetMaintenanceActionsForAirframeAsync(
+        Guid airframeId, CancellationToken ct = default)
+    {
+        return await _db.MaintenanceActions
+            .Where(m => m.AirframeId == airframeId)
+            .OrderByDescending(m => m.PerformedAt)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<Entities.Session?> GetMostRecentSessionAsync(Guid airframeId, CancellationToken ct = default)
+    {
+        return await _db.Sessions
+            .Where(s => s.AirframeId == airframeId)
+            .OrderByDescending(s => s.EndedAt ?? s.StartedAt)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(ct);
+    }
+
+    public async Task<int> CountSquawksAsync(Guid airframeId, CoreSquawkStatus status, CancellationToken ct = default)
+    {
+        return await _db.Squawks
+            .Where(s => s.AirframeId == airframeId && s.Status == (int)status)
+            .CountAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Entities.Squawk>> GetSquawksForAirframeAsync(Guid airframeId, CancellationToken ct = default)
+    {
+        return await _db.Squawks
+            .Where(s => s.AirframeId == airframeId)
+            .AsNoTracking()
+            .ToListAsync(ct);
     }
 }

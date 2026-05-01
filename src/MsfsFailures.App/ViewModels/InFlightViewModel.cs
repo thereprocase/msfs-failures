@@ -1,8 +1,14 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MsfsFailures.App.Services;
+using MsfsFailures.Core;
 using MsfsFailures.Core.Wear;
+using MsfsFailures.Data.Repositories;
 using MsfsFailures.Sim;
+using DataEntities = MsfsFailures.Data.Entities;
 
 namespace MsfsFailures.App.ViewModels;
 
@@ -31,18 +37,42 @@ public sealed record ProjectionItem(string Name, string Delta, string Detail, st
 public sealed partial class InFlightViewModel : ObservableObject, IDisposable
 {
     private const int TrendBufferSize = 60;
+    private const int HealthRefreshIntervalSeconds = 30;
 
     private readonly ILogger<InFlightViewModel> _log;
     private readonly IDisposable _sampleSub;
     private readonly IDisposable _statusSub;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IActiveAirframeProvider _airframeProvider;
+    private readonly System.Timers.Timer _healthRefreshTimer;
+    private CancellationTokenSource? _healthCts;
 
     // Rolling trend queues — updated on sample thread, read by UI thread via ObservableCollection.
     private readonly Queue<double> _ittTrendQueue   = new(TrendBufferSize + 1);
     private readonly Queue<double> _torqueTrendQueue = new(TrendBufferSize + 1);
 
-    public InFlightViewModel(ISimBus bus, ILogger<InFlightViewModel> log)
+    // Default hardcoded health (fallback when no DB data).
+    private static readonly IReadOnlyList<HealthIndex> DefaultHealth =
+    [
+        new("ENGINE",        "condition index",                          0.74),
+        new("HOT SECTION",   "1382 h to HSI",                            0.82),
+        new("COMPRESSOR",    "wash due",                                 0.61),
+        new("OIL SYSTEM",    "11.4 / 14 qt",                             0.88),
+        new("FUEL",          "clean · last sample 4.2 h ago",            0.94),
+        new("PROPELLER",     "erosion + governor drift",                 0.79),
+        new("GEAR · BRAKES", "brakes 55% · tires 62%",                   0.66),
+        new("ELECTRICAL",    "battery SOH 91%",                          0.91),
+    ];
+
+    public InFlightViewModel(
+        ISimBus bus,
+        ILogger<InFlightViewModel> log,
+        IServiceScopeFactory scopeFactory,
+        IActiveAirframeProvider airframeProvider)
     {
         _log = log;
+        _scopeFactory = scopeFactory;
+        _airframeProvider = airframeProvider;
 
         // Seed trend buffers with initial static values (replaced by live data on first tick).
         foreach (var v in new double[] { 612,634,656,672,684,698,712,706,694,688,684,682,684,685,686,684,683,685,686,685 })
@@ -52,9 +82,26 @@ public sealed partial class InFlightViewModel : ObservableObject, IDisposable
 
         IttTrend    = new ObservableCollection<double>(_ittTrendQueue);
         TorqueTrend = new ObservableCollection<double>(_torqueTrendQueue);
+        Health      = new ObservableCollection<HealthIndex>(DefaultHealth);
 
         _sampleSub = bus.SampleStream.Subscribe(OnSample, OnSampleError);
         _statusSub = bus.StatusStream.Subscribe(OnStatus, OnStatusError);
+
+        // Subscribe to airframe changes to recompute health.
+        _airframeProvider.ActiveAirframeChanged += OnAirframeChanged;
+
+        // Set up periodic health refresh timer.
+        _healthRefreshTimer = new System.Timers.Timer(HealthRefreshIntervalSeconds * 1000)
+        {
+            AutoReset = true
+        };
+        _healthRefreshTimer.Elapsed += async (s, e) => await RefreshHealthAsync();
+
+        _healthCts = new CancellationTokenSource();
+
+        // Compute health once at startup (after all wiring) and start the timer.
+        _ = RefreshHealthAsync();
+        _healthRefreshTimer.Start();
     }
 
     // ── Aircraft constants (fixed for seeded demo aircraft) ──────────────────
@@ -151,22 +198,13 @@ public sealed partial class InFlightViewModel : ObservableObject, IDisposable
     public string EnduranceHours => (FuelLb / (double)FuelFlow).ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
     public string ReserveAtArrival => "+" + (((double)FuelLb / FuelFlow) - 0.86 - 0.32).ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "h";
 
-    // ── Health indices (hardcoded v1 — derived surface, needs more plumbing) ─
+    // ── Health indices (observable, computed from active airframe data) ──────
 
-    public IReadOnlyList<HealthIndex> Health { get; } =
-    [
-        new("ENGINE",        "condition index",                          0.74),
-        new("HOT SECTION",   "1382 h to HSI",                            0.82),
-        new("COMPRESSOR",    "wash due",                                 0.61),
-        new("OIL SYSTEM",    "11.4 / 14 qt",                             0.88),
-        new("FUEL",          "clean · last sample 4.2 h ago",            0.94),
-        new("PROPELLER",     "erosion + governor drift",                 0.79),
-        new("GEAR · BRAKES", "brakes 55% · tires 62%",                   0.66),
-        new("ELECTRICAL",    "battery SOH 91%",                          0.91),
-    ];
+    [ObservableProperty]
+    private ObservableCollection<HealthIndex> _health = new(DefaultHealth);
 
-    public double EngineHealth        => Health[0].Value;
-    public string EngineHealthPercent => ((int)Math.Round(Health[0].Value * 100)).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    public double EngineHealth        => Health.Count > 0 ? Health[0].Value : 0.74;
+    public string EngineHealthPercent => ((int)Math.Round(EngineHealth * 100)).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     // ── Thermal ──────────────────────────────────────────────────────────────
 
@@ -356,11 +394,163 @@ public sealed partial class InFlightViewModel : ObservableObject, IDisposable
             collection.RemoveAt(0);
     }
 
+    // ── Health computation ──────────────────────────────────────────────────
+
+    private void OnAirframeChanged(object? sender, Guid? airframeId)
+    {
+        _log.LogInformation("InFlightViewModel: active airframe changed to {AirframeId}.", airframeId);
+        _ = RefreshHealthAsync();
+    }
+
+    private async Task RefreshHealthAsync()
+    {
+        if (_healthCts?.Token.IsCancellationRequested ?? true)
+            return;
+
+        try
+        {
+            var airframeId = await _airframeProvider.GetActiveAirframeIdAsync(_healthCts.Token);
+            if (airframeId is null)
+            {
+                _log.LogInformation("InFlightViewModel: no active airframe yet.");
+                return;
+            }
+
+            using var scope = _scopeFactory.CreateScope();
+            var repo = scope.ServiceProvider.GetRequiredService<IFleetRepository>();
+            var components = await repo.GetComponentsForAirframeAsync(airframeId.Value, _healthCts.Token);
+            var consumables = await repo.GetConsumablesForAirframeAsync(airframeId.Value, _healthCts.Token);
+            var templates = await repo.GetTemplatesForModelAsync(
+                (await repo.GetAirframeAsync(airframeId.Value, _healthCts.Token))?.ModelRefId ?? Guid.Empty,
+                _healthCts.Token);
+
+            var newHealth = ComputeHealth(components, consumables, templates);
+
+            // Marshal to UI thread.
+            if (Application.Current?.Dispatcher is var disp && disp != null)
+            {
+                disp.Invoke(() =>
+                {
+                    Health.Clear();
+                    foreach (var h in newHealth)
+                        Health.Add(h);
+
+                    var healthStr = string.Join(", ", newHealth.Select(h => $"{h.Label}={((int)Math.Round(h.Value * 100))}%"));
+                    _log.LogInformation("InFlightViewModel: recomputed health: {Health}.", healthStr);
+                });
+            }
+            else
+            {
+                // No dispatcher — update synchronously.
+                Health.Clear();
+                foreach (var h in newHealth)
+                    Health.Add(h);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Shutdown in progress.
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "InFlightViewModel: failed to recompute health.");
+        }
+    }
+
+    private IReadOnlyList<HealthIndex> ComputeHealth(
+        IReadOnlyList<DataEntities.Component> components,
+        IReadOnlyList<DataEntities.Consumable> consumables,
+        IReadOnlyList<DataEntities.ComponentTemplate> templates)
+    {
+        var result = new List<HealthIndex>();
+
+        // Group components by category.
+        var componentsByCategory = components
+            .GroupBy(c =>
+            {
+                var template = templates.FirstOrDefault(t => t.Id == c.TemplateId);
+                return template != null ? (ComponentCategory)template.Category : ComponentCategory.Other;
+            })
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        // Consumable lookup by Kind.
+        var consumablesByKind = consumables
+            .GroupBy(c => (ConsumableKind)c.Kind)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        // ENGINE — average (1 - wear) for Engine category components.
+        var engineHealth = AverageHealth(componentsByCategory.GetValueOrDefault(ComponentCategory.Engine) ?? new());
+        result.Add(new("ENGINE", "condition index", engineHealth));
+
+        // HOT SECTION — average (1 - wear) for HotSection category.
+        var hotSectionHealth = AverageHealth(componentsByCategory.GetValueOrDefault(ComponentCategory.HotSection) ?? new());
+        var hotsectionSub = hotSectionHealth > 0.5 ? "templates avg" : "HSI service overdue";
+        result.Add(new("HOT SECTION", hotsectionSub, hotSectionHealth));
+
+        // COMPRESSOR — average (1 - wear) for Compressor category, with wash-due indicator.
+        var compressorHealth = AverageHealth(componentsByCategory.GetValueOrDefault(ComponentCategory.Compressor) ?? new());
+        var compressorSub = compressorHealth < 0.4 ? "wash due" : "clean";
+        result.Add(new("COMPRESSOR", compressorSub, compressorHealth));
+
+        // OIL SYSTEM — based on Oil consumable level + OilSystem components.
+        var oilLevel = consumablesByKind.GetValueOrDefault(ConsumableKind.Oil)?.FirstOrDefault()?.Level ?? 1.0;
+        var oilCapacity = consumablesByKind.GetValueOrDefault(ConsumableKind.Oil)?.FirstOrDefault()?.Capacity ?? 14.0;
+        var oilSystemComponents = componentsByCategory.GetValueOrDefault(ComponentCategory.OilSystem) ?? new();
+        var oilComponentHealth = AverageHealth(oilSystemComponents);
+        var oilHealth = (oilLevel + oilComponentHealth) / 2; // blend consumable + component health
+        var oilSub = $"{(oilLevel * oilCapacity):F1} / {oilCapacity:F1} qt";
+        result.Add(new("OIL SYSTEM", oilSub, oilHealth));
+
+        // FUEL — FuelSystem components average.
+        var fuelHealth = AverageHealth(componentsByCategory.GetValueOrDefault(ComponentCategory.FuelSystem) ?? new());
+        var fuelSub = "clean · last sample 4.2 h ago";
+        result.Add(new("FUEL", fuelSub, fuelHealth));
+
+        // PROPELLER — Propeller category average.
+        var propellerHealth = AverageHealth(componentsByCategory.GetValueOrDefault(ComponentCategory.Propeller) ?? new());
+        result.Add(new("PROPELLER", "erosion + governor drift", propellerHealth));
+
+        // GEAR · BRAKES — combine GearBrakes components + Tires/BrakePad consumables.
+        var gearBrakesComponents = componentsByCategory.GetValueOrDefault(ComponentCategory.GearBrakes) ?? new();
+        var tiresConsumable = consumablesByKind.GetValueOrDefault(ConsumableKind.Tire)?.FirstOrDefault();
+        var brakePadConsumable = consumablesByKind.GetValueOrDefault(ConsumableKind.BrakePad)?.FirstOrDefault();
+        var gearBrakesHealth = AverageHealth(gearBrakesComponents);
+        var tiresHealth = tiresConsumable?.Level ?? 0.7;
+        var brakesHealth = brakePadConsumable?.Level ?? 0.65;
+        var gearBrakesBlended = (gearBrakesHealth + tiresHealth + brakesHealth) / 3;
+        var gearBrakesSub = $"brakes {((int)Math.Round(brakesHealth * 100))}% · tires {((int)Math.Round(tiresHealth * 100))}%";
+        result.Add(new("GEAR · BRAKES", gearBrakesSub, gearBrakesBlended));
+
+        // ELECTRICAL — BatterySoh consumable level.
+        var batteryConsumable = consumablesByKind.GetValueOrDefault(ConsumableKind.BatterySoh)?.FirstOrDefault();
+        var electricalHealth = batteryConsumable?.Level ?? 0.91;
+        var batterySoh = (int)Math.Round(electricalHealth * 100);
+        result.Add(new("ELECTRICAL", $"battery SOH {batterySoh}%", electricalHealth));
+
+        return result;
+    }
+
+    private double AverageHealth(IReadOnlyList<DataEntities.Component> components)
+    {
+        if (components.Count == 0)
+            return 0.5; // TODO: stub value for no data.
+
+        double sum = 0;
+        foreach (var c in components)
+            sum += (1 - Math.Max(0, Math.Min(1, c.Wear)));
+
+        return sum / components.Count;
+    }
+
     // ── IDisposable ──────────────────────────────────────────────────────────
 
     public void Dispose()
     {
+        _healthRefreshTimer?.Dispose();
+        _healthCts?.Cancel();
+        _healthCts?.Dispose();
         _sampleSub.Dispose();
         _statusSub.Dispose();
+        _airframeProvider.ActiveAirframeChanged -= OnAirframeChanged;
     }
 }

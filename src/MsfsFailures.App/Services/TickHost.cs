@@ -30,6 +30,7 @@ public sealed class TickHost : BackgroundService
     private readonly ILogger<TickHost> _log;
     private readonly IWearEngine _wear;
     private readonly IFailureEngine _failure;
+    private readonly IActiveAirframeProvider _airframeProvider;
 
     // Session state — managed on the subscription thread (sequential per-sample).
     private Guid? _currentSessionId;
@@ -51,13 +52,15 @@ public sealed class TickHost : BackgroundService
         IServiceScopeFactory scopeFactory,
         ILogger<TickHost> log,
         IWearEngine wear,
-        IFailureEngine failure)
+        IFailureEngine failure,
+        IActiveAirframeProvider airframeProvider)
     {
-        _bus          = bus;
-        _scopeFactory = scopeFactory;
-        _log          = log;
-        _wear         = wear;
-        _failure      = failure;
+        _bus               = bus;
+        _scopeFactory      = scopeFactory;
+        _log               = log;
+        _wear              = wear;
+        _failure           = failure;
+        _airframeProvider  = airframeProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -336,19 +339,8 @@ public sealed class TickHost : BackgroundService
 
     private async Task<Guid?> ResolveAirframeIdAsync(CancellationToken ct)
     {
-        // TODO: derive from sim aircraft detection (TITLE/ATC_MODEL)
-        // v1 fallback: try well-known demo tail, then take first airframe in DB.
-        using var scope = _scopeFactory.CreateScope();
-        var repo = scope.ServiceProvider.GetRequiredService<IFleetRepository>();
-
-        var byTail = await repo.GetAirframeByTailAsync("N208RC", ct);
-        if (byTail is not null) return byTail.Id;
-
-        // No N208RC seeded — fall back to the first airframe found.
-        var all = await repo.GetAllAirframesAsync(ct);
-        if (all.Count > 0) return all[0].Id;
-
-        return null;
+        // Delegate to the provider.
+        return await _airframeProvider.GetActiveAirframeIdAsync(ct);
     }
 
     // ── Data → Core mapping ──────────────────────────────────────────────────

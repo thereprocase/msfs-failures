@@ -1,19 +1,14 @@
 // TODO (future passes — synthetic / cosmetic fields not yet populated from DB):
 //   - AirframeVm.Nickname       → populate from a future airframes.nickname column or separate metadata table
-//   - AirframeVm.HobbsSinceMx   → derive from last MaintenanceAction.PerformedAt + elapsed Hobbs hours
-//   - AirframeVm.NextInspectionHrs → derive from inspection_interval_hours - HobbsSinceMx
-//   - AirframeVm.OpenSquawks / Deferred → aggregate from Squawks table (currently zeroed)
-//   - AirframeVm.LastFlight      → query Sessions table for most recent session per airframe
-//   - AirframeVm.Status          → derive from squawk severity + inspection window; currently forced Airworthy
-//   - AirframeVm.Live / LiveState→ no Live flag in Airframe entity yet; will come from a live Session row
-//                                  N350KA "live" tinting will not appear until a real live-session concept is added.
-//   - SquawkVm.Id / Component / Summary → Squawk entity packs these into Notes for now (seed compat);
-//                                          a future migration adds Component + Summary columns.
+//   - AirframeVm.Live / LiveState→ once SessionService exists, set Live = airframe has open session.
 
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MsfsFailures.Core;
 using MsfsFailures.Data;
-using MsfsFailures.Data.Entities;
+using Entities = MsfsFailures.Data.Entities;
+using MsfsFailures.Data.Repositories;
 using MsfsFailures.App.ViewModels;
 
 namespace MsfsFailures.App.Services;
@@ -22,42 +17,83 @@ namespace MsfsFailures.App.Services;
 /// <see cref="IFleetSource"/> backed by <see cref="IFleetRepository"/> (SQLite).
 /// Reads on construction (sync-over-async) which is acceptable at app startup
 /// after the host has started and migrations/seed have run.
+/// TODO: live refresh on a timer or via DB-change hook.
 /// </summary>
 public sealed class RepositoryFleetSource : IFleetSource
 {
-    private readonly IReadOnlyList<AirframeVm> _airframes;
-    private readonly IReadOnlyList<SquawkVm> _squawks;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private IReadOnlyList<AirframeVm> _airframes;
+    private IReadOnlyList<SquawkVm> _squawks;
 
     public RepositoryFleetSource(IServiceScopeFactory scopeFactory)
     {
-        // Open a fresh scope so we get a Scoped FleetDbContext (DbContext is Scoped).
-        using var scope = scopeFactory.CreateScope();
-        var db   = scope.ServiceProvider.GetRequiredService<FleetDbContext>();
+        _scopeFactory = scopeFactory;
 
-        // Include Consumables so BuildConsumables has data; GetAllAirframesAsync
-        // only includes ModelRef, so we go directly to db for a fuller projection.
-        var airframes = db.Airframes
-                          .Include(a => a.ModelRef)
-                          .Include(a => a.Consumables)
-                          .AsNoTracking()
-                          .ToList();
-        var squawks   = db.Squawks
-                          .Include(s => s.Airframe)
-                          .AsNoTracking()
-                          .ToList();
-
-        _airframes = airframes.Select(MapAirframe).ToList();
-        _squawks   = squawks.Select(MapSquawk).ToList();
+        // Initial load on construction (sync-over-async pattern).
+        // In real apps with async DI, this should be deferred to an async initializer.
+        _airframes = LoadAirframesSync();
+        _squawks   = LoadSquawksSync();
     }
 
     public IReadOnlyList<AirframeVm> GetAirframes() => _airframes;
     public IReadOnlyList<SquawkVm>   GetSquawks()   => _squawks;
 
+    private IReadOnlyList<AirframeVm> LoadAirframesSync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var repo = scope.ServiceProvider.GetRequiredService<IFleetRepository>();
+        var db = scope.ServiceProvider.GetRequiredService<FleetDbContext>();
+
+        // Load airframes with consumables and relations needed for mapping.
+        var airframes = db.Airframes
+                          .Include(a => a.ModelRef)
+                          .Include(a => a.Consumables)
+                          .Include(a => a.MaintenanceActions)
+                          .Include(a => a.Sessions)
+                          .Include(a => a.Squawks)
+                              .ThenInclude(s => s.FailureMode)
+                          .AsNoTracking()
+                          .ToList();
+
+        return airframes.Select(a => MapAirframe(a, repo)).ToList();
+    }
+
+    private IReadOnlyList<SquawkVm> LoadSquawksSync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<FleetDbContext>();
+
+        var squawks = db.Squawks
+                        .Include(s => s.Airframe)
+                        .AsNoTracking()
+                        .ToList();
+
+        return squawks.Select(MapSquawk).ToList();
+    }
+
     // ── Mapping helpers ──────────────────────────────────────────────────
 
-    private static AirframeVm MapAirframe(Airframe a)
+    private AirframeVm MapAirframe(Entities.Airframe a, IFleetRepository repo)
     {
         var consumables = BuildConsumables(a.Consumables);
+
+        // Derive HobbsSinceMx from the latest MaintenanceAction
+        var hobbsSinceMx = ComputeHobbsSinceMx(a.MaintenanceActions, a.TotalHobbsHours);
+
+        // NextInspectionHrs: hardcoded 100h interval minus HobbsSinceMx, clamped to >=0
+        // TODO: proper version pulls per-airframe interval from ComponentTemplate or maintenance program
+        var nextInspectionHrs = Math.Max(0, 100.0 - hobbsSinceMx);
+
+        // Count open and deferred squawks
+        var openCount = a.Squawks.Count(s => s.Status == (int)SquawkStatus.Open);
+        var deferredCount = a.Squawks.Count(s => s.Status == (int)SquawkStatus.Deferred);
+
+        // Determine Status based on squawks and inspection window
+        var status = ComputeAirframeStatus(a.Squawks, nextInspectionHrs);
+
+        // Derive LastFlight from the most recent Session
+        var lastFlight = ComputeLastFlight(a.Sessions);
+
         return new AirframeVm
         {
             Id               = a.Id.ToString(),
@@ -66,27 +102,90 @@ public sealed class RepositoryFleetSource : IFleetSource
             Model            = a.ModelRef?.Name ?? a.Type,
             // TODO: Nickname from future DB column
             Nickname         = string.Empty,
-            // TODO: Status derived from squawks + inspection window
-            Status           = AirframeStatus.Airworthy,
+            Status           = status,
             Hours            = a.TotalHobbsHours,
             Cycles           = a.TotalCycles,
-            // TODO: HobbsSinceMx from last MaintenanceAction
-            HobbsSinceMx     = 0.0,
-            // TODO: NextInspectionHrs from inspection interval
-            NextInspectionHrs = 100.0,
-            // TODO: OpenSquawks + Deferred from Squawks table aggregate
-            OpenSquawks      = 0,
-            Deferred         = 0,
+            HobbsSinceMx     = hobbsSinceMx,
+            NextInspectionHrs = nextInspectionHrs,
+            OpenSquawks      = openCount,
+            Deferred         = deferredCount,
             Consumables      = consumables,
-            // TODO: LastFlight from Sessions table
-            LastFlight       = new LastFlightVm("—", "—", 0, 0, 0),
-            // TODO: Live from a live Session row; N350KA tinting deferred
+            LastFlight       = lastFlight,
+            // TODO: once SessionService exists, set Live = airframe has open session.
             Live             = false,
             LiveState        = null,
         };
     }
 
-    private static ConsumablesVm BuildConsumables(List<Consumable> consumables)
+    private static double ComputeHobbsSinceMx(List<Entities.MaintenanceAction> actions, double totalHobbs)
+    {
+        if (actions.Count == 0)
+            return 0.0;
+
+        var latest = actions.OrderByDescending(m => m.PerformedAt).First();
+        return Math.Max(0, totalHobbs - latest.HoursAtAction);
+    }
+
+    private static AirframeStatus ComputeAirframeStatus(List<Entities.Squawk> squawks, double nextInspectionHrs)
+    {
+        // Check for grounding squawks: open squawks whose FailureMode has Grounding severity
+        if (squawks.Any(s => s.Status == (int)SquawkStatus.Open &&
+                            s.FailureMode?.Severity == (int)FailureSeverity.Grounding))
+            return AirframeStatus.Grounded;
+
+        // Check for any open squawks (non-deferred)
+        if (squawks.Any(s => s.Status == (int)SquawkStatus.Open))
+            return AirframeStatus.Squawks;
+
+        // Check if maintenance is due (NextInspectionHrs < 5)
+        if (nextInspectionHrs < 5)
+            return AirframeStatus.MxDue;
+
+        return AirframeStatus.Airworthy;
+    }
+
+    private static LastFlightVm ComputeLastFlight(List<Entities.Session> sessions)
+    {
+        if (sessions.Count == 0)
+            return new LastFlightVm("—", "—", 0, 0, 0);
+
+        var latest = sessions.OrderByDescending(s => s.EndedAt ?? s.StartedAt).First();
+
+        // Format date
+        var date = (latest.EndedAt ?? latest.StartedAt).ToString("yyyy-MM-dd");
+
+        // Compute duration: (EndedAt - StartedAt).TotalMinutes formatted H:mm
+        var duration = "—";
+        if (latest.EndedAt.HasValue)
+        {
+            var totalMinutes = (latest.EndedAt.Value - latest.StartedAt).TotalMinutes;
+            var hours = (int)(totalMinutes / 60);
+            var minutes = (int)(totalMinutes % 60);
+            duration = $"{hours}:{minutes:D2}";
+        }
+
+        // Parse OvertempEventsJson to count overtemps
+        int overtemps = 0;
+        try
+        {
+            using var doc = JsonDocument.Parse(latest.OvertempEventsJson);
+            overtemps = doc.RootElement.GetArrayLength();
+        }
+        catch
+        {
+            overtemps = 0;
+        }
+
+        return new LastFlightVm(
+            Date: date,
+            Duration: duration,
+            MaxG: latest.MaxG,
+            HardLandings: latest.HardLandings,
+            Overtemps: overtemps
+        );
+    }
+
+    private static ConsumablesVm BuildConsumables(List<Entities.Consumable> consumables)
     {
         double Get(int kind) =>
             consumables.FirstOrDefault(c => c.Kind == kind)?.Level ?? 0.0;
@@ -99,7 +198,7 @@ public sealed class RepositoryFleetSource : IFleetSource
             Hydraulic: Get(4));
     }
 
-    private static SquawkVm MapSquawk(Squawk s)
+    private static SquawkVm MapSquawk(Entities.Squawk s)
     {
         // Until the Squawk entity gains Component + Summary columns, we read
         // these from the Notes field where the seeder packed them.
