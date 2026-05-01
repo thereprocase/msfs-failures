@@ -1,10 +1,10 @@
-# MsfsFailures 0.1.0 — Distribution
+# MsfsFailures 0.1.1 — Distribution
 
 ## What's in this directory
 
 | File | Description |
 |------|-------------|
-| `MsfsFailures-0.1.0-x64.msi` | Windows x64 MSI installer (self-contained, no .NET 8 runtime needed) |
+| `MsfsFailures-0.1.1-x64.msi` | Windows x64 MSI installer (self-contained, no .NET 8 runtime needed) |
 | `README.md` | This file |
 
 `dist/*.msi` and `dist/*.zip` are gitignored — they are not committed. The installer source lives in `installer/`.
@@ -14,10 +14,10 @@
 ## Installing with the MSI
 
 ```
-msiexec /i MsfsFailures-0.1.0-x64.msi
+msiexec /i MsfsFailures-0.1.1-x64.msi
 ```
 
-Or double-click `MsfsFailures-0.1.0-x64.msi` in Explorer.
+Or double-click `MsfsFailures-0.1.1-x64.msi` in Explorer.
 
 Installs to: `C:\Program Files\MsfsFailures\`
 Adds a Start Menu shortcut under **MsfsFailures**.
@@ -71,7 +71,7 @@ set MSFS_FAILURES_SIM=auto
 
 ## ZIP fallback
 
-If you receive `MsfsFailures-0.1.0-x64.zip` instead of the MSI, extract it anywhere and run `MsfsFailures.App.exe` directly. No installation required.
+If you receive `MsfsFailures-0.1.1-x64.zip` instead of the MSI, extract it anywhere and run `MsfsFailures.App.exe` directly. No installation required.
 
 ---
 
@@ -81,7 +81,7 @@ If you receive `MsfsFailures-0.1.0-x64.zip` instead of the MSI, extract it anywh
 # From repo root:
 dotnet.exe publish src/MsfsFailures.App -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -o publish/win-x64/
 python3 installer/gen_wxs.py
-wix.exe build installer/MsfsFailures.Installer/Product.wxs installer/MsfsFailures.Installer/Files.wxs -arch x64 -out dist/MsfsFailures-0.1.0-x64.msi
+wix.exe build installer/MsfsFailures.Installer/Product.wxs installer/MsfsFailures.Installer/Files.wxs -arch x64 -out dist/MsfsFailures-0.1.1-x64.msi
 ```
 
 WiX version: 5.0.2 (installed via `dotnet.exe tool install --global wix --version 5.*`).
