@@ -1,3 +1,5 @@
+using MsfsFailures.Core.Wear;
+
 namespace MsfsFailures.Sim.Internal;
 
 /// <summary>
@@ -43,6 +45,13 @@ internal interface ISimConnectClient : IAsyncDisposable
     event EventHandler<AircraftIdentityEventArgs> AircraftIdentityReceived;
 
     /// <summary>
+    /// Raised at ~4 Hz while connected, carrying the latest <see cref="MsfsFailures.Core.Wear.FlightTickSample"/>.
+    /// The mock implementation drives this from a synthetic flight-profile state machine.
+    /// The real implementation will drive it from SimConnect data-request callbacks.
+    /// </summary>
+    event EventHandler<FlightSampleEventArgs> SampleProduced;
+
+    /// <summary>
     /// Open the SimConnect connection. Implementations should be non-blocking; the
     /// <see cref="Connected"/> event fires asynchronously when the sim accepts the session.
     /// Throws <see cref="InvalidOperationException"/> if already connected.
@@ -74,4 +83,10 @@ internal sealed class AircraftIdentityEventArgs : EventArgs
 {
     public string? AircraftTitle { get; init; }
     public string? AtcModel { get; init; }
+}
+
+/// <summary>Arguments for the <see cref="ISimConnectClient.SampleProduced"/> event.</summary>
+internal sealed class FlightSampleEventArgs : EventArgs
+{
+    public required FlightTickSample Sample { get; init; }
 }

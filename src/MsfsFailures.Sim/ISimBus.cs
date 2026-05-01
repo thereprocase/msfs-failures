@@ -1,8 +1,11 @@
+using MsfsFailures.Core.Wear;
+
 namespace MsfsFailures.Sim;
 
 /// <summary>
 /// Primary abstraction for the SimConnect integration layer.
-/// Consumers observe <see cref="StatusStream"/> to react to connection state and aircraft changes.
+/// Consumers observe <see cref="StatusStream"/> to react to connection state and aircraft changes,
+/// and <see cref="SampleStream"/> to receive ~4 Hz flight-state snapshots.
 /// </summary>
 public interface ISimBus
 {
@@ -15,6 +18,14 @@ public interface ISimBus
     /// Completes when the bus is disposed.
     /// </summary>
     IObservable<SimStatus> StatusStream { get; }
+
+    /// <summary>
+    /// Hot observable that emits ~4 Hz <see cref="FlightTickSample"/> snapshots while
+    /// <see cref="SimConnectionState.Connected"/>. Emits nothing when offline.
+    /// Multiple subscribers all see the same stream (Subject multicast).
+    /// Completes when the bus is disposed.
+    /// </summary>
+    IObservable<FlightTickSample> SampleStream { get; }
 
     /// <summary>
     /// Initiates connection to the simulator. Transitions through

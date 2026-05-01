@@ -1,5 +1,6 @@
 using System.Reactive.Subjects;
 using Microsoft.Extensions.Logging;
+using MsfsFailures.Core.Wear;
 using MsfsFailures.Sim.Internal;
 
 namespace MsfsFailures.Sim;
@@ -7,13 +8,15 @@ namespace MsfsFailures.Sim;
 /// <summary>
 /// Default implementation of <see cref="ISimBus"/>.
 /// Wraps an <see cref="ISimConnectClient"/>, manages connection lifecycle, and broadcasts
-/// <see cref="SimStatus"/> snapshots via a <see cref="BehaviorSubject{T}"/>.
+/// <see cref="SimStatus"/> snapshots via a <see cref="BehaviorSubject{T}"/> and
+/// <see cref="FlightTickSample"/> snapshots via a <see cref="Subject{T}"/>.
 /// </summary>
 internal sealed class SimBus : ISimBus, IAsyncDisposable
 {
     private readonly ILogger<SimBus> _logger;
     private readonly ISimConnectClient _client;
-    private readonly BehaviorSubject<SimStatus> _subject;
+    private readonly BehaviorSubject<SimStatus> _statusSubject;
+    private readonly Subject<FlightTickSample> _sampleSubject;
     private readonly SemaphoreSlim _lock = new(1, 1);
     private bool _disposed;
 
@@ -22,23 +25,31 @@ internal sealed class SimBus : ISimBus, IAsyncDisposable
         _logger = logger;
         _client = client;
 
-        // Seed the subject with Offline so new subscribers immediately get a value.
-        _subject = new BehaviorSubject<SimStatus>(SimStatus.Offline());
+        // Seed the status subject with Offline so new subscribers immediately get a value.
+        _statusSubject = new BehaviorSubject<SimStatus>(SimStatus.Offline());
+
+        // Sample subject: plain Subject<T> — no replay, no initial value.
+        // Multiple subscribers all see the same emissions (hot multicast).
+        _sampleSubject = new Subject<FlightTickSample>();
 
         // Wire client events → status pushes.
-        _client.Connected += OnClientConnected;
-        _client.Disconnected += OnClientDisconnected;
-        _client.Error += OnClientError;
+        _client.Connected             += OnClientConnected;
+        _client.Disconnected          += OnClientDisconnected;
+        _client.Error                 += OnClientError;
         _client.AircraftIdentityReceived += OnAircraftIdentityReceived;
+        _client.SampleProduced        += OnSampleProduced;
     }
 
     // ── ISimBus ──────────────────────────────────────────────────────────────
 
     /// <inheritdoc/>
-    public SimStatus CurrentStatus => _subject.Value;
+    public SimStatus CurrentStatus => _statusSubject.Value;
 
     /// <inheritdoc/>
-    public IObservable<SimStatus> StatusStream => _subject;
+    public IObservable<SimStatus> StatusStream => _statusSubject;
+
+    /// <inheritdoc/>
+    public IObservable<FlightTickSample> SampleStream => _sampleSubject;
 
     /// <inheritdoc/>
     public async Task ConnectAsync(CancellationToken ct = default)
@@ -46,9 +57,9 @@ internal sealed class SimBus : ISimBus, IAsyncDisposable
         await _lock.WaitAsync(ct).ConfigureAwait(false);
         try
         {
-            if (_subject.Value.State is SimConnectionState.Connected or SimConnectionState.Connecting)
+            if (_statusSubject.Value.State is SimConnectionState.Connected or SimConnectionState.Connecting)
             {
-                _logger.LogDebug("ConnectAsync called but already {State}; ignoring.", _subject.Value.State);
+                _logger.LogDebug("ConnectAsync called but already {State}; ignoring.", _statusSubject.Value.State);
                 return;
             }
 
@@ -82,7 +93,7 @@ internal sealed class SimBus : ISimBus, IAsyncDisposable
         await _lock.WaitAsync(ct).ConfigureAwait(false);
         try
         {
-            if (_subject.Value.State is SimConnectionState.Offline)
+            if (_statusSubject.Value.State is SimConnectionState.Offline)
             {
                 _logger.LogDebug("DisconnectAsync called but already Offline; ignoring.");
                 return;
@@ -137,13 +148,19 @@ internal sealed class SimBus : ISimBus, IAsyncDisposable
             e.AircraftTitle, e.AtcModel);
 
         // Merge into current status preserving connection state.
-        var current = _subject.Value;
+        var current = _statusSubject.Value;
         Publish(current with
         {
             AircraftTitle = e.AircraftTitle,
-            AtcModel = e.AtcModel,
-            Timestamp = DateTimeOffset.UtcNow,
+            AtcModel      = e.AtcModel,
+            Timestamp     = DateTimeOffset.UtcNow,
         });
+    }
+
+    private void OnSampleProduced(object? sender, FlightSampleEventArgs e)
+    {
+        if (!_disposed)
+            _sampleSubject.OnNext(e.Sample);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
@@ -151,7 +168,7 @@ internal sealed class SimBus : ISimBus, IAsyncDisposable
     private void Publish(SimStatus status)
     {
         if (!_disposed)
-            _subject.OnNext(status);
+            _statusSubject.OnNext(status);
     }
 
     // ── IAsyncDisposable ─────────────────────────────────────────────────────
@@ -161,15 +178,18 @@ internal sealed class SimBus : ISimBus, IAsyncDisposable
         if (_disposed) return;
         _disposed = true;
 
-        _client.Connected -= OnClientConnected;
-        _client.Disconnected -= OnClientDisconnected;
-        _client.Error -= OnClientError;
+        _client.Connected             -= OnClientConnected;
+        _client.Disconnected          -= OnClientDisconnected;
+        _client.Error                 -= OnClientError;
         _client.AircraftIdentityReceived -= OnAircraftIdentityReceived;
+        _client.SampleProduced        -= OnSampleProduced;
 
         await _client.DisposeAsync().ConfigureAwait(false);
 
-        _subject.OnCompleted();
-        _subject.Dispose();
+        _statusSubject.OnCompleted();
+        _statusSubject.Dispose();
+        _sampleSubject.OnCompleted();
+        _sampleSubject.Dispose();
         _lock.Dispose();
     }
 }
