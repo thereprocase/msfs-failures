@@ -1,0 +1,1491 @@
+The Journal of the                                                                                                        First Quarter - 2005
+
+
+
+
+                                                          Reliability Analysis Center
+
+
+                                                                                                                                                    5
+Reliability Analysis of Avionics in the Commercial                                                                                Reliability Theory
+Aerospace Industry                                                                                                                 Explains Human
+                                                                                                                               Aging and Longevity
+By: Jin Qin, Bing Huang, Joerg Walter, Joseph B. Bernstein, Michael Talmor Reliability Engineering,
+                                                              University of Maryland, College Park
+                                                                                                                                                    7
+
+
+
+
+                                                                                                                                                         I
+Abstract                                                   Data Collection                                                      Form, Fit, Function,
+                                                                                                                                  and Interface - An
+
+
+
+
+                                                                                                                                                         N
+The reliability of avionics using commercial-off-          Return-for-service records were collected from
+the-shelf (COTS) items and products is a concern           two major suppliers of avionics. Several types of                    Element of an Open
+for the aerospace industry. The results of collect-        systems were included, such as a flight control                         System Strategy
+
+
+
+
+                                                                                                                                                         S
+ing and analyzing field return records of avionics         system, autopilot, flight director system, and
+are documented in this article. Our analysis               symbol generator. Records from company A                                              14
+                                                                                                                                System Level Clues
+
+
+
+
+                                                                                                                                                         I
+shows that the exponential distribution is still           include eight systems dating from 1982 to 2002.
+appropriate for describing the life of most avion-         Company B’s records are dated from 1997 to                              for Detailed Part
+ics manufactured over the past 20 years. Results           2002 and include one system. Most of these                                         Issues
+
+
+
+
+                                                                                                                                                         D
+also show that failure rates decrease at the intro-        records include the unit serial number, date sold,
+duction of products. An increasing trend in fail-          return for service date, replaced IC types, and                                    19
+
+
+
+
+                                                                                                                                                         E
+ure rate can be noted, for systems made after              quantities. Some of the original data were found                   New Markov Analysis
+1994, suggesting the need for further investiga-           to be insufficient for analysis. We compiled the                             Web Site
+tion.                                                      original records to weed out and discard the use-
+                                                           less ones; the remaining records had sufficient                                         19
+Introduction                                               data to support statistically significant conclu-                          RMSQ Headlines
+Microelectronic systems built with COTS are                sions. We also made some assumptions to facil-
+now widely used in the aerospace industry and              itate the statistical analysis. Our assumptions                                        21
+are becoming increasingly important. After the             were as follows.                                                             Future Events
+Department of Defense (DoD) changed the
+                                                               1. Systems were grouped by type and the                                             22
+acquisition process (one formerly based on mili-
+tary standards and specifications) in 1994, mili-                 year of “date sold” assuming they were                               From the Editor
+tary-specified avionics have become rare. The                     manufactured and used in the same year.
+aerospace industry’s use of microelectronics is                2. For units with multiple returns, only the                                      23
+shrinking as a percentage of the entire market, so                first return was calculated and analyzed.                            PRISM Column
+it must face the reality of a commercially-driven              3. It is assumed that all ICs replaced in serv-
+market. Commercial integrated circuit (IC) prod-                  ice have experienced failure. This                                              23
+ucts’ life cycles are decreasing to 2-4 years                     assumption may have caused us to over-                               Upcoming June
+[Reference 6]. In contrast, the aerospace indus-                  estimate the number of failures.                                           Training
+try assumes the life of a Line Replacement Unit                4. Censor time: the time to check the status
+(LRU) is more than 10 years. This discrepancy                     of system. It is set to April 30, 2002.
+will worsen given the continuing advancement in
+functionality and speed in the microelectronic             Based on these assumptions, a C language pro-
+industry. To understand the impact of technolo-            gram was used to select the useful records, check
+gy advancement on avionics, we needed to find              the end status of the systems, and calculate the
+out what had happened in field operation. Field            service hours. The method used to calculate the
+records of return-for-service of avionics in the           service hours follows Figure 1, in which the dif-
+past 20 years were collected and analyzed, and             ferent periods between sold date and return-to-
+the results are documented herein.                         service date are shown.
+
+
+
+                                     RAC is a DoD Information Analysis Center Sponsored by the Defense Technical Information Center
+      The Journal of the Reliability Analysis Center
+
+
+                                                                           distribution of the time between equipment failures tends to the
+                                                                           exponential as the complexity and the time of operation increas-
+               P1                 P2                   P3
+                                                                           es; and somewhat less generally, so does the time up to the first
+                                                                           failure of the equipment.”
+        SD           BISD                         FD        RTSD
+
+        SD – Sold Date,    BISD – Begin In Service Date,
+                                                                                                          Weibull Shape Parameter Histogram
+        FD – Failure Date, RTSD – Return To Supplier Date
+                    Figure 1. Time Line of Field Records                                 16
+
+                                                                                         14
+    The P1 interval between SD and BISD includes delivery time and
+                                                                                         12
+    installation time. The unit service period (days), P2, is:
+
+
+
+
+                                                                             Frequency
+                                                                                         10
+
+                         P2 = (RTSD - SD) - P1 - P3                 (1)                   8
+
+                                                                                          6
+    P3 is the return time from customers to suppliers. If the unit did                    4
+    not fail to the censor time, the service period is between BISD
+                                                                                          2
+    and the censor time. Generally, there are only SD and RTSD in
+                                                                                          0
+    the raw records. P1 and P3 are estimated based on the informa-
+
+
+
+
+                                                                                                                0.9
+
+                                                                                                                      1.1
+
+                                                                                                                            1.3
+
+                                                                                                                                  1.5
+
+                                                                                                                                        1.7
+
+                                                                                                                                              1.9
+                                                                                                                                                    2.1
+
+                                                                                                                                                          2.3
+
+                                                                                                                                                                2.5
+
+                                                                                                                                                                      2.7
+
+                                                                                                                                                                            2.9
+
+                                                                                                                                                                                  3.1
+                                                                                                                                                                                        3.3
+
+                                                                                                                                                                                              3.5
+
+                                                                                                                                                                                                    3.7
+                                                                                              0.3
+
+                                                                                                    0.5
+
+                                                                                                          0.7
+    tion given by the suppliers. Different suppliers have different P1
+                                                                                                                                              Beta
+    and P3. Once P2 is found, the unit service hours are calculated
+    from: ServiceHours = Hon * P2. The Hon is the power-on hours                              Figure 2. Weibull Shape Parameter Histogram
+    per day of system. Different companies give different Hon.
+                                                                           In the microelectronic industry, due to the advance of technology,
+    Data Analysis                                                          chips are becoming more and more complex following Moore’s
+    Analysis of System Records from Company A. There are                   law. Additionally, avionics have complex structures. A flight
+    records for about 21,535 systems sold between August 17, 1982          director system may consist of 460 digital ICs, 97 linear ICs, 34
+    and December 30, 2001 from company A. Categorized by sys-              memories, 25 ASICs, and 7 processors. The number of compo-
+    tem type and year of “date sold,” there are 87 groups of data,         nents in such a system is huge. For these components, external
+    which include 9 groups with zero failures and 6 groups with one        failure mechanisms caused by random factors such as electrical
+    failure. The statistical analysis process and results follow.          overstress, electrostatic discharge, and other environmental and
+                                                                           human interaction, and intrinsic failure mechanisms, which
+    Probability plotting. As the generally accepted lifetime distribu-     include dielectric breakdown, electromigration, and hot carrier
+    tion in microelectronic industry, Weibull distribution is used to      injection, can cause the components to fail. These failure modes
+    analyze the service hours. To verify its usage, we plotted proba-      combine together to form a constant failure rate process, as
+    bility and calculated the correlation coefficient (CC) of Weibull      Abernethy [Reference 2] stated that as the number of failure modes
+    distribution and lognormal distribution respectively (Groups           mixed together increases to five or more, the Weibull shape param-
+    with 0 or 1 failure are omitted). Results show that the CC for 42      eter will tend toward one unless all the modes have the same shape
+    groups of Weibull distribution was greater than the CC for the         parameter and similar scale parameter. Some recent research that
+    lognormal distribution. The CCs of Weibull distribution were           focuses on intrinsic wearout failure mechanisms lends support to
+    also compared with the 90% critical CC [Reference 1] to deter-         the exponential distribution. Degraeve [Reference 4], Stathis
+    mine if the distribution is appropriate or not. Results show that      [Reference 7], and Alam [Reference 3] pointed out that the Weibull
+    62 of 72 groups CC was greater than the given critical CC.             shape parameter of oxide breakdown is thickness dependent and
+                                                                           goes to unity for ultra-thin oxides. As the Weibull shape parame-
+    Parameter estimation. The parameters of Weibull distribution           ter approaches 1, the intrinsic wearout becomes more random and
+    are estimated by using the maximum likelihood estimation               the device times to failure become statistically indistinguishable
+    (MLE) method. The histogram of the estimated shape parame-             from a random pattern of times to failure.
+    ters is shown in Figure 2. It shows the values of most of the
+    shape parameters are distributed between 0.6 and 1.1.                  We use the likelihood ratio test to verify the hypothesis of the
+                                                                           exponential distribution – the special case of Weibull distribution
+    Exponential distribution verification. Although the wide use           with the shape parameter equals to 1. Setting the significance
+    of exponential distribution has been questioned for a long time,       level to 0.05, for systems grouped in different years, the likeli-
+    it is unwise to blindly accept or reject it. The exponential distri-   hood ratio test is done using the following steps.
+    bution was theoretically shown to be the appropriate failure dis-
+    tribution for complex systems by R.F. Drenick [Reference 5].                  a. H0: β = 1; H1: β ≠ 1
+    He stated that “Under some reasonably general conditions, the
+
+2     First Quarter - 2005
+                                                                                                                                   The Journal of the Reliability Analysis Center
+
+
+   b. Calculate the statistics T = 2( L̂ - L̂ 0 )                                                                           the trend of system reliability increase around 1994 and after that,
+      L̂ : global maximum log likelihood                                                                                    could be noted. System 1 shows the same trend around 1997.
+      L̂ 0 : constrained maximum log likelihood at β = 1
+                                                                                                                            Analysis of system records from company B. Records from
+   c. If, T < χ2 (0.95, 1), accepts H0, else rejects H0.
+                                                                                                                            company B are dated between January 14, 1988 and October 27,
+The hypothesis test results show that exponential distribution is                                                           2001. Since the population size and the failure number of each
+acceptable for 56 groups.                                                                                                   year are small, we statistically analyze the moving five-year’s
+                                                                                                                            records using the exponential distribution to get better results.
+System failure rate results. Since the exponential distribution is                                                          We also analyze all records of company A in the same way to
+appropriate for most of those systems, we use MLE to calculate                                                              compare the change in reliability. Figure 4 shows the overall
+the failure rate. The systems’ failure rates vs. year are shown in                                                          failure rates of systems from company A and B (Year in the X-
+Figure 3. The data shows that, with the exception of system 2 and                                                           axis is the middle point of the moving five-year period). From
+8, the systems’ failure rates decrease at the beginning of use. For                                                         this result, we determined that there is an increasing trend of fail-
+system 4, 5, 6, and 7, whose use spanned the 1980s and 1990s,                                                               ure rate after 1994 for systems from both companies.
+
+
+
+                                                      30.00
+                                                                            System 1                                                                                 System 2
+                                                                                                                                                5.00
+                                                      25.00
+
+
+
+
+                                                                                                                          Failure rate (E-6)
+                                 Failure rate (E-6)
+
+
+
+
+                                                                                                                                                4.00
+                                                      20.00
+                                                                                                                                                3.00
+                                                      15.00
+                                                                                                                                                2.00
+                                                      10.00
+                                                        5.00                                                                                    1.00
+                                                        0.00                                                                                    0.00
+                                                              1992      1994       1996      1998     2000        2002                             1982        1983     1984       1985    1986    1987
+                                                                                          Year                                                                              Year
+
+                                                                            System 3                                                                                 System 4
+                                                       12.00                                                                                    5.00
+                                                       10.00
+                                Failure rate (E-6)
+
+
+
+
+                                                                                                                                                4.00
+                                                                                                                           Failure rate (E-6)
+
+
+
+
+                                                        8.00
+                                                                                                                                                3.00
+                                                        6.00
+                                                        4.00                                                                                    2.00
+
+                                                        2.00                                                                                    1.00
+                                                        0.00                                                                                    0.00
+                                                           1985 1986 1987 1988 1989 1990 1991 1992 1993                                                1989   1991   1993   1995    1997   1999   2001
+                                                                                     Year                                                                                   Year
+
+
+                                                      20.00
+                                                                            System 5                                                                                 System 6
+                                                                                                                                                6.00
+                                                      18.00
+                                                                                                                                                5.00
+                      Failure Rate(E-6)
+
+
+
+
+                                                                                                                           Failure rate (E-6)
+
+
+
+
+                                                      16.00
+                                                      14.00                                                                                     4.00
+                                                      12.00
+                                                      10.00                                                                                     3.00
+                                                       8.00
+                                                       6.00
+                                                                                                                                                2.00
+                                                       4.00                                                                                     1.00
+                                                       2.00
+                                                       0.00                                                                                     0.00
+                                                          1985 1987 1989 1991 1993 1995 1997 1999 2001                                             1981 1983 1985 1987 1989 1991 1993 1995 1997
+                                                                                     Year                                                                                   Year
+
+                                                                            System 7                                                                                 System 8
+                                                      10.00
+                                                                                                                                                8.00
+                                                                                                                           Failure rate (E-6)
+
+
+
+
+                                                       8.00
+                         Failure rate (E-6)
+
+
+
+
+                                                                                                                                                6.00
+                                                       6.00
+                                                                                                                                                4.00
+                                                       4.00
+                                                                                                                                                2.00
+                                                       2.00
+                                                                                                                                                0.00
+                                                       0.00
+                                                          1985       1987   1989    1991     1993   1995   1997    1999                            1997 1998 1999 2000 2001 2002
+                                                                                      Year                                                                                  Year
+                                                                      Figure 3. Failure Rates of Systems with 90% Confidence Intervals
+                                                                                                                                                                                                  First Quarter - 2005   3
+      The Journal of the Reliability Analysis Center
+
+
+
+                                                                                      System Failure Rate                                       Company A
+                                                                                                                                                Company B
+                                                                   16.00
+                                                                   14.00
+
+
+
+
+                                   Failure Rate( E-6)
+                                                                   12.00
+                                                                   10.00
+                                                                    8.00
+                                                                    6.00
+                                                                    4.00
+                                                                    2.00
+                                                                    0.00
+                                                                        1983 1985 1987 1989 1991 1993 1995 1997 1999 2001
+                                                                                              Year
+                         Figure 4. Overall System Failure Rates from Company A and B (90% Confidence Interval)
+    IC failure analysis. We can get the type and number of replaced                                                      to the lack of information. It could be due to design prob-
+    ICs from company A’s records but only the number of failed ICs                                                       lems in replacement military grade components by com-
+    from company B’s records. Since no information was available for                                                     mercial or due to total redesign in introducing new tech-
+    tracing down the failure mechanism, we simply calculated the over-                                                   nologies, inherent reliability of commercial components
+    all failure rate of all ICs from company A and from Company B.                                                       or manufacturing problems in introducing new for avion-
+    For company B’s records, we used the exponential distribution to                                                     ic system packaging standards, etc.
+    analyze the moving five-year IC failure data because of the small
+    number of failures in each year. Company A’s IC failure records                                           This work presents some practical observations. A future inves-
+    were analyzed in the same way. The results are shown in Figure 5.                                         tigation, tracking of the failure data and failure analysis, is sug-
+                                                                                                              gested.
+    Summary
+    Field data of microelectronic systems in the aerospace industry                                           For Further Reading
+    was collected and analyzed. Based on our statistical analysis                                             1. Abernethy, R.B., The New Weibull Handbook, Third Edition,
+    results, we found that:                                                                                      page 3-3. North Palm Beach, Florida: R.B. Abernethy, 1998.
+                                                                                                              2. Abernethy, R.B., Ibid, page 3-14.
+       1. The exponential distribution is appropriate for most                                                3. Alam, M., B. Weir, and P. Silverman, “A future of function
+          avionics’ lifetime analyses because the IC chips and sys-                                              or failure? (CMOS gate oxide scaling),” IEEE Circuits and
+          tem structure are becoming more complex.                                                               Device, Vol. 18, pages 42-48, March 2002.
+       2. System reliability generally improves in the first several                                          4. Degraeve, R., “New insights in the relation between electron
+          years after introduction and drops off later. It follows                                               trap generation and the statistical properties of oxide break-
+          very well the known phenomena of “infant mortality” or                                                 down,” IEEE Transaction on Electron Devices, Vol. 45,
+          “learning curve.”                                                                                      pages 904-911, April 1998.
+       3. According to the analysis, the failure rate of several sys-                                         5. Drenick, R.F., “The failure law of complex equipment,”
+          tems increases, almost constantly, after 1994-1996. The                                                Journal of the Society for Industrial and Applied
+          increase isn’t large and not statistically significant. No                                             Mathematics, Vol. 8, pages 680-690, December 1960.
+          one specific reason of this trend could be postulated due
+                                                                                                                                          Company A
+                                                                                          IC Failure Rates
+                                                                                                                                      ?   Company B
+
+                                                                   30
+
+                                                                   25                                     ?
+                                              Failure Rate (FIT)
+
+
+
+
+                                                                   20                                ?
+
+
+                                                                   15                                           ?                                ?
+                                                                                                                                            ?
+
+                                                                                                                     ?     ?          ?
+                                                                   10                                                           ?
+
+
+                                                                    5
+
+                                                                    0
+                                                                     1984   1986   1988       1990       1992       1994       1996       1998        2000
+                                                                                                     Year(sold)
+
+                                                                    Figure 5. Overall IC Failure Rate (90% Confidence Interval)
+4     First Quarter - 2005
+                                                                         The Journal of the Reliability Analysis Center
+
+
+6. Hnatek, E.R., Integrated Circuit Quality and Reliability,             University of Maryland (2003) and a Masters of Science in
+   Marcel Dekker, Inc, 2nd Edition, 1995.                                Systems Engineering from AFIT (1997).
+7. Stathis, J.H., “Percolation models for gate oxide break-
+   down,” Journal of Applied Physics, Vol. 86, pages 5757-               Joseph B. Bernstein Dr. Bernstein is an Associate Professor of
+   5766, November 1999.                                                  Reliability Engineering at the University of Maryland, College
+                                                                         Park. Professor Bernstein’s interests lie in several areas of micro-
+About the Authors                                                        electronics reliability and physics of failure research including sys-
+JIN QIN is a PhD candidate of Reliability Engineering at the             tem reliability modeling, gate oxide integrity, radiation effects,
+University of Maryland, College Park. His research topics                MEMS and laser programmable metal interconnect. Research
+include reliability testing, reliability data analysis, and microelec-   areas include thermal, mechanical, and electrical interactions of
+tronic system reliability estimation. He holds a Master of Science       failure mechanisms of ultra-thin gate dielectrics, next generation
+in Reliability Engineering from the University of Maryland and a         metallization, and power devices. Dr. Bernstein is currently a
+Master of Engineering in Management Science and Engineering              Fulbright Senior Scientist at Tel Aviv University in the Department
+from the University of Science and Technology of China.                  of Electrical Engineering, Physical Electronics where he started a
+                                                                         Maryland/Israel Joint Center for Reliable Electronic Systems.
+Bing Huang currently is a PhD Candidate of Reliability
+Engineering program at the University of Maryland. He                    Michael Talmor is a Certified ASQC Quality (CQE) and
+received a B.S. in Mining Engineering from the University of             Reliability (CRE) Engineer. He holds Master’s degrees in
+Science and Technology of Beijing, and a M.S. in Nuclear                 Reliability and Quality Assurance from the Technion - Israel
+Engineering from Tsinghua University.                                    Institute of Technology in Haifa and in Electrical Engineering,
+                                                                         Automatics and Telemechanics from the Electrotechnical
+Joerg Walter Dr. Joerg D. Walter is an Assistant Professor of            Institute, Saint Petersburg, Russia. Michael is currently a
+Aerospace Engineering at the Air Force Institute of Technology           Visiting Researcher at UMD during his sabbatical leave from
+(AFIT). He holds a PhD in Reliability Engineering from the               RAFAEL Ltd, Israel.
+
+                           Reliability Theory Explains Human Aging and Longevity
+                                   Reprinted with permission of Dr. Leonid A. Gavrilov, Center on Aging, NORC/University of Chicago
+Our bodies’ backup systems don’t prevent aging, they make it             Gavrilova offer an explanation why people (and other biological
+more certain. This is one offshoot of a new “reliability theory of       species as well) deteriorate and die more often with age.
+aging and longevity” by two researchers at the Center on Aging,
+National Opinion Research Center (NORC) at the University of             Interestingly, the relative differences in mortality rates across
+Chicago.                                                                 nations and gender decrease with age: Although people living in
+                                                                         the U.S. have longer life spans on average than people living in
+The authors presented their new theory at the National Institutes        countries with poor health and high mortality, those who achieve
+of Health (NIH) conference “The Dynamic and Energetic Bases              the oldest-old age in those countries die at rates roughly similar
+of Health and Aging” (held in Bethesda, NIH). Their theory of            to the oldest-old in the U.S.
+aging has been published by the “Science” magazine department
+on aging research, Science’s SAGE KE (“Science of Aging                  The authors explain that humans are built from the ground up,
+Knowledge Environment”).                                                 starting off with a few cells that differentiate and multiply to form
+                                                                         the systems that keep us operating. But even at birth, the cells
+The authors say, “Reliability theory is a general theory about sys-      that make up our systems are full of faults that would kill primi-
+tems failure. It allows researchers to predict the age-related fail-     tive organisms lacking the redundancies that we have built in.
+ure kinetics for a system of given architecture (reliability struc-
+ture) and given reliability of its components.”                          “It’s as if we were born with our bodies already full of garbage,”
+                                                                         said Gavrilov. “Then, during our life span, we are assaulted by
+“Reliability theory predicts that even those systems that are entire-    random destructive hits that accumulate further damage. Thus
+ly composed of non-aging elements (with a constant failure rate)         we age.”
+will nevertheless deteriorate (fail more often) with age, if these
+systems are REDUNDANT in irreplaceable elements. Aging,                  “At some point, one of those hits causes a critical system with-
+therefore, is a direct consequence of systems redundancy.”               out a back-up redundancy to fail, and we die.”
+
+In their paper, “The quest for a general theory of aging and             As the authors puts it, “Reliability theory also predicts the late-
+longevity” (Science’s SAGE KE [Science of Aging Knowledge                life mortality deceleration with subsequent leveling-off, as well
+Environment] for 16 July 2003; Vol. 2003, No. 28, 1-10.                  as the late-life mortality plateaus, as inevitable consequences of
+<http://sageke.sciencemag.org>), Leonid Gavrilov and Natalia             redundancy exhaustion at extreme old ages.”
+                                                                                                              First Quarter - 2005                5
+      The Journal of the Reliability Analysis Center
+
+
+    All those who have achieved the oldest-old age have very few             are becoming relatively similar at advanced ages for different
+    redundancies remaining when the next random shock hits a crit-           populations of the same species) as well as late-life mortality
+    ical system. Hence, the mortality rates tend to level off at             deceleration, leveling off, and mortality plateaus. (iv) Living
+    extreme old ages, and people all over the world die at relatively        organisms apparently contain a high load of initial damage
+    similar rates on average. The initial differences in body reserves       from the early stages of development, and therefore their life
+    (redundancy) eventually disappear.                                       span and aging patterns may be sensitive to early-life condi-
+                                                                             tions that determine this initial damage load. Thus, the relia-
+    In the authors’ words, “The theory explains why relative differ-         bility theory provides a parsimonious explanation for many
+    ences in mortality rates of compared populations (within a given         important aging-related phenomena and suggests a number of
+    species) vanish with age, and mortality convergence is observed          interesting testable predictions. We therefore suggest adding
+    due to the exhaustion of initial differences in redundancy levels.”      the reliability theory to the arsenal of methodological
+                                                                             approaches applied to research on aging. PMID: 12867663
+    This fundamental theory of aging and longevity is grounded in a          [PubMed - in process; web link: <http://www.ncbi.nlm.nih.
+    predictive mathematical model that accounts for questions raised         gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=
+    by previous models addressing the mechanisms of aging, mor-              12867663&dopt=Abstract>].
+    tality, survival, and longevity.
+                                                                           About the Author
+    The authors are research associates at the Center for Aging at the     Dr. Leonid Gavrilov earned his PhD and MSc degrees from the
+    University of Chicago’s National Opinion Research Center.              Moscow State University in Moscow, Russia in 1980 and 1976,
+    Their research was sponsored by the National Institute on Aging.       respectively. Dr. Gavrilov is a Research Associate at the Center
+    The authors are invited to present and discuss their theory at the     on Aging, NORC (National Organization for Research) and the
+    forthcoming 10th Congress of the International Association of          University of Chicago. He specializes in biodemography of
+    Biomedical Gerontology (England, September 2003), organized            Human Longevity/Analysis of Human Mortality and Aging,
+    by Dr. Aubrey de Grey (<http://www.gen.cam.ac.uk/iabg10/               Mathematical Modeling of Aging, and Mortality Genetics of
+    abs/Gavrilov2.htm>).                                                   Aging and Longevity. He currently has a grant from the National
+                                                                           Institute on Aging for his work as Principal Investigator in biode-
+    Additional information on new theory is available at <http://          mography of human longevity. Dr. Gavrilov is a member of
+    longevity-science.org/> and <http://longevity-science.org/SAGE-        many professional organizations, including the International
+    KE-03.pdf>.                                                            Union for the Scientific Study of Population, Population
+                                                                           Association of America, Gerontological Society of America,
+    Medline abstract of this new publication follows (Sci Aging            Social Science History Association, and the European
+    Knowl Environ. 2003 Jul 16; 2003 (28): RE5):                           Association for Population Studies. He is cited in “Who’s Who
+                                                                           in America” in Marquis Who’s Who, 2002 and 2003 Editions:
+      The quest for a general theory of aging and longevity.               “Who’s Who in Medicine and Healthcare,” Marquis Who’s Who,
+      Gavrilov LA, Gavrilova NS. Center on Aging, National                 4th Edition, 2002-2003, and “Who’s Who in Science and
+      Opinion Research Center/University of Chicago, Chicago, IL           Engineering” Marquis Who’s Who, 7th Edition, 2003-2004.
+      60637, USA <lagavril@midway.uchicago.edu>.
+                                                                           Dr. Gavroliv’s many publications include “The Biology of Life
+      Extensive studies of phenomena related to aging have pro-            Span: A Quantitative Approach,” Harwood Academic Publisher,
+      duced many diverse findings, which require a general theoreti-       NY, 1991; “Why We Fall Apart. Engineering’s Reliability
+      cal framework to be organized into a comprehensive body of           Theory Explains Human Aging,” IEEE Spectrum, 2004, 41(9):
+      knowledge. As demonstrated by the success of evolutionary            30-35; and “The Reliability-Engineering Approach to the
+      theories of aging, quite general theoretical considerations can      Problem of Biological Aging,” Annals of the New York Academy
+      be very useful when applied to research on aging. In this the-       of Sciences, 2004, 1019: 509-512.
+      oretical study, we attempt to gain insight into aging by apply-
+      ing a general theory of systems failure known as reliability the-    Contact Information:
+      ory. Considerations of this theory lead to the following con-
+      clusions: (i) Redundancy is a concept of crucial importance for      Center on Aging
+      understanding aging, particularly the systemic nature of aging.      NORC and the University of Chicago
+      Systems that are redundant in numbers of irreplaceable ele-          1155 E 60th Street
+      ments deteriorate (that is, age) over time, even if they are built   Chicago, IL 60637
+      of elements that do not themselves age. (ii) An apparent aging       Tel: (773) 256-6359
+      rate or expression of aging is higher for systems that have high-    Fax: (773) 256-6313
+      er levels of redundancy. (iii) Redundancy exhaustion over the        E-mail: <gavrilov@longevity-science.org>
+      life course explains a number of observations about mortality,       Web site: <http://longevity-science.org>
+      including mortality convergence at later life (when death rates
+
+6     First Quarter - 2005
+                                                                       The Journal of the Reliability Analysis Center
+
+
+
+
+                  Form, Fit, Function, and Interface - An Element of an Open
+                                                             System Strategy
+                                                                              By: Ned H. Criscimagna, Alion Science and Technology
+Introduction                                                                  Table 1. Objectives of an Open Systems Strategy
+                                                                       •   Promote transition from science and technology into acquisition
+Parts obsolescence and diminishing sources of manufacturing are
+                                                                           and deployment
+two problems that the commercial and defense sectors alike face        •   Adapt to evolving requirements and threats
+on a daily and increasing basis. The problem has reached seri-         •   Facilitate systems integration
+ous proportions over the past decade or so, as the pace of tech-       •   Leverage commercial investment
+nological improvements and innovation has steadily accelerated.        •   Reduce the development cycle time/total life-cycle cost
+An approach to solving the problem that enjoys broad support           •   Ensure that the system will be fully interoperable with all the
+within the defense management community is that of open sys-               systems which it must interface, without major modification of
+tems. The term is bound to be heard at nearly every conference             existing components
+and symposium even remotely related to logistics and support.          •   Enhance commonality and reuse of components among systems
+                                                                       •   Enhance access to cutting edge technologies and products from
+                                                                           multiple suppliers
+What is the open systems approach? Federal Standard 1037C              •   Mitigate the risks associated with technology obsolescence
+defines open system as follows:                                        •   Mitigate risk of single source of supply over system life
+                                                                       •   Enhance life-cycle supportability
+  “A system with characteristics that comply with specified,           •   Increase competition
+  publicly maintained, readily available standards and that
+  therefore can be connected to other systems that comply with
+  these same standards.”                                           Form, Fit, Function, and Interface (F3I)
+                                                                   Although the concept of open systems has become a top priority
+The Software Engineering Institute defines an open system in a     issue within DoD over the last 10-15 years, the military services
+similar fashion:                                                   were considering the use of form, fit, function, interface (F3I)1
+                                                                   standards in the 1970s and even earlier. F3I supports but is not
+  “An open system is a collection of interacting software,         exactly equivalent to the open system concept. F3I are types of
+  hardware, and human components:                                  essential technical requirements in a performance-based specifi-
+                                                                   cation and are defined as follows.
+    • Designed to satisfy stated needs
+    • With interface specifications of its components that are:         Form. The term form addresses the physical characteristics
+       • Fully defined                                             of an end item. For hardware items, form includes the product
+       • Available to the public                                   envelope (which could include both internal and external
+       • Maintained according to group consensus                   envelopes), weight or mass, center of gravity, moments of iner-
+    • In which the implementations of the components con-          tia. The term has less significance for software items but could
+      form to the interface specifications”                        include memory storage requirements, throughput requirements,
+                                                                   etc. For training materials, it would include characteristics such
+The Department of Defense (DoD) Open Systems Joint Task            as the delivery media.
+Force defines the Open System Approach (OSA) as:
+                                                                        Fit. The term fit is primarily applicable to hardware end items
+ “A means to assess and implement when feasible widely sup-        and addresses the “mating” characteristics with other hardware
+ ported commercial interface standards in developing systems       items and with the user and operator. Fit includes such character-
+ using modular design concepts. It is a significant part of the    istics as the location relative to a defined datum of mating sur-
+ toolset that will help meet DoD’s goals of modernizing            faces/features; the location relative to a defined datum of features
+ weapon systems, developing and deploying new systems              designed to facilitate handling, assembly, and installation; and mat-
+ required for 21st century warfare, and supporting these sys-      ing surface and feature requirements such as flatness or contour.
+ tems over their total life cycle. DoD 5000 series documents
+ call for an OSA as an integral part of the overall acquisition         Function. Function addresses what the end item must be
+ strategy.”                                                        capable of doing under a defined set of conditions. Function
+                                                                   includes power, speed, reliability, useful life, maintainability,
+The Task Force goes on to state that an OSA is also an integrat-   supportability, and other “-ilities” in general.
+ed technical and business strategy that defines key system or
+equipment interfaces by widely used consensus-based standards.         Interface. Interface is defined as the functional and physical
+According to the Task Force, the open systems strategy is an       requirements and constraints at a common boundary between two
+enabler to achieve the objectives listed in Table 1.               1
+                                                                    Often written as F3I.                             (Continued on page 10)
+                                                                                                           First Quarter - 2005                7
+                    Consider...
+
+
+   Your product is having major
+problems at a key customer site and
+   your customer is losing faith.
+
+
+
+
+                         Your warranty costs
+                doubled last month and your VP calls
+                           to ask you why.
+
+
+
+    Your customer is asking for
+reliability and availability numbers
+   and your reliability expert just
+          left the company.
+
+
+
+       Do you have a solution?
+                www.relexsoftware.com
+                                                                                   Comprehensive
+                                                                                   Software Tools
+                             Relex                    ®
+                                                                                   ● PREDICTIVE TOOLS
+                                                                                    MIL-HDBK-217
+The Solution Provider For Global Reliability Management                             Telcordia/Bellcore
+                                                                                    RDF 2000
+                                                                                    HRD5, 299B
+                                                                                   ● PRISM
+
+Building Solutions One Customer At A Time                                           Fully Integrated
+                                                                                   ● CORRECTIVE ACTION
+At Relex Software we realize that every customer has a
+unique vision to promote reliability. By working together
+                                                                                    FRACAS
+                                                                                   ● MODELING TOOLS
+to analyze your needs, Relex forges a partnership to build
+a complete, manageable solution for your reliability
+                                                                                    RBD, Markov
+requirements. By taking advantage of our world-class tools,
+                                                                                    Simulation
+services, and support, you can rely on Relex to help you
+                                                                                    Optimization
+                                                                                   ● RISK ASSESSMENT
+achieve your reliability management goals.
+                                                                                    Fault Tree
+                                                                                    FMEA/FMECA
+                                                                                   ● R&M SUPPORT
+                                                       ● Thousands of Satisfied
+                                                         Customers Since 1986
+                                                                                    Weibull
+                                                       ● Comprehensive Services
+                                                                                    Maintainability
+                                                         Offerings
+                                                                                    Life Cycle Cost
+                                                       ● World-Class Predictive
+                                                         Analytics                 Professional
+                                                       ● Commitment to Quality     Services
+                                                                                   ● RELIABILITY
+The Quality Choice Professionals Rely On                                             CONSULTING
+Relex Software, a trusted and proven market leader, is used by thousands of        ● TRAINING
+professionals worldwide to improve product reliability and quality. Whether your   ● IMPLEMENTATION
+needs span a small team solution or a large-scale, enterprise-wide deployment,       SERVICES
+Relex Software is your partner for success.                                        ● TECHNICAL SUPPORT
+
+
+                                                                                   Quality Assurance
+                                                                                   ● ISO 9001:2000
+
+                      Relex                Software                                 CERTIFICATION
+                                                                                   ● TickIT 2000
+                         www.relexsoftware.com                                       STANDARD
+                              724.836.8800                                         ● ASQ CERTIFIED
+                                                                                     RELIABILITY ENGINEERS
+          Call today to speak with one of our solution consultants.                  ON STAFF
+         The Journal of the Reliability Analysis Center
+
+
+
+     Form, Fit, and Function . . . (Continued from page 7)
+     or more functions or items. Interfaces result from the interaction     The ARINC Standards
+     between functions, items, products of an item, or collateral effects   Long before the military was debating the pros and cons of F3I,
+     of operating an item. Functional interfaces are the relationships      the concept had found a home in the commercial airlines com-
+     between characteristic internal or external actions. Physical          munity. The first standards that were developed on an F3I basis
+     interfaces are the relationships between internal parts of the solu-   are known as the ARINC Standards. The standards are actually
+     tion as well as between the solution and external elements.            developed by the Airlines Electronic Engineering Committee
+                                                                            (AEEC). The AEEC is an international standards organization,
+     Under the F3I concept, only the form, fit, function, and interface     comprising major airline operators and other airspace users. The
+     requirements, most commonly at the Line Replaceable Unit               AEEC began developing standards in 1949. The AEEC estab-
+     (LRU) level, are stipulated; no requirements are levied below the      lishes consensus-based, voluntary form, fit, function, and inter-
+     LRU level. A supplier can use any approach for designing the           face standards that are published by ARINC2 and are known as
+     internal workings of an LRU, and retain proprietary rights to the      ARINC Standards. ARINC Standards specify the air transport
+     internal design, as long as the F3I requirements are met. This         avionics equipment and systems used by more than 10,000 com-
+     approach allows suppliers to implement new technology as               mercial aircraft worldwide.
+     LRUs are returned for repair. These changes are transparent to
+     the customer but the new technology may manifest itself as             A brief description of the three classes of ARINC Standards,
+     improved reliability, lower power consumption, lighter weight,         Characteristics, Specifications, and Reports, follows.
+     etc. F3I has the benefits listed in Table 2.
+                                                                                 1. ARINC Characteristics – Define the form, fit, function,
+                            Table 2. Benefits of F3I                                and interfaces of avionics equipment.
+     •    Promotes competition                                                   2. ARINC Specifications – Principally used to define the
+          •    Increases supplier base
+                                                                                    physical packaging or mounting of avionics equipment,
+          •    Reduces cost
+          •    Leverages commercial investment                                      data communication standards, or a high-level computer
+     •    Facilitates technology refreshment                                        language
+     •    Eliminates need for customer repair of LRUs                            3. ARINC Reports – Provide guidelines or general informa-
+     •    Supports standardization, thereby enhancing commonality and               tion found by the airlines to be good practices, often relat-
+          reuse of LRUs among systems                                               ed to avionics maintenance and support
+     •    Enhances life-cycle supportability
+     •    Supports interoperability                                                        Example of an ARINC Standard: ARINC 429
+     •    Eliminates parts obsolescence problems for customer
+                                                                            The ARINC 429 specification defines how avionics equipment and sys-
+                                                                     3
+     These benefits are similar to those listed in Table 1 because F I is   tems should communicate with each other, interconnected by wires in
+     similar to the open systems approach but the latter places more        twisted pairs. The specification defines the electrical and data charac-
+                                                                            teristics and protocols,. ARINC 429 employs a unidirectional data bus
+     emphasis on specifying interfaces based on broadly accepted stan-
+                                                                            standard known as Mark 33 Digital Information Transfer System
+     dards to allow for as many suppliers as possible over the long term.
+                                                                            (DITS). Messages are transmitted at a bit rate of either 12.5 or 100
+                                                                            kilobits per second to other system elements, which are monitoring the
+     The F3I concept is an important consideration in Reliability-          bus messages. Transmission and reception is on separate ports so that
+     Based Logistics, Flexible Sustainment, and other processes and         many wires may be needed on aircraft.
+     initiatives within the DoD.
+                                                                            ARINC 429 has been installed on most commercial transport aircraft
+                             3                                              including Airbus A310/A320 and A330/A340; Bell Helicopters; Boeing
+     Accepting the F I Concept                                              727, 737, 747, 757, and 767; and McDonnell Douglas MD-11. Boeing
+     A common problem encountered in accepting the F3I concept is           installed a newer system specified as ARINC 629 on the 777. The uni-
+     the reluctance to yield configuration control of the inside of a       directional ARINC 429 system provides high reliability at the cost of
+     “box” (i.e., below the LRU level) to the manufacturer. The rea-        wire weight and limited data rates. Military aircraft generally use a
+     son? Logisticians and maintenance managers are accustomed to           high-speed, bi-directional protocol IAW Military Specifications MIL-
+     repairing boxes at the shop or depot level. To perform mainte-         STD-1553.
+     nance below the box level, one must have configuration control.
+                                                                            Source: Condor Engineering - <http://www.429-arinc.com/arinc-429-
+     Otherwise, keeping the maintenance people trained, the repair
+                                                                            tutorial.html>
+     manuals and schematics up to date, and having the right test
+     equipment available would be impossible. On the other hand, if
+     the customer retains configuration control, then the manufacturer      2
+                                                                             Incorporated December 2, 1929, Aeronautical Radio, Inc., was chartered by the Federal
+     is not free to change the internal design as new or improved tech-     Radio Commission to serve as the airline industry’s “single licensee and coordinator of radio
+     nology becomes available, to reduce costs, improve reliability, etc.   communication outside of the government.” Soon the company, widely known as ARINC,
+                                                                            took on responsibility for all ground-based, aeronautical radio stations and for ensuring sta-
+                                                                            tion compliance with FRC rules and regulations. Today, ARINC serves the aviation, airports,
+                                                                            defense, government, and transportation industries with products and services.
+
+10       First Quarter - 2005
+                                                                        The Journal of the Reliability Analysis Center
+
+
+The use of ARINC standards for purchasing their air transport           Off-The-Shelf (COTS) microwave components and tools that
+avionics equipment and systems results in substantial benefits to       have resulted from developments in the cellular communication
+airlines by allowing avionics interchangeability and commonali-         and other microwave industries.
+ty and reducing avionics cost by promoting competition.
+Furthermore, for new aircraft and avionics installations, ARINC         Using these replacements, the life cycle of the components and
+standards provide the starting point for avionics development           system has been increased and there has been a dramatic savings
+and allow aircraft manufacturers to pre-wire aircraft, thus ensur-      in cost, space, and downtime, and improved maintainability.
+ing that cost-effective avionics for air transport aircraft are ready
+when needed.                                                            In another case, and in response to its strategy of Flexible
+                                                                        Sustainment, the Air Forces implemented the F3I Lifetime
+The airlines also benefit from suppliers transparently incorporat-      Contractor Sustainment (FLICS) program for the F-15 APG-63
+ing new technology, avoid the problems of parts obsolescence            V1 radar. Under the program, the radar developer, Raytheon, has
+and diminishing manufacturing sources, and eliminate the need           systems engineering responsibility of the radar: and configuration
+for any maintenance below the LRU level. Given the volume of            control below the LRU level. Raytheon has the responsibility and
+avionics bought by the airlines and airliner manufacturers, avion-      authority to manage technology insertion and parts obsolescence.
+ics firms readily accept the ARINC standards and competition in         The Air Force’s responsibility is to remove and replace LRUs and
+this market is alive and well. This competition helps keep costs        ship bad LRUs to Raytheon within 24 hours of removal. Figure 1
+down and drives the competing companies to continually                  illustrates the support concept for aircraft stationed at Base X.
+improve their products. According to Georgia State University
+in a 2000 study “The Economic Impact of Avionics                        Another F3I application is the Generalized Emulation of
+Standardization on the Airline Industry,” use of ARINC                  Microcircuits (GEM). GEM technology was developed by the
+Standards to foster a competitive avionics marketplace alone            Defense Logistics Agency (DLA) as a long-term solution to the
+saves the airline industry nearly $300 million annually. An             problem of diminishing manufacturing sources (DMS). DMS
+August 2002 article of Avionics Magazine, Reference 1, pro-             becomes a significant problem as systems are operated over
+vides a current perspective on the ARINC standards.                     ever-increasing life spans and a continually faster rate of change
+                                                                        in technology. Using gate arrays and single line processing tech-
+                                                                        nology, F3I microcircuits are manufactured to replace non-
+Three Military Applications                                             procurable microcircuits originally designed with RTL, NMOS,
+The military has had some experience in applying the F3I con-           CMOS, and other technologies.
+cept. Take the case of the AN/FPS-108 (COBRA DANE) ground
+radar system. When support of three components of the system
+became difficult and expensive, state-of-the-art F3I replacements       COTS and F3I
+were developed. Development was accomplished using state-of-            A broad military application of the F3I concept is the acquisition
+the-art design tools, leveraging the evolution of Commercial-           on COTS items as end products or to integrate into military sys-
+                                                                        tems. The decision to use a COTS item is essentially a decision
+
+
+
+
+                                      Figure 1. Support Concept for the F-15 APG-(63) V1 Radar
+
+
+
+                                                                                                           First Quarter - 2005              11
+           The Journal of the Reliability Analysis Center
+
+
+     to make an F3I purchase. The advantages of buying COTS are                                      An important difference between a COTS item and one bought
+     similar to those for buying F3I and are shown in Table 2. If the                                using an F3I specification is that the form, fit, and function of a
+     item is modified in any way, then some of these advantages may                                  COTS item are determined by suppliers based on the needs of a
+     be lost. These lost advantages can include warranty coverage                                    commercial market. An F3I specification can be tailored to the
+     and technology updates.                                                                         needs of a specific customer. Thus, although a COTS item may
+                                                                                                     not meet all of the environmental and operating requirements of
+                              Table 2. Advantages of COTS                                            the user, an item bought using an F3I specification will (or
+                                                                                                     should, if the specification is accurate and complete). Table 3
+              •     Reduces cost
+              •     Leverages commercial investment
+                                                                                                     compares COTS and F3I items.
+              •     Facilitates technology refreshment
+              •     Eliminates need for customer to repair LRUs                                      The Importance of Reliability to F3I
+              •     Can support standardization                                                      A critical performance requirement for items bought on an F3I
+              •     Eliminates parts obsolescence problems
+                                                                                                     basis is reliability. The reason is fairly simple as can be deduced
+              •     Enhances life-cycle supportability
+              •     Can support interoperability
+                                                                                                     from studying Figure 1. Note that organic maintenance consists
+              •     Usually warranted                                                                of removal and replacement (R&R) of the failed unit. The failed
+                                                                                                     unit is then shipped to Raytheon.
+     When a COTS item must be modified, either to address a more                                     To make this maintenance concept viable, some minimum value
+     severe environment or for some other reason, the item is no                                     of reliability is needed. That level is the one that will ensure that
+     longer a pure COTS item. Terms such as Ruggedized-Off-the-                                      the supply pipeline is not constantly full of avionics boxes. If the
+     Shelf (ROTS) and Militarized-Off-the-Shelf (MOTS) are used to                                   reliability is insufficient, not only will a great number of boxes
+     refer to such modified COTS items. Definitions of COTS,                                         be required to keep a reasonable stock of good spares at the base,
+     MOTS, and ROTS follow.                                                                          but availability will suffer. Even though R&R, as opposed to
+                                                                                                     repair in place, is the fastest way to “repair” an aircraft, too many
+        COTS – A COTS product is one that is bought and used “as                                     R&R actions will affect availability. They also increase the need
+     is.” Nearly all software bought for a desktop or laptop comput-                                 for maintenance and, hence, increase ownership costs.
+     er is COTS, including Word, WordPerfect, Excel, and Windows.
+
+       MOTS – A MOTS product is a COTS product customized by                                         Obstacles to Implementing F3I
+     the buyer or the supplier to meet customer requirements that are                                Despite the long and successful history of F3I in the airline indus-
+     different from those of the original COTS market.                                               try, and the success with which it has been used in military sys-
+                                                                                                     tems, the concept has found limited application in military acqui-
+       ROTS – A ROTS product is a COTS product customized to                                         sition and modernization programs. Several related reasons
+     meet harsher or more severe environments than originally envi-                                  could account for this limited application.
+     sioned by the designers. Again, the customization may be per-
+     formed by either the buyer or the supplier.                                                       1. Tradition and Lack of Trust. Traditional approaches to
+                                                                                                     specifying requirements have involved customer oversight, if not
+                                                                                                     specific control, of all aspects of design down to the part level.
+                                                     Table 3. Comparing COTS and F3I Items in Military Applications
+     Basis for Comparison                              COTS3                                                                              F3I
+     How bought            “As is”                                                                                 3
+                                                                                                              To F I specification
+     Designed to           Satisfy commercial customers                                                       Meet F3I specification
+     Source                Original equipment manufacturer (OEM)                                              Any supplier who can design & build to F3I spec
+     Configuration control None                                                                               At F3I (“box”) level
+     Suitability           Buyer must assess to determine if item can meet require-                           Item must meet F3I specification
+                           ments
+     Repair                Provided by OEM                                                                    Provided by supplier
+     Warranty:             Usually; may be voided by operation in different environ-                          Only if provided for by contract with supplier
+                           ment/for different application
+     Obsolescence          OEM can make technology updates transparently to user,                             OEM can make technology updates transparently to user;
+                           but may choose to stop production of the item at any time                          production can continue as long as buyer willing to pay sup-
+                                                                                                              pliers to “build to [F3I] print”
+     Investment                        No R&D or other up-front investment; purchase and repair               Some up-front investment may be needed plus purchase and
+                                       costs                                                                  repair costs
+     Market                            Usually large depending on product and whims of commer-                Depends on military application; can be very small or very
+                                       cial marketplace                                                       large
+     3
+         Un-modified. MOTS and ROTS items, as discussed in the text, are different from pure COTS items.
+
+12         First Quarter - 2005
+                                                                       The Journal of the Reliability Analysis Center
+
+
+  It is difficult for some to shift their thinking from a parts per-   By replacing older technology legacy system LRUs, that are
+spective to a box perspective. They question the wisdom of relin-      repaired by the military services, with F3I LRUs, performance can
+quishing control at lower indentures of design, fearing that doing     be improved and costs reduced. In fact, the payoff for applying the
+so will compromise meeting requirements at the higher levels of        F3I concept to modernization and life extension programs is greater
+design. For example, unless they know what is inside the box, how      than for new system, due to the sheer number of legacy systems.
+can they be sure reliability requirements for the LRU will be met?
+                                                                       Vested Financial Interests. As for the affect of F3I on depot
+   Although relationships between customer and contractor have         workload, management and personnel policies can minimize the
+improved markedly in military acquisition over the past decade,        impact on the workforce. Given the impact of outsourcing and
+a level of customer distrust of contractors still exists. Those who    private competition for depot work, the effect of a wider appli-
+most have this distrust are unwilling to let the contractor dictate    cation of F3I should be less dramatic by comparison.
+the internal specification and design of LRUs. They believe that
+only by controlling the design to the piece part level can they be     Tradition and Lack of Trust. This obstacle really boils down to the
+assured that the end product will meet their requirements.             issue of requirements. Requirements, whether or not an open sys-
+                                                                       tems approach is being used in a specific program, must be realis-
+  2. Vested Financial Interests. The military services have            tic, achievable, and appropriate. They must be derived from the
+developed an extensive logistics infrastructure. Military depots       warfighter’s needs. A program must start with good requirements
+employ thousands of people. Managers of these depots control           and then have effective means of verifying if the requirements have
+millions of dollars in assets. A considerable amount of the work       been met. These means include analysis, simulation, and testing.
+done by depots involves repair and replacement of shop-replace-
+able units (SRUs) that make up the LRUs. The move to an F3I            Certainly the government has the responsibility to ensure that a
+concept means that repair of LRUs now becomes the sole pre-            contractor is implementing good configuration management
+rogative of a contractor. The loss of work could mean that the         practices, an effective process for selecting parts and suppliers,
+depots need fewer people and smaller budgets. Although the             and has effective design, analysis, and test methods for achiev-
+benefits accruing to the military from F3I may outweigh any neg-       ing the F3I requirements. However, the government’s focus must
+ative impact on the depots, it is only natural for those directly      be on the F3I requirements, whether the LRU has the required
+affected to be less than enthusiastic about the concept.               form, fit, and function, and can interface with the other elements
+                                                                       of the system and not on the internal design, i.e., parts selection
+   3. Dominance of Legacy Systems. It has become the norm              and specific design.
+for military systems to continue in operational use far beyond
+what was originally planned or even envisioned. Today, the bulk        References
+of the military’s support dollars go to keep legacy systems up         1. ANSI/EIA 649-1998, National Consensus Standard for
+and running. Consequently, some may conclude that since                   Configuration Management, Approved July 10, 1998.
+embracing the F3I concept in new system development will have          2. Charles, Richard A. and Arthur C. Brooks, “The Economic
+little impact on total operating and support costs, why bother.           Impact of Avionics Standardization on the Airline Industry,”
+                                                                          Georgia State University, 2000.
+Overcoming the Obstacles                                               3. Criscimagna, Ned H., “Commercial Off-the-Shelf Equipment
+The obstacles just discussed are certainly not insurmountable.            and Non-Developmental Items,” RAC START Sheet 98-4.
+Let’s look at the obstacles presented in the previous section,         4. Hanratty, Michael, Robed H. Lightsey, and Arvid G. Larson,
+working from the last obstacle to the first.                              “Open Systems and The Systems Engineering Process,”
+                                                                          Acquisition Review Quarterly, Winter, 1999.
+Dominance of Legacy Systems. Consider the view that since the          5. Jensen, David, “ARINC Standards: Where They Come
+support of legacy systems dominates the budget, and will proba-           From. Why We Need Them,” Avionics Magazine, Access
+bly do so for years to come, why bother with F3I for new sys-             Intelligence, LLC, Potomac, MD, August 2002.
+tems. The fallacy of this line of reasoning is that F3I is a perfect   6. OS Computer Resources Acquisition Guide & Supportability
+approach to modernizing and extending the life of legacy sys-             Guide, Next Generation Computer Resources Document No.
+tems. The examples of the F-15 radar and COBRA DANE radar,                AST 003, Version 1.0 – 31, Space and Naval Warfare Systems
+discussed earlier, clearly substantiate this claim.                       Command, December 1996.
+
+Legacy systems usually have size, space, power, cooling, and           About the Author
+shape factor constraints. For these systems, the open systems          Ned H. Criscimagna is a Science Advisor with Alion Science and
+approach provides F3I solutions within existing packaging, power,      Technology Corporation and Deputy Director of the Reliability
+and environmental constraints. In such cases, the open systems         Analysis Center. Prior to joining Alion, he worked for ARINC
+solution frequently requires less system resources by using newer,     Research Corporation. Before entering industry, Mr. Criscimagna
+more efficient technologies.                                           served for 20 years in the U.S. Air Force and retired with the rank
+                                                                       of Lieutenant Colonel. Over his 39-year career, he has been
+
+                                                                                                          First Quarter - 2005               13
+       The Journal of the Reliability Analysis Center
+
+
+     involved in a wide variety of projects related to Department of          graduate credits in Systems Management from the University of
+     Defense acquisition, reliability, logistics, reliability and maintain-   Southern California in 1976-77. He is a member of the
+     ability (R&M), and availability. He led the development of the last      American Society for Quality (ASQ), the National Defense
+     version of MIL-HDBK-470 and the last update to MIL-HDBK-                 Industries Association (NDIA), and the Society of Automotive
+     338. He has experience in project management, aircraft mainte-           Engineers (SAE), and is a Senior Member of the International
+     nance, system acquisition, logistics, R&M, and availability. He          Society of Logistics (SOLE). He is a SOLE Certified
+     instructs the RAC’s Mechanical Design Reliability Course.                Professional Logistician and an ASQ Certified Reliability
+                                                                              Engineer. He is a member of the ASQ/ANSI Z-1 Dependability
+     Mr. Criscimagna earned his B.S. in Mechanical Engineering                Subcommittee, the US TAG to IEC TC56, and the SAE G-11
+     from the University of Nebraska-Lincoln in 1965 and his M.S. in          Division. He is listed in the 27th Edition of Who’s Who in the
+     Systems Engineering with an emphasis on reliability from the             East, the 54th, 56th, and 57th, Editions of Who’s Who in America,
+     USAF Institute of Technology in 1971. In addition, he earned             and in the 8th Edition of Who’s Who in Science and Engineering.
+
+     System Level Clues for Detailed Part Issues
+     By: C. Richard Unkle, Senior Reliability Engineer, GE Transportation – Rail Division, Erie, Pennsylvania
+     Abstract                                                                 cause of such trends and, if necessary, to develop improvements
+     With the renewed emphasis on reliability within industry comes           that are then cut in on the affected fleets. In all cases, six-sigma
+     the desire to diagnose potential reliability problems of fielded sys-    methods are used to determine the root cause and help develop a
+     tems, before they become either a warranty or life cycle cost issue.     viable solution to the problem.
+     In the world of six-sigma, many techniques are available for deter-
+     mining the main issue or root cause of a problem, so it can be           While this process has proven to be effective, project teams are
+     fixed. However, many such techniques are applied after a prob-           too often reactive in nature. That is, problem investigation and
+     lem arises. This is especially true in the world of reliability, where   resolution sometimes occur after the problem has become signif-
+     the high-failure items tend to warrant most of the problem-solving       icant enough to be noticeable. To be more effective and to
+     focus. This article presents a drill-down method useful in the           reduce the amount of time and dollars required to make improve-
+     world of six-sigma for early detection of reliability issues in field-   ments, proactive methods need to be developed. Such methods
+     ed systems. More specifically, the article describes research on a       would include the ability to detect problems in their early stages,
+     hypothesized relationship between a key parameter of the Weibull         prior to the point in time that they are affecting an entire stage
+     distribution and the Crow-AMSAA reliability growth model. This           and prior to the point in time that they are affecting an entire fleet
+     relationship has proven to be strong at both the component and           of locomotives. One such method being researched and pro-
+     functional levels of systems indenture. Actual data from GE              posed by the author involves the use of two well-known reliabil-
+     Transportation Systems (GETS) were used in the research.                 ity analysis tools, Crow-AMSAA (CA) and Weibull.
+     Examples of how the relationship may be used to help detect
+     upcoming reliability issues on GETS products are presented.              Tracking Field Reliability
+                                                                              Several methods are used today in tracking and assessing the
+     Introduction                                                             reliability of fielded systems. At GE Rail, many of the historical
+     One of the key objectives of a six-sigma company is to develop           methods have included both Pareto analysis at the component
+     and maintain high quality products and processes, as measured            level and trending of monthly mission failure rates. Projects are
+     using statistical methods. For products designed by General              then created that target the poorest performing components for
+     Electric’s Transportation Rail Division (GE Rail) not only is it         upgrades and improvement. More specialized techniques, such
+     necessary to deliver high quality, but also to sustain high relia-       as Weibull analysis are also used on an as-needed basis.
+     bility over the full life cycle of the equipment. GE Rail current-
+     ly has several long-term service agreements with many of its             While such techniques have been sufficient to improve the over-
+     major North American customers. Because of the known impact              all reliability of GE Rail products, other methods are being
+     that product reliability has on services and maintainability, GE         researched that can provide more advanced warning of reliabili-
+     Rail continuously monitors the reliability of its products that are      ty problems. Often, projects are defined after the problem is
+     maintained under such agreements.                                        large enough to impact system reliability. It would certainly be
+                                                                              better and less costly to find and fix such problems before they
+     GE Rail controls the management of product maintenance under             become large enough to be “felt” by the customer.
+     the aforementioned service agreements, making it easier to col-
+     lect field reliability data and store it in on-line database systems.    One method of accomplishing early detection of reliability problems
+     GE Rail engineers use this reliability database system to track          would be to perform a Weibull analysis on each and every compo-
+     product performance for each customer, by product model and              nent in the system. Such analysis could be used to detect early
+     fleet. Whenever adverse trends in product reliability are detect-        wearout failure modes that could adversely impact a fleet of loco-
+     ed in the data, project teams are created to determine the root          motives prior to overhaul, for example. However, even if such a
+
+14     First Quarter - 2005
+                                                                          The Journal of the Reliability Analysis Center
+
+
+process were automated, the amount of effort to review the plots for      bility is starting to decrease, as measured by the CA β-value being
+multiple failure modes, and to scrub the data for evidence of             between 1.3 and 1.6, say, then the analyst can feel confident that
+replacements, and not repairs, becomes a costly proposition.              a failure mode exists that is in the wearout region, and needs to
+Another method would be to apply the CA model at the system-              be considered as a potential improvement project. If the reliabil-
+level. The CA model is similar to Weibull in that it provides a means     ity of a function, as measured using CA, shows no degradation,
+to determine if reliability is increasing, decreasing or remaining        then the analyst can feel confident that no adverse failure mode is
+constant in time. This is communicated via the CA β-value, which          evident in the system. In this fashion, the drill down approach to
+has a similar interpretation as the Weibull β-value. However, even        a proactive reliability tracking system can easily be digitized and
+if the CA β-value indicates decreasing reliability, additional analysis   set up to warn the right functional engineer, automatically. The
+is required to determine which part, or parts of the system are con-      engineer then has a clear picture of what analysis, using Weibull,
+tributing to the poor behavior. Further, at what value of β does one      needs to be performed to diagnose the failure mode of interest.
+decide to take action? Most uses of this value have been primarily        Such a process is akin to the well-known six-sigma technique
+to characterize growth, constant failure rate, or deterioration.          called a Solution TreeSM, developed by Dorian Shanin.
+
+The approach to be discussed in this article would be to use the                         Table 1. Component-Level Results
+CA model and Weibull model in concert with each other. The                                     CA Model           Conf.   Weibull Weibull
+remainder of this article will briefly describe the proposed                Case     CA β         FIT     M     Range (%)    β    Model Fit
+                                                                              1        0.6       0.182    27      95-99    0.59     0.97
+methodology, summarize research completed to-date, and pro-
+                                                                              2        0.7       0.086    13      80-99    2.52    0.964
+vide an example of the methodology as applied to actual data                  3      0.765       0.045     8      80-99    0.605   0.922
+from a fleet of GE Rail locomotives.                                          4       0.77       0.062     4      80-99     1.2    0.962
+                                                                              5       0.78       0.079    12      80-99    0.925   0.968
+A Discussion of the Approach                                                  6
+                                                                              7
+                                                                                       0.9
+                                                                                      0.91
+                                                                                                 0.056
+                                                                                                 0.057
+                                                                                                          16
+                                                                                                          10
+                                                                                                                  80-99
+                                                                                                                  80-99
+                                                                                                                           1.07
+                                                                                                                             1
+                                                                                                                                   0.939
+                                                                                                                                   0.966
+In the paper, Relationship between Weibull and AMSAA models in                8      0.962       0.054    10      80-99    1.136   0.911
+reliability analysis: a case study, (Unkle and Venkataraman,                  9       0.98       0.038     6      80-99    1.04    0.877
+2002), a hypothesized relationship between the CA model β-value              10         1        0.135    41      85-99     0.8    0.967
+(referred to only as the AMSAA model in the referenced paper),               11       1.16       0.041    10      80-99    1.23    0.895
+and the Weibull β-value was described. The hypothesis was that               12        1.5        0.05     4      80-99    1.44    0.995
+                                                                             13       1.53       0.041    15      80-99    1.46    0.977
+whenever the CA β is shown to be 1.6 or higher, this is an indica-           14        1.8        0.06     4      80-99    2.36    0.831
+tion that one or at most two dominating failure modes are driving            15        1.9       0.123    16      80-99     2.6    0.923
+the reliability behavior in the system. Furthermore, when the data           16       1.94       0.087     7      80-99    2.147   0.912
+is analyzed by the Weibull distribution, its β-value will be at least        17        2.3       0.094     9      80-99     6.5    0.852
+2 or greater. (A Weibull β-value in the range of 2-4 is an indica-           18        2.5        0.07     4      80-99    1.65     0.96
+                                                                             19       5.03        0.11     9      80-99    5.87    0.894
+tion of the onset of early wearout. Higher than 4 implies old age,
+                                                                             20        6.8      0.146 4    4      90-99    15.83    0.86
+or rapid wearout. Either case is an indication that action needs to
+be taken). This relationship was proven out at both the component
+and functional levels of indenture using empirical data.                                     Table 2. Function-Level Results
+                                                                                               CA Model           Conf.   Weibull Weibull
+                                                                            Case     CA β        FIT      M     Range (%)    β    Model Fit
+A summary of the findings of this previous research is presented in           1       0.52       0.12     31      80-90    0.578   0.942
+Tables 1 and 2. Table 1 shows the component-level analysis                    2       0.66       0.09      6      80-90    0.804   0.836
+results; Table 2 shows the functional-level analysis results. In a            3       0.72        0.3     19       99      1.65    0.883
+majority of the cases used in the analysis, the basic premise of the          4       0.84       0.07     38      80-90     0.7    0.973
+hypothesized relationship held true. That is, whenever the meas-              5      0.854       0.06     42      80-90    0.576   0.957
+                                                                              6       0.89        0.1      5      80-90    0.788   0.863
+ured CA β-value was at least 1.6 or greater, the component or func-
+                                                                              7      0.905       0.05      9      80-90    0.718   0.954
+tion contained at least one failure mode that had a measured                  8      0.915       0.06     57      80-90    0.792   0.977
+Weibull β-value of greater than 2.0. Further work was done using              9      0.917       0.04     17      80-90    1.03    0.961
+Monte Carlo simulation techniques in an attempt to generalize this           10       0.93       0.15     35      85-99     2.7     0.88
+relationship. The authors concluded that in general, whenever the            11       0.98       0.17     33      90-99    1.631   0.922
+CA β-value was at least 1.3 or greater, one could expect a failure           12       0.99       0.24     26       99       1.3     0.94
+                                                                             13       1.08       0.04      7      80-90    0.863   0.993
+mode to exist that has a measured Weibull β-value of 2.0 or greater.
+                                                                             14       1.13       0.14     12      85-99    1.92    0.897
+                                                                             15        1.2       0.05     14      80-90    1.36    0.955
+The significance of this relationship, in terms of detecting prob-           16       1.22       0.07      8      80-90    1.22    0.925
+lems more proactively, is as follows. Because the CA model                   17       1.23        0.1     25      80-90     1.3    0.942
+measures the frequency of events, regardless of the number of                18       1.23       0.09     12      80-90    0.905    0.97
+failure modes involved, tracking of reliability can take place at            19       1.24       0.03      9      80-99    1.255   0.881
+                                                                             20       1.33       0.04      8      80-99    1.19    0.965
+higher levels of indenture, without the details necessary to deter-
+                                                                             21       1.44      0.247      6       99      1.55    0.896
+mine specific failure modes. Should a function indicate its relia-
+                                                                                                                        (Continued on page 17)
+                                                                                                               First Quarter - 2005              15
+                                     PUTTING THE "RELIABILITY" BACK INTO
+                                       RELIABILITY CENTERED MAINTENANCE                                               SM
+
+
+
+
+RCM++ facilitates analysis, data management and reporting for Reliability Centered Maintenance (RCM) analysis,
+integrated with full-featured FMEA/FMECA capabilities.
+Equipment Selection: In order to focus resources where they can provide the greatest benefit, RCM++ supports two
+configurable methods for selecting the equipment that will be analyzed with RCM techniques: Selection Questions
+(yes/no) and Criticality Factors (rating scales).
+Failure Effect Categorization and Maintenance Task Selection Logic Charts: RCM++ supports the Failure Effect
+Categorization (FEC) and Maintenance Task Selection logic charts in the major industry RCM standards and provides
+the ability to customize the questions and categories to meet specific application needs. Analysts can use these logic
+charts to categorize the effects of failure and then to select the maintenance tasks that will be applicable and effective.
+Optimum Maintenance Interval and Operational Cost Comparisons: RCM++ goes beyond calculations based on
+MTBFs and the often-inappropriate assumption of an exponential failure distribution. Analysts can use the Weibull,
+exponential, normal, lognormal or mixed Weibull distributions to describe the equipment's failure behavior and then
+use the same powerful calculation and simulation engines that are available in ReliaSoft's BlockSim software to
+estimate the optimum maintenance interval and to compare the operational costs of various maintenance strategies.
+Maintenance Task Packaging: RCM++ makes it easy to group individual tasks into packages based on interval, labor
+crew, etc. Both manual and automated packaging options are available.
+Reports, Charts and Queries: RCM++ provides a complete set of print-ready reports for your analysis, which can be
+generated directly in Microsoft Word or Excel. The software also provides a variety of pareto (bar), pie and matrix
+charts to demonstrate the analysis information graphically; as well as a flexible query utility.
+Full-Featured FMEA or FMECA: Full integration with ReliaSoft's Xfmea software enables RCM++ to provide a
+complete set of FMEA/FMECA capabilities that can be used independently or integrated with the RCM analysis. This
+includes Risk Priority Numbers (RPNs) or Criticality Analysis, recommended action tracking, and much more.
+Data Management: RCM++ allows multiple users to work cooperatively on the analysis and provides numerous ways
+to leverage the lessons learned from previous analyses, including copy/paste, import/export, and more.
+Integrated with Xfmea, Weibull++, ALTA and BlockSim                                         Part of ReliaSoft’s
+                                                                                          Reliability Office suite,
+                                                                                           which also includes:
+                                                                                          - Weibull++
+                                                                                          - ALTA
+                                                                                          - BlockSim (RBD+FTA)
+                                                                                          - Xfmea
+                                                                                          - RGA
+
+
+ReliaS
+     S oft
+                                                                                          - MPC 3 (MSG-3)
+                                                                                          - QTMS (FRACAS)
+                                                                                          - Lambda Predict
+                                                                    ®
+http://www.ReliaSoft.com                                                                    Toll Free: 1.888.886.0410
+http://www.Weibull.com                                                                             Tel: +1.520.886.0410
+E-mail: Sales@ReliaSoft.com                                                                       Fax: +1.520.886.0399
+                                                                         The Journal of the Reliability Analysis Center
+
+
+
+System Level Clues ... (Continued from page 15)
+            Table 2. Function-Level Results (Cont’d)                     The author has continued to research the relationship between
+                    CA Model                 Conf.   Weibull Weibull     the two models at higher levels of indenture. While the relation-
+   Case      CA β      FIT        M        Range (%)    β    Model Fit   ship does appear to hold true at the subsystem level, the author
+    22       1.45    0.206        13         95-99    1.56    0.981      has found that higher levels within the system tend to have more
+    23        1.5     0.05        32         80-99     7.3    0.953
+                                                                         and more constant failure rates (β = 1), than not. Therefore, the
+    24       1.51     0.05        12         80-99     1.2    0.981
+    25       1.54    0.169         8         95-99    1.64    0.917
+                                                                         preliminary conclusion is that this technique, due to the nature of
+    26        1.6     0.22        82         95-99     5.6    0.827      systems reliability, may not be sensitive enough to detect prob-
+    27       1.64      0.1        11         80-99    5.67    0.872      lems early enough.
+    28       1.65     0.115        6         80-99     2.5    0.855
+    29        1.7    0.081        12         80-99    4.23    0.935
+    30       1.73    0.044         8         80-99    2.16    0.921
+                                                                         Applying the Method
+    31       1.74    0.046         6         80-99    4.07    0.988      As a demonstration of the potential of this new methodology to
+    32       1.96    0.037        12         80-99    2.44     0.99      detect problems proactively, the author has applied it to one of
+    33         2     0.073         9         80-99    2.68    0.916      GE Rail’s product lines that contains multiple subsystems and
+    34       2.02     0.16        16         90-99     1.7     0.95      functions. A proposed format for how the results of the analysis
+    35       2.12    0.107         6         80-99    2.13    0.943
+    36       3.18     0.22         9          99      11.6     0.98
+                                                                         could be presented is shown in Table 3. Note that none of the
+    37       5.01    0.149        22         90-99    6.83    0.825      actual names of the subsystems or the analyzed functions is
+                                                                         shown for proprietary reasons. In reviewing Table 3, one can see
+                          Table 3. Example Drill Down Approach Using the CA-Weibull Analysis Methodology
+          SS #                  Function #                 CA β             Weibull β          RU Related to Weibull            Notes
+           01                       1                      0.94            Not Evaluated
+                                    2                      0.82            Not Evaluated
+           03                          1                    0.93           Not Evaluated
+                                       2                    1.15           Not Evaluated
+                                       3                    0.72           Not Evaluated
+           04                          1                    1.27         Should be Evaluated         Computer          Borderline CA beta value
+                                       2                    1.60          Needs Evaluation       Not yet determined    CA beta above threshold
+                                       3                    1.12           Not Evaluated
+           06                          1                    2.14                2.17                 Duct work         Unknown Failure Mode
+                                       2                    0.77           Not Evaluated
+                                       3                    1.31          Needs Evaluation         Rotating Part
+                                       4                    0.66           Not Evaluated
+           07                          1                    0.97           Not Evaluated
+                                       2                    0.93           Not Evaluated
+           08                          1                    0.98           Not Evaluated
+                                       2                    0.84           Not Evaluated
+                                       3                    1.10           Not Evaluated
+                                       4                    1.09           Not Evaluated
+                                       5                    1.01           Not Evaluated
+                                       6                    1.53          Needs Evaluation       Not yet determined
+           09                          1                    1.68          Needs Evaluation           Battery
+                                       2                    1.29                2.71               Power Supply        Unknown Failure Mode
+                                       3                    1.08           Not Evaluated
+           10                          1                    1.34          Needs Evaluation         Comm Panel
+           11                          1                    1.49               1.98                Mech. Equip.         Oil Leak Failure Mode
+                                       2                    1.02           Not Evaluated
+                                       3                    0.90           Not Evaluated
+                                       4                    1.00           Not Evaluated
+                                       5                    1.08           Not Evaluated
+                                       6                    1.19           Not Evaluated
+                                       7                    0.91           Not Evaluated
+                                       8                    0.43           Not Evaluated
+                                       9                    0.95           Not Evaluated
+           12                          1                    1.15           Not Evaluated
+                                       2                    1.60          Needs Evaluation        Electronic Panel     Unknown Failure Mode
+                                       3                    1.93          Needs Evaluation                              Potential Batch Issue
+                                       4                    0.68           Not Evaluated
+                                                                                                                        (Continued on page 19)
+                                                                                                              First Quarter - 2005                17
+                           YOU ASKED, AND WE LISTENED
+               PUTTING THE PIECES OF RELIABILITY, AVAILABILITY,
+          MAINTAINABILITY, SAFETY AND QUALITY ASSURANCE TOGETHER
+
+                             New Fault Tree Analysis Engine!
+
+ITEM TOOLKIT MODULES                                                                   Binary Decision
+■    MIL-217 Reliability Prediction                                                    Diagram (BDD)
+■    Bellcore/Telcordia Reliability Prediction                                          AVAILABLE
+■    299B Reliability Prediction                                                          NOW
+■    RDF Reliability Prediction
+■    NSWC Mechanical Reliability Prediction
+■    Maintainability Analysis
+■    Failure Mode, Effects and Criticality Analysis
+■    Reliability Block Diagram
+■    Fault Tree Analysis
+■    Markov Analysis
+■    SpareCost Analysis
+
+ITEM QA MODULES
+■ Design FMEA
+■ Process FMEA
+■ Control Plan
+■ Document Control and Audit (DCA)
+■ Calibration Analysis
+■ Concern and Corrective Action
+  Management (CCAR)
+■ Statistical Process Control (SPC)
+
+
+              Item Software (USA) Inc.                              Item Software (UK) Limited
+    2190 Towne Centre Place, Suite 314, Anaheim, CA 92806   1 Manor Court, Barnes Wallis Road, Fareham, Hampshire
+            Tel: 714-935-2900 - Fax: 714-935-2911                               PO15 15TH, U.K.
+                    URL: www.itemsoft.com                     Tel: +44 (0) 1489 885085 - Fax: +44 (0) 1489 885065
+                 E-Mail: itemusa@itemsoft.com                               E-Mail: sales@itemuk.com
+
+
+
+                          Visit our Web site at www.itemsoft.com,
+                 or call us today for a free demo CD and product catalog.
+                                                                         The Journal of the Reliability Analysis Center
+
+
+
+System Level Clues ... (Continued from page 17)
+that whenever engineering is presented with data in this format,         CA β-value being at least in the 1.3-1.6 range, then it is highly
+they can now quickly see which functions and even which com-             likely that one and possibly two wearout failure modes exist
+ponents require further analysis. Table 3 also points out where          within the function. Detection and characterization of the failure
+additional data collection activity may be needed to determine           mode is then possible using Weibull analysis techniques. Using
+further specific failure mode information such that it can be ana-       this method in a drill down fashion will allow quick and focused
+lyzed using Weibull techniques. Much of this approach can be             identification of only those pieces of the system that require
+automated, and GETS is in the process of doing so for its field          attention. This new methodology is significant in that the drill
+reliability database. One note of caution here is that even when         down nature of the approach, with the result being a focused
+these methods show potential problem areas, trade-off analyses           problem definition, fits quite nicely within the six-sigma stable
+may still be required. However, this method shows promise as a           of analysis techniques.
+means to focus quickly and easily in on potential problems.
+Further, such methods can be applied at any time in a system’s           References
+life cycle, and therefore has the potential of detecting problems        1. Unkle, C. Richard and Venkataraman, Ray, Relationship
+early enough, before they become an issue with the customer. In             between Weibull and AMSAA models in reliability analysis:
+this fashion, the design team can stay ahead of such problems,              a case study, International Journal of Quality & Reliability
+improving performance and customer satisfaction.                            Management, Vol. 19, No. 8/9, 2002.
+                                                                         2. MIL-HDBK-189, “Reliability Growth Management,” 13
+Conclusion                                                                  February 1981.
+Proactive analysis of fielded system reliability is becoming a           3. Abernethy, Robert B., The New Weibull Handbook- Fourth
+must for companies that are responsible for the life cycle man-             Edition, Published and Distributed by Robert B. Abernethy,
+agement of large equipments. Current trending methods, while                536 Oyster Rd, N. Palm Beach, Florida 33408-4328,
+adequate for determining when problems may be arising in such               September 2000.
+systems, are reactive rather than proactive in nature. Because of
+this, other methods are required that will provide the needed            About the Author
+early warning of failure modes that, if left unchecked, could            Richard Unkle is a Six Sigma Black Belt and a Senior Reliability
+develop into larger problems later on. One such method, as               Engineer working for GE Rail in Erie, Pennsylvania. He earned
+described in this paper, is to use two well-known reliability            a BSEE from RIT in 1981 and an MBA from The Pennsylvania
+analysis techniques in concert to provide the noted proactive            State University in 2002. He has more than 20 years experience
+capability. One technique, known as Crow-AMSAA, is applica-              in systems reliability engineering, having worked at the USAF
+ble at any system level. More importantly, it can be used to             Rome Laboratory, ARINC Research Corporation, and the
+measure the impact of all failure modes at once. Using CA, the           Reliability Analysis Center before joining GE Rail in 1997. In
+analyst can first determine if the system reliability, at least at the   his current role, he provides reliability training, analysis, and tool
+functional level of indenture, is increasing, decreasing, or             development support to the engineering, quality, life cycle cost,
+remaining constant in time. If decreasing, as measured by the            and finance departments of GE Transportation’s Rail division.
+
+
+
+                                                                                                          RMSQ Headlines
+Wired for Success: Ensuring Aircraft Wiring Integrity Requires           also looks at the emergence of proactive approaches designed to
+a Proactive Systems Approach, AMPTIAC QUARTERLY, pub-                    safeguard wiring system performance.
+lished by the Advanced Materials and Processes Technology
+Information Analysis Center, Vol. 8, No. 3, 2004, page 17.               How Useful is QFD, Quality Progress, published by the
+Wiring integrity has become a highly visible aging aircraft issue        American Society for Quality, January 2005, page 51. This arti-
+in recent years, both for military and commercial aircraft. This         cle discusses an interesting application of Quality Function
+article highlights some recent events that have resulted in an           Deployment (QFD). The author, a quality engineer at
+increased emphasis on wiring interconnection and power distri-           Cincinnati-Lamb in Hebron, KY, tells how he used QFD in men-
+bution, both of which are considered highly critical to the safe         toring a high school team that was developing a robot for the
+and successful operation of modern aircraft and space vehicles. It       FIRST Robotics Competition.
+
+
+ The appearance of advertising in this publication does not constitute endorsement by the
+ Department of Defense or RAC of the products or services advertised.
+
+
+
+                                                                                                              First Quarter - 2005                19
+                                                                   The Journal of the Reliability Analysis Center
+
+
+
+
+Future Events in Reliability, Maintainability, Supportability & Quality
+WESTEC APEX                                Reliability World 2005                      28th ESReDA SEMINAR: The
+April 4-7, 2005                            April 26-28, 2005                            Geographical Component of Safety
+Los Angeles, CA                            San Antonio, TX                              Management
+Contact: Expositions Division;             Contact: Lisa Jenkins                       June 14-15, 2005
+Society of Manufacturing Engineers         Noria Corporation                           Contact: Professor Inge Svedung
+One SME Drive                              Tulsa, OK 74105                             Karlstad University
+P.O. Box 930                               Tel: (800) 597-5460                         Karlstad SE 651 88 Sweden
+Dearborn, MI 48121-0930                    Fax: (918) 746-0925                         E-mail: <information@kau.se>
+Tel: (800) 733-3976                        E-mail: <ljenkins@noria.com>                On the Web: <http://www.kau.se/esreda>
+Fax: (313) 425-3407                        On the Web: <http://www.reliabilityworld.
+E-mail: <service@sme.org>                   com/rwc>                                   Human Systems Integration Symposium
+On the Web: <http://www.sme.org/westec/>                                                2005
+                                           2005 ASQ World Conference on Quality        June 20-22, 2005
+2005 JSEM (Joint Service                    & Improvement                              Arlington, VA
+ Environmental Management)                 May 16-18, 2005                             Contact: HSIS 2003
+ Conference                                Seattle, WA                                 American Society of Naval Engineers
+April 11-14, 2005                          Contact: Event Management Department        Alexandria, VA 22314
+Tampa, FL                                  ASQ                                         Tel: (703) 836-6727
+Contact: Britt Bommelje                    Milwaukee, WI 53201-3005                    Fax: (703) 836-7491
+NDIA                                       Tel: (800) 248-1946                         E-mail: <asnehq@navalengineers.org>
+Arlington, VA 22201                        Fax: (414) 272-1734                         On the Web: <http://www.navalengineers.
+Tel: (703) 247-2587                        E-mail: <help@asq.org>                       org/Events/HSIS2005/HSIS05Index.html>
+Fax: (703) 522-1885                        On the Web: <http://wcqi.asq.org>
+E-mail: <bbommelje@ndia.org>                                                           World Tribology Congress III Contact
+On the Web: <http://register.ndia.org/     International Applied Reliability             Mechanics and Friction Interfacial
+ interview/register.ndia?PID=Brochure&      Symposium                                    Phenomena in MEMS
+ SID=_1GN0LRD0YEMID=5440>                  May 18-20, 2005                             September 12-16, 2005
+                                           San Diego, CA                               London, ON
+DMSMS 2005                                 Contact: Patrick T. Hetherington            Contact: Dr. Richard S. Cowan
+April 11-15, 2005                          Reliability Analysis Center                 Georgia Tech
+Nashville, TN                              201 Mill Street                             Manufacturing Research Center
+Contact: David G. Robinson                 Rome, NY 13440-6916                         P.O. Box 0560
+DMSMS & GEM Program Manager                Tel: (315) 339-7084                         Atlanta, GA 30332
+Columbus, OH 43213                         Fax: (315) 337-9932                         Tel: (404) 894-3270
+Tel: (614) 692-7493                        E-mail: <Info@ARSymposium.org>              Fax: (404) 894-8336
+Fax: (614) 693-1629                        On the Web: <http://www.arsymposium.        E-mail: <rick.cowan@me.gatech.edu>
+E-mail: <david.g.robinson@dla.mil>          org/>                                      On the Web: < http://www.
+On the Web: <http://www.dmsms2005.                                                       conferencetoolbox.org/WTC05/
+ utcdayton.com/>                           ICAF 2005 (International Committee on         CallForPapersDetail.cfm>
+                                            Aeronautical Fatigue)
+6th Annual Science & Engineering           June 6-10, 2005
+ Technology Conference/Dodd Tech           Contact: Klaus Schubert
+ Exposition                                ICAF 2005
+April 19-21-2005                           Bonn D-53175 Germany
+North Charleston, SC                       Tel: (+49) 228-30805-18
+Contact: Simone Baldwin                    Fax: (+49) 228-30805-24
+NDIA                                       E-mail: <klaus.schubert@dglr.de>
+Arlington, VA 22201                        On the Web: <http://www.www.icaf2005.
+Tel: (703) 247-2596                         org>
+Fax: (703) 522-1885
+E-mail: <sbaldwin@ndia.org>
+On the Web: <http://register.ndia.org/
+ interview/register.ndia?PID=Brochure&        Also visit our Calendar web page at
+ SID=_1GN0LRD0Y&MID=5720>                    <http://rac.alionscience.com/calendar>
+
+
+
+                                                                                                   First Quarter - 2005          21
+       The Journal of the Reliability Analysis Center
+
+
+
+
+     From the Editor
+     Be Positive But Be Realistic                                           At other times, ridiculously high relia-
+     Having a positive outlook on life is an enviable trait. Now I          bility requirements are called out
+     don’t mean positive in a Pollyanna sense, where everything will        because technology is available, or at
+     turn out rosy if we are only good and believe. I mean looking for      least is touted as being available, to
+     possibilities where none seem to exist, and accepting problems         achieve the requirements. Unless the
+     as challenges and then working to find solutions. Having a pos-        overall life cycle cost is minimized (or
+     itive outlook means that we do not easily give up but persistent-      nearly so) by this level of reliability, and
+     ly pursue our goals and objectives.                                    unless the technology can be incorporat-
+                                                                            ed within the budget and schedule for
+     Having a positive outlook is as healthy for people in their occu-      the program, the requirement is “gold
+     pations as it is in their private lives. Everyone has days when        plating” at its worst.
+     they gripe about something that has happened at work, about the
+     company for which they work, or about a co-worker. But over-           In system acquisition, rather than dream- Ned H. Criscimagna
+     all, most of us like the profession we have chosen and gain some       ing of what we want, we must be realis-
+     measure of self-satisfaction in the work we perform.                   tic and see things as they really are. We have the tools to help us
+                                                                            do this for reliability. These include:
+     In system acquisition, as in any other endeavor, a positive out-
+     look can be a healthy and desirable characteristic of the manage-         •   Analysis – Using analytical tools like the Failure Modes
+     ment and technical team. Unfortunately, this positive outlook                 and Effects Analysis and Fault Tree Analysis can help us
+     sometimes slips into the world of self-deception and illusion.                assess whether or not we have a realistic opportunity to
+     For example, when technical problems arise, and every tool                    attain the required reliability.
+     available to the engineer, every management indicator, and com-           •   Tests – Testing parts to determine life and testing systems
+     mon sense tell us that the challenge is insurmountable within the             provides additional insight into the realism and achiev-
+     budget and schedule, we should be wise enough to call a time-                 ability of a reliability requirement.
+     out. During the timeout, we need to reassess and possibly relax           •   The Reliability Case – A useful approach for organizing
+     the goals, examine less lofty alternatives, or even cancel the pro-           all available information and then using the information
+     gram. Too often, however, a “can-do” mentality and an overly                  as the basis for assessing the level of reliability achieved.
+     positive outlook blind us to such practical actions.                      •   Engineering Judgment – Our experience and good sense
+                                                                                   are indispensable for evaluating the level of reliability
+     All of us at least have heard anecdotal stories about programs in             that can reasonable be expected from a system.
+     which requirements were doggedly chased, despite incontrovert-
+     ible evidence that the requirements were unachievable, given           A good reliability program can be an essential part of an overall
+     program and technical constraints. Reliability is often one of         risk management program. By selecting key criteria (e.g., fix
+     these requirements. It seems that every new program asks for           effectiveness, occurrence of new failures, test results, etc.) and
+     ever-higher levels of reliability, even as every other measure of      assigning a color code, we can assess the risk in meeting the reli-
+     performance is also expected to be improved significantly.             ability requirement. When all the indicators are red, perhaps we
+                                                                            have a problem and not simply a challenge.
+     Now, striving for improvement is commendable, but only if the
+     improvement is really needed and is within the realm of techni-        As engineers, we have an obligation to tell management how it
+     cal feasibility. All-too-often, an extremely high reliability          “really is.” Sugar-coating the truth may be easier than being the
+     requirement is imposed to compensate for restricted budgets that       bearer of bad news, but in the long run, no one is well served by
+     prevent the needed number of systems from being bought.                such a tactic. Managers always have the prerogative, of course,
+     Reliability and higher performance overall is expected to make         of ignoring bad news. It may be that some have even tried to
+     up for the reduced number of systems. A rule of thumb, the ori-        manipulate the facts to avoid losing funding or political support
+     gin of which escapes me, is that if the opponent has twice as          for their program. Be that as it may, the engineer’s responsibili-
+     many tanks (or planes, or men, etc.) as you, your tanks must be        ty is to use the available information and his or her best judgment
+     four times better. Whether or not this ratio is or ever was true. It   in assessing the technical realities. It is then a matter of ethics
+     is obvious that when outnumbered, you must have weapons of             not to be swayed by pressures to sacrifice reality for the unreal-
+     superior quality.                                                      istically positive outlook others desperately seek.
+
+
+
+
+22     First Quarter - 2005
+                                                                           The Journal of the Reliability Analysis Center
+
+
+
+
+                                                                                                                PRISM Column
+Environmental Profiles                                                     and vibration (Grms) should be used for the intended application
+A factor is included in PRISM to account for the environmental             environment. The PRISM software tool includes default values
+effects of vibration and temperature cycling at the system level.          for these values that are a function of the generic environment
+At the component level, the π and λ factors in PRISM account               that can be used when the model user does not know the specif-
+for temperature cycling, vibration, and relative humidity when             ic environmental stresses to which the system will be exposed.
+RACRates models are used.
+                                                                           Default values for environmental stresses can be found in the
+At the system level, if the specific environmental stresses to which       PRISM user’s manual, Appendix B. Additionally, as with the
+the system will be exposed in field use are known, then the envi-          operational profiles, custom profiles can be added to the system.
+ronmental correction factor is calculated using the formula:               For example, say that a ground communications system is operat-
+                                                                           ed in an environment with an operating temperature of 30°C, dor-
+              P • SS(TC use ) + PRV • SS(RVuse )                           mant temperature of 10°C, relative humidity of 50%, and a vibra-
+         ∏ E = TC                                                          tion of 0.5 Grms. To use this profile in related systems and system
+              PTC • SS(TC G b ) + PRV • SS(RVG b )
+                                                                           reassessments, it is recommended that a custom profile be created.
+                                                                           To add custom environmental profile or to review the default oper-
+where,
+                                                                           ational profiles, select “Environments” from the Libraries menu.
+  PTC     =    percentage of failures resulting from temperature
+                                                                           RAC is offering a two day PRISM® Training Course at the
+               cycling stresses
+                                                                           Turning Stone Conference Center in Verona, NY on May 10-11,
+  PRV     =    percentage of failures resulting from random
+                                                                           2005. Registration for this training course will be free of charge
+               vibration stresses                                          to licensed PRISM users. Individuals who are not currently
+  SS      =    screening strength applicable to the application            licensed users will be able to purchase the PRISM software for
+               environmental values                                        $1,995 ($2,195 International) and attend the course at no charge.
+If the actual values of these variables are unknown, the default           For more information on PRISM feel free to contact the PRISM
+values that should be used are PTC = 0.80 and PRV = 0.20. The              team by phone (315-337-0900) or by E-mail (<rac_software@
+SS value is the screening strength and has been derived from               alionscience.com>). To obtain additional information including
+MIL-HDBK-344. It is an estimate of the probability of both pre-            a demo version of the software or to register for training go to
+cipitating a defect to failure and detecting it once precipitated by       (<http://rac.alionscience. com/prism>).
+the test. Whenever possible, the actual values of delta T (∆T)
+
+                                                                                             Upcoming June Training
+Electronic Design Reliability                                              of estimating, testing and modeling system reliability data.
+This intensive course is structured for all key participants in the        Course materials include the course manual and RAC’s publica-
+reliability engineering process. Included are systems and circuit          tion “Practical Statistical Tools for the Reliability Engineer.”
+design engineers, quality engineers, and members of related disci-
+plines having little or no previous reliability training. The course       Mechanical Design Reliability
+deals with both theoretical and practical applications of reliability;     This training course is a practical application of fundamental
+all considerations related to the design process including parts           mechanical engineering to system and component reliability.
+selection and control, circuit analysis, reliability analysis, reliabil-   Designed for the practitioner, this course covers the theories of
+ity test and evaluation, equipment production and usage, reliabili-        mechanical reliability and demonstrates the supporting mathemati-
+ty-oriented trade-offs, and reliability improvement techniques.            cal theory. For the beginner, the essential tools of reliability analy-
+                                                                           sis are presented and demonstrated. These applications are further
+Reliability Engineering Statistics                                         solidified by practical problem solving and open discussion. The
+The Reliability Statistics Training Course is a three-day, applica-        objective of this extensive application of reliability principles is to
+tions-oriented course on statistical methods. Designed for the             leave the participants prepared to address reliability related to
+practitioner, this course covers the main statistical methods used         mechanical equipment and to provide competency in the predomi-
+in reliability and life data analysis. The course starts with an           nant tools of mechanical system reliability analysis.
+overview of the main results of probability and reliability theory.
+Then, the main discrete and continuous distributions used in reli-         For more information <http://rac.alionscience.com/training>.
+ability data analysis are overviewed. This review of reliability
+                                                                           Date: June 7-9, 2005
+principles prepares the participants to address the main problems
+                                                                           Location: Chicago, IL
+                                                                                                                First Quarter - 2005                 23
+Reliability Analysis Center                  The Journal of the                      PRSRT STD
+201 Mill Street
+                                                                                   US Postage Paid
+Rome, NY 13440-6916                                                                   Utica, NY
+                                                                                    Permit #566
+
+                                                     Reliability Analysis Center
+
+
+(315) 337-0900                General Information
+(888) RAC-USER                General Information
+(315) 337-9932                Facsimile
+(315) 337-9933                Technical Inquiries
+
+rac@alionscience.com          via E-mail
+
+http://rac.alionscience.com   Visit RAC on the Web
+

@@ -1,0 +1,216 @@
+                               AIRCRAFT OIL USAGE
+                                          JIM EYRE
+
+Most oil knowledge is something that someone told someone who heard it from
+somebody. But, as they say on X-Files, “The truth is out there.”
+
+Almost all general aviation piston engines have a wet sump, a built-in oil reservoir,
+instead of an external oil tank. How can you determine by looking at the oil dipstick of a
+wet-sump engine the minimum oil quantity with which the engine can be operated
+safely? It is one-half of the maximum indication etched on the dipstick. If the engine
+holds 12 quarts, for example, it can be operated with a minimum of six. (Refer to
+Federal Aviation Regulation 33.39).
+
+Low-time pilots who sidle up to longtime fliers are often surprised when the graybeards
+scoff at their practice of completely filling their airplane’s oil reservoir. “It’s going to blow
+out all over the belly if you fill it up,” the old-timers say. They’re correct. Here’s the
+lowdown on engine oil capacities.
+
+Way back in the early days of aviation, the rule makers had gathered their experience
+from the radial engine Transport Category airplane world. So they worded the regulation
+related to engine oil capacity to read, “The usable oil tank capacity shall not be less than
+the product of the endurance of the airplane under critical operating conditions and the
+maximum oil consumption of the engine under the same conditions, plus a suitable
+margin to assure adequate system circulation and cooling.” The oil capacity of an
+engine is predicated on the endurance of the airplane! What does this mean to us
+“ordinary” pilots?
+
+When an engine is being designed the company wants its new offering to be favorably
+looked on by as many airframe manufacturers as possible for as many of their airplanes
+as possible. Following the mandates governing tank capacity, it follows that the engine
+manufacturers did not want the oil capacity of their engines to limit their market, so they
+built in extra capacity.
+
+Civil Aeronautics Administration Manual No. 107 (January 1949), titled Aircraft Power
+Plant Handbook, adds oil-tank capacity guidelines when it says, “The customary ratio is
+one gallon of oil for every 25 gallons of fuel, but not less than one gallon for every 75
+maximum continuous horsepower of the engine involved for non-Transport category
+airplanes.” Is it any wonder that engines have overly large oil capacities?
+
+T-Craft Cessna 182s have a 230-horsepower O-470(R, L, U) engine. The oil capacity of
+this engine is 12 quarts, yet it is quite safe to fly a four-hour flight with only 8 or 9 quarts
+in the sump. Experience has shown that oil added above the nine-quart level is quickly
+“blown out” the crankcase breather tube, which exits the engine compartment at the
+right cowl flap. This “blowing out” results in a very oily belly (those members that clean
+the belly’s at plane wash can attest to this). Safety is not enhanced when the sump is
+full of oil. However it is expensive (@$4.59/quart).
+
+The newest regulations governing the standards of aircraft engines are found in Part 33
+of the FARs, particularly Part 33.39 which says that oil systems must be designed and
+constructed to ensure proper operation in all flight attitudes and conditions. For
+airplanes with wet sump systems (T-Craft fleet) “this requirement must be met when
+only one-half of the maximum lubricant supply is in the engine.”
+
+How much is not enough? John Frank, at Cessna Pilot Association, says, “There are
+two oil levels – enough and not enough. The not-enough level will be signaled by a rise
+in oil temperature and a decrease in oil pressure – as long as the temperature is stable
+you have enough oil.”
+
+So for regulatory reasons airplane engine sumps are generous in relation to the needs
+of the engine, and somewhere between very full and half-full is the “sweet spot”
+identifiable by stable oil temperatures and stable oil consumption.
+
+The best time to get an accurate dipstick reading is just prior to the first flight of the day.
+If you check the oil level shortly after the engine has been run for a while, the dipstick
+reading will be noticeably lower because a significant quantity of oil remains adhered to
+various engine components. Another reading taken 24 hours later will often show an oil
+level that is 1⁄2 to 1 quart higher.
+
+Oil consumption is a very important trend to monitor in an engine; therefore we try and
+keep track of how many quarts of make-up oil are added between oil changes by having
+T-Craft Members record on the sign-out sheet if they add any oil. Usually we find that
+less oil is consumed soon after oil change and more added as time progresses (oil’s
+time in service increases).
+Experience has shown us that 4-6 quarts for the 152, 6-8 quarts for the 172s and 8-10
+quarts for the 182s is quite sufficient. If you feel you need to “top it off” according to
+dipstick markings than please show at next plane wash and volunteer to clean the under
+carriages.
+
+The following contributed to this article: Cessna Pilot Association; AOPA Pilot;
+Aviation Maintenance Bulletin; Sport Flying Magazine; Textron Lycoming “Flyer”
+Newsletter, and our faithful local mechanics.
+                    CHECKING THE DIPSTICK
+NOVEMBER 15, 2016 / MIKE BUSCH / 10 COMMENTS
+
+
+
+
+There’s a lot more to checking the dipstick than just noting the oil level. The
+appearance of the oil is at least as important as its quantity.
+We’ve been doing it since our earliest days as student pilots. Now that we’re aircraft
+owners, we still do it as part of our standard preflight ritual. But are we doing it right?
+It turns out that there’s a lot more to checking the engine’s oil dipstick properly than
+just making sure that the oil level is above the minimum-for-flight level listed in the
+POH. If we really pay attention, we can learn a lot about the condition of our oil and of
+our engine.
+
+HOW MUCH OIL IS NEEDED?
+The engines on my Cessna 310 have 12-quart sumps—13 quarts if you include the
+quart in the spin-on oil filter. When I first acquired the airplane, my mechanic would fill
+the sump to its maximum capacity at each oil change. It didn’t take me long to
+discover that the engines didn’t like that, and promptly tossed several quarts out the
+engine breathers.
+My POH states that the “minimum for flight” oil level is 9 quarts. So I asked my
+mechanic to service the sump to 10 quarts (instead of 12), and I’d add a quart of
+make-up oil when the level got down to 9 quarts. That worked better, but I was still
+seeing a fair amount of oil on the underside of the engine nacelles and the outer gear
+doors.
+After I became a mechanic myself and learned about such things, I checked the Type
+Certificate Data Sheet (TCDS) for my Continental TSIO-520-BB engines, and found
+that an oil level of 6 quarts was sufficient to make good oil pressure in all flight
+attitudes from 23° nose-up to 17° nose-down. Armed with this information, I decided to
+experiment with lower oil levels.
+What I discovered was that oil consumption (and the oily mess on the airframe) was
+drastically reduced if I maintained the oil level at around 8 quarts on the dipstick.
+Since then, I’ve avoided filling the sump to more than 9 quarts, and I normally do not
+add make-up oil until the dipstick reads about 7½ quarts. (This still gives me a 1½-
+quart “cushion” above what the engine needs to operate reliably in all flight attitudes.)
+You might wonder why Continental put a 12-quart sump on an engine that requires
+only 6 quarts. The answer is that FAA certification requirements demand that the
+engine be designed to hold twice as much oil as it actually needs:
+FAR §33.39 Lubrication system.
+(a) The lubrication system of the engine must be designed and constructed so that it
+will function properly in all flight attitudes and atmospheric conditions in which the
+airplane is expected to operate. In wet sump engines, this requirement must be met
+when only one-half of the maximum lubricant supply is in the engine.
+The TCDS for my TSIO-520-BB engines states that maximum acceptable oil
+consumption is about one quart per hour. If my engines actually used that much oil,
+then I’d need to fill the sumps nearly to their maximum capacity to ensure that I had
+enough oil to make a 5-hour flight without risking oil starvation. But since I know from
+long experience that my engines use more like 0.1 quart per hour, there’s no reason
+for me to carry anywhere near that much oil.
+Every aircraft engine installation has an optimum oil level at which oil consumption is
+minimized and the engine is happiest. I would encourage you to experiment to
+determine what oil level works best for your airplane. Your engine will operate properly
+at 50% of its maximum oil capacity—guaranteed. As long as you keep the oil level a
+quart or two above the 50% point, your engine will be happy.
+The best time to get an accurate dipstick reading is just prior to the first flight of the
+day. If you check the oil level shortly after the engine has been run for awhile, the
+dipstick reading will be noticeably lower because a significant quantity of oil remains
+adhered to various engine components. Another reading taken 24 hours later will
+often show an oil level that is ½ to 1 quart higher.
+
+OIL CONSUMPTION?
+Having assured yourself that there’s enough oil in the engine, your next task is to
+make note of how much oil your engine is using. Keeping track of oil consumption—
+particularly any significant increase in oil consumption rate—is an important tool for
+monitoring engine condition.
+The most common method of measuring oil consumption is to record how many
+quarts of make-up oil are added between oil changes, and to divide the total by the
+number of hours in the oil-change interval. (For example, if the oil is changed after 50
+hours and 6 quarts of make-up oil were added during that time, the average oil
+consumption rate is 50/6 or 8.3 hours per quart.)
+Oil consumption isn’t linear—it accelerates as the oil deteriorates over time. The rate
+of consumption during the first 10 hours after an oil change is a good indication of
+engine condition.
+However, this approach obscures the fact that oil consumption is not linear over the oil
+change interval. If you keep track of when you add each quart of make-up oil, you’ll
+find that less oil is consumed at first, and progressively more oil is consumed as the
+oil’s time-in-service increases.
+The reason for this accelerating oil consumption is that the viscosity of the oil
+decreases as the oil deteriorates. Mineral oils lose viscosity due to a phenomenon
+called “polymer shearing” in which the long organic molecules are actually broken
+apart by mechanical action of the engine’s moving parts. Multigrade oils also lose
+viscosity because their viscosity-index improvers oxidize when exposed to high
+temperatures.
+The increased rate of oil consumption provides tangible evidence that your engine oil
+is getting “long in the tooth” and ought to be changed soon.
+
+WHAT DOES YOUR OIL LOOK LIKE?
+Whenever you check the dipstick, it’s also important to make note of the oil’s
+appearance—particularly its color and clarity. The oil’s appearance offers valuable
+clues to its condition and that of your engine.
+Color and transparency are important indicators of engine condition. When oil
+becomes dark and opaque, it should be changed. If this happens rapidly, it
+suggests that the engine has too much blow-by past the rings, or that oil
+temperature is too hot.
+Fresh engine oil has a light amber color and is so transparent that it’s sometimes hard
+to read the dipstick level. As the oil remains in service, it gradually darkens in color
+and becomes progressively more opaque.
+The darkening of engine oil is caused by contamination and oxidation. Contaminants
+include carbon (soot), lead salts and sulfur from combustion byproducts that get past
+the compression rings and into the crankcase (“blow-by”), as well as any dust or dirt
+that gets past the induction air filter. Oxidation of the oil occurs when it is exposed to
+high localized temperatures at it circulates through the engine, and results in the
+formation of coke. Various oil additives are also vulnerable to oxidation, particularly
+the viscosity-index improvers used in multiweight oils.
+Dispersant additives are blended in the oil to help keep these so-called “insolubles” in
+suspension in order to keep the engine clean and minimize sludge deposits. As the
+quantity of insolubles in suspension increases, the oil darkens and becomes opaque.
+It is important to note how quickly this darkening occurs. If your oil remains relatively
+light-colored and translucent after 25 hours in service, you can be reasonably
+confident that your cylinders and rings are in fine condition and that your oil can
+prudently remain in service for 40 or 50 hours. On the other hand, if your oil gets dark
+and opaque after 10 or 15 hours, you’d be wise to change your oil more often—
+perhaps at 25 hours—and you may want to investigate the possibility that one or more
+cylinders are excessively worn.
+Such rapid discoloration is often a good indicator that the oil is distressed. In one
+study, 90% of oil that appeared abnormally dark on the dipstick was subsequently
+found by laboratory analysis to be non-compliant with required specifications. Oil that
+is dark and opaque from blow-by past the rings is very likely to be rich in acids and
+other corrosive compounds that can attack your cam and lifters, and that’s probably
+the #1 cause of engines failing to make TBO. Any time your oil appears dark or
+opaque, you would be wise to drain it and replace it with fresh oil and a new oil filter,
+regardless of the oil’s time-in-service.
+
+Mike Busch
+Mike Busch is arguably the best-known A&P/IA in general aviation, honored by the FAA in
+2008 as National Aviation Maintenance Technician of the Year. Mike is a 7,500-plus hour pilot
+and CFI, an aircraft owner for 45 years, a prolific aviation author, co-founder of AVweb, and
+presently heads a team of world-class GA maintenance experts at Savvy Aviator. Mike’s book
+Manifesto: A Revolutionary Approach to General Aviation Maintenance is available from
+Amazon.com in paperback and Kindle versions.
+
+Aircraft ownership and maintenance, Mike Busch, Opinion
+GENERAL AVIATIONMAINTENANCEOWNERSHIP
+

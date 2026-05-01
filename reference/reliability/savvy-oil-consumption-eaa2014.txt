@@ -1,0 +1,200 @@
+                    MIKE BUSCH
+                    COMMENTARY / SAVVY AVIATOR
+
+
+
+
+                                                                       After a bit of Q&A with the owner, I concluded
+                                                                      that the T210’s oil consumption problem would
+                                                                        most likely be cured by a $1,400 turbocharger
+                                                                           swap rather than a $14,000 top overhaul.
+
+
+
+
+                                  High Oil Consumption
+                                  Don’t do anything until you’re sure where the oil is going
+
+
+                                  A FELLOW NAMED TED phoned me to say that his 1984 Cessna T210                         WHERE’S THE OIL GOING?
+                                  was in the shop for its annual inspection, and his mechanic was                       When troubleshooting an oil consumption
+                                  suggesting a $14,000 top overhaul. “Mike, I’ve read a lot of your                     problem, the ﬁrst question to ask is always,
+                                  articles, and I know you’re not a big fan of top overhauls,” Ted                      “Where’s the oil going?” There are only
+                                  told me, “so I thought I’d ask your opinion before I tell my                          three possibilities:
+                                  mechanic to proceed.”                                                                  • The oil is exiting the engine through its
+                                      “What’s the problem with your engine?” I asked. Ted told me                           breather line.
+                                  his oil consumption had suddenly increased dramatically to a                           • The oil is leaking out of the engine some-
+                                  quart every three or four hours, and that the compressions on                             where else.
+                                  his 1,200-hour engine were mediocre (mostly 60s, a couple of                           • The oil is getting into the combustion
+                                  high 50s). The mechanic said his cylinders were “tired,” that                             chamber of one or more cylinders and
+                                  this was typical for a mid-time Continental TSIO-520-R, and                               being “consumed” in combustion.
+                                  that turbocharged Continentals seldom make TBO without cyl-                               It’s usually not hard to ﬁgure out the
+                                  inder replacement.                                                                    answer. If the oil is departing through the
+                                      I counseled Ted to slow down and take a thoughtful approach.                      breather, then there will be excessive oil on
+                                  While his increased oil consumption was certainly a matter of con-                    the belly of the aircraft. If it’s leaking from
+                                  cern, it wasn’t yet an airworthiness or safety-of-ﬂight issue.                        the engine, then there will be excessive oil
+                                  Continental says maximum permissible oil consumption for this                         inside the engine compartment. If it’s being
+                                  310-hp engine is about 1 quart per hour (and Ted’s oil consumption                    consumed in combustion, then the inside of
+                                  wasn’t anywhere close). No airplane has ever fallen out of the sky                    the tailpipe(s) will be dark and oily instead
+                                  because of high oil consumption—unless the oil consumption was                        of being coated with the normal light pow-
+                                  so high that the engine ran out of oil before it ran out of fuel (which               dery residue.
+                                  is always embarrassing). With a sump capacity of 12 quarts (8                             I questioned Ted about these possible
+                                  usable) and a maximum IFR range of ﬁve hours, it would be hard to                     symptoms. He responded that he hadn’t
+                                  do that in a T210. So before throwing a ﬁve-digit sum of money at                     noticed any more oil on the belly than
+                                  the problem, I suggested to Ted that some systematic troubleshoot-                    usual, and that the engine compartment
+                                  ing was in order.                                                                     seemed relatively dry and oil-free—but now
+
+
+28 Sport Aviation February 2014                                                                                                             PHOTOGRAPHY COURTESY OF MIKE BUSCH
+that I mentioned it, the residue on the         breather onto the belly of the aircraft,
+inside of the tailpipe did strike him as        our dialogue would have focused on an
+being dark and oily.                            entirely different branch of the trouble-
+    This suggested that the oil was being       shooting tree. Excessive breather
+consumed in combustion. If so, the next         discharge is the most common reason
+obvious questions in the troubleshooting        for elevated oil consumption. It mani-
+tree are, “How is the oil getting into the      fests itself as excessive oil on the belly,
+combustion chamber(s)?” and, “Which             and it’s usually—but not always—caused
+cylinder(s) is/are involved?”                   by excessive blow-by past the compres-
+    One way that oil can wind up in a cyl-      sion rings in one or more cylinders.
+inder’s combustion chamber is a bad                 But just because you have elevated oil
+intake valve oil seal that permits oil from     consumption and oil on the belly doesn’t
+the cylinder’s rocker box area to be sucked     necessarily mean that it’s appropriate to
+into the cylinder during the intake stroke      do a top overhaul. Usually it isn’t. For one
+through the annulus between the intake          thing, the problem might involve only one
+valve stem and intake valve guide. This         or perhaps two cylinders, not all of them.
+problem is usually easy to localize and         For another, excessive blow-by is not the
+diagnose by using a borescope inserted          only cause of oil-on-the-belly syndrome;
+into the combustion chamber through the         there are several other possibilities. Once
+top spark plug hole to inspect the intake       again, a thoughtful approach and system-
+valve stem when the exhaust valve is open.      atic troubleshooting is called for before
+If the intake valve stem appears oily, then     doing anything invasive or expensive.
+you’ve found the problem, and the ﬁx is
+quick and easy (replace the intake valve oil    When troubleshooting an oil
+seal) and doesn’t require cylinder removal.
+    In a turbocharged engine like Ted’s,        consumption problem, the
+there’s another possibility. If the turbo-
+charger has a bad oil seal that allows oil to
+                                                ﬁrst question to ask is always,
+escape from the center section into the         “Where’s the oil going?”
+compressor section, that oil will be
+“inhaled” by all cylinders, consumed in            A ﬁrst step that is often useful is to
+combustion, and leave a dark oily residue       measure crankcase pressure and ﬁnd
+inside the tailpipe. In discussing this pos-    out whether it’s actually excessive.
+sibility with Ted, he admitted that he’d        Continental has an old service bulletin
+noticed a small quantity of oil dripping        (M89-9, “Excessive Crankcase Pressures”)
+from the clamp where the induction air          that explains how to do this. The proce-
+duct connects to the turbocharger com-          dure involves hooking up a length of
+pressor discharge. This struck me as being      tubing to the crankcase—via the dipstick
+a possible smoking gun.                         tube, a modiﬁed oil cap, or a modiﬁed tim-
+    I advised Ted to have his mechanic dis-     ing plug, depending on engine model—and
+connect the air duct from the turbocharger      hooking up the other end of the tubing to
+and inspect the compressor, which should        an old airspeed indicator. (The airspeed
+be bone dry. If oil is found in the compres-    indicator is used as a sensitive pressure
+sor, then my presumptive diagnosis would        gauge.) The engine is then run up at full
+be conﬁrmed, and the cure for Ted’s oil         power, and the crankcase pressure is read
+consumption problem would be a $1,400           from the airspeed indicator. Continental’s
+turbocharger overhaul/exchange rather           service bulletin speciﬁes the maximum
+than a $14,000 top overhaul.                    acceptable pressure reading on the air-
+                                                speed indicator; for small-bore engines
+OIL-ON-THE-BELLY SYNDROME                       (A- and C-series, O-200, O-300), the maxi-
+Had Ted told me that he’d noticed a big         mum is 44 mph (38 knots), and for
+increase in oil discharge from the              big-bore engines (360-, 470-, 520-,
+
+
+                                                                                               www.eaa.org   29
+                                  550-series), the maximum is 90 mph (78                                which one(s) is/are at fault is the worst
+                                  knots). A reading above these thresholds                              kind of “shotgunning” in my opinion.
+                                  indicates excessive blow-by. (The same                                What’s the probability of all six cylinders
+                                  approach would work for Lycomings,                                    going bad simultaneously? Probably about
+                                  although Lycoming doesn’t have a service                              the same as drawing a royal straight ﬂush
+                                  bulletin about it.)                                                   in poker. Think about it…
+                                      If crankcase pressure is high, then the                               If crankcase pressure is not excessive,
+                                  problem is likely excessive blow-by in one                            then the problem isn’t high blow-by and
+                                  or more cylinders. A conﬁrming symptom                                the problem isn’t cylinder-related. So
+                                  of excessive blow-by would be oil that                                what could be causing oil-on-the-belly
+                                  turns dark and opaque very quickly after                              syndrome? One of two things: Either
+                                  each oil change.                                                      something is pressurizing the crankcase
+                                      The best way to determine which                                   in the air but not on the ground, or else
+                                  cylinder(s) is/are at fault is to perform a                           something is sucking oil out the breather
+                                  borescope inspection with emphasis on                                 in ﬂight. Pressurization of the crankcase
+                                  the condition of the cylinder barrels. Any                            in ﬂight could be caused by something as
+                                  cylinders exhibiting excessive barrel wear                            simple as a leaky gasket or O-ring in the
+                                  (shiny spots with no crosshatch), substan-                            oil ﬁller cap or dipstick, or something
+                                  tial barrel damage (vertical scoring), or                             else that permits ram air to enter the
+                                  excessive corrosion pitting are candidates                            crankcase in ﬂight. Suction could be
+                                  for coming off for rework or replacement.                             caused by an improperly positioned
+                                  Low compression with air leakage past the                             breather outlet that’s located in a low-
+                                  rings audible through the oil ﬁller would                             pressure area in ﬂight.
+                                  tend to conﬁrm the high blow-by diagno-
+                                  sis for a particular cylinder, although a                             OIL LEAKS
+                                  compression test alone is not reliable                                While an engine oil leak is a third possi-
+                                  enough to use as a primary diagnostic tool.                           ble escape route that could account for
+                                      Yanking all cylinders (“top overhaul”)                            increased oil consumption, it’s the least
+                                  rather than taking the time to determine                              likely in my experience. While engine oil
+
+
+
+
+                                  Excessive discharge of oil on the belly is often caused by excessive blow-by in one or more cylinders—but not always. Unless the oil is
+                                  turning dark and opaque very quickly after each oil change, blow-by probably isn’t the cause.
+
+
+
+30 Sport Aviation February 2014                                                                                                    PHOTOGRAPHY COURTESY OF MIKE BUSCH
+ NEW                        NORMAL                      WORN
+
+
+
+
+A simple borescope inspection is the best way to tell which cylinder(s)
+is/are worn to the point of causing excessive blow-by. A compression test
+is much less reliable.
+
+CYLINDER WEAR
+
+
+leaks are quite commonplace, it would take a
+massive leak to cause a noticeable increase in oil
+consumption. Most engine oil leaks are tiny,
+although even a tiny leak can make a major mess
+in the engine compartment. A little bit of leaking
+oil can cover a lot of real estate rather quickly
+when exposed to a 100-knot breeze.
+    Most common sources of oil leaks—rocker
+cover gaskets, pushrod housing seals, magneto
+gaskets, Garlock seals, oil filler cap gaskets, dip-
+stick O-rings, etc.—are quick and easy fixes, and
+are almost always worth fixing to make sure they
+don’t cover up something more serious like a
+crankcase crack, chafed oil pan, or leaky oil
+quick-drain.
+    Chasing down the source of an oil leak is often
+quite frustrating because the oil spreads so rapidly
+throughout the engine compartment. The key is to
+spray down the engine with solvent until it’s scru-
+pulously clean of oil, then run the engine on the
+ground (absent the 100-knot breeze), and inspect
+it. The application of some white aerosol powder
+like dye-penetrant developer (or jock-itch spray)
+can sometimes be helpful in localizing the source
+of the leak.
+    None of my recommendations to Ted or the
+other things I’ve discussed here involve rocket sci-
+ence, only simple logic. My advice is simply that
+when faced with elevated oil consumption, resist
+the temptation to throw money at the problem.
+Better to throw neurons at it instead.
+
+Mike Busch, EAA 740170, was the 2008 National Aviation
+Maintenance Technician of the Year, and has been a pilot
+for 44 years, logging more than 7,000 hours. He’s a CFI and
+A&P/IA. E-mail him at mike.busch@savvyaviator.com. Mike
+also hosts free online presentations as part of EAA’s webinar
+series on the ﬁrst Wednesday of each month. For a schedule
+visit www.EAA.org/webinars.
+
+
+
+
+                                                                            www.eaa.org   31
+

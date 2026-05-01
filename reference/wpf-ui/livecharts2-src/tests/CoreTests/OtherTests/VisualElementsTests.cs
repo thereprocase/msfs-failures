@@ -1,0 +1,149 @@
+﻿using System.Collections.Generic;
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Drawing;
+using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
+using LiveChartsCore.SkiaSharpView.SKCharts;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using LiveChartsCore.VisualElements;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SkiaSharp;
+using LiveChartsCore.Kernel;
+
+namespace CoreTests.OtherTests;
+
+[TestClass]
+public class VisualElementsTests
+{
+    [TestMethod]
+    public void Dispose()
+    {
+        var suts = new List<IChartElement>
+        {
+            new StackPanel<RectangleGeometry>(),
+            new RelativePanel<RectangleGeometry>(),
+            new TableLayout<RectangleGeometry>(),
+            new GeometryVisual<RectangleGeometry>(),
+            new VariableGeometryVisual(new RectangleGeometry()),
+            new NeedleVisual
+            {
+                Fill = new SolidColorPaint(SKColors.Red)
+            },
+            new AngularTicksVisual
+            {
+                Stroke = new SolidColorPaint(SKColors.Black),
+                LabelsPaint = new SolidColorPaint(SKColors.Blue)
+            }
+        };
+
+        var chart = new SKPieChart
+        {
+            Width = 1000,
+            Height = 1000,
+            MaxValue = 100
+        };
+
+        void Draw()
+        {
+            var coreChart = chart.CoreChart;
+
+            chart.CoreCanvas.DisableAnimations = true;
+            coreChart.IsLoaded = true;
+            coreChart._isFirstDraw = true;
+            coreChart.Measure();
+
+            using var surface = SKSurface.Create(new SKImageInfo(chart.Width, chart.Height));
+            using var canvas = surface.Canvas;
+
+            chart.CoreCanvas.DrawFrame(
+                new SkiaSharpDrawingContext(
+                    chart.CoreCanvas,
+                    canvas,
+                    SKColors.White));
+        }
+
+        Draw();
+
+        // get the count of geometries and paint tasks without the visuals
+        var g = chart.CoreCanvas.CountGeometries();
+        var p = chart.CoreCanvas.CountPaintTasks();
+
+        // add trhe visuals and ensure that the visuals were drawn
+        chart.VisualElements = suts;
+        Draw();
+        Assert.IsTrue(
+            chart.CoreCanvas.CountGeometries() > g &&
+            chart.CoreCanvas.CountPaintTasks() > p);
+
+        // clear the visuals and ensure that all the geometries and paints were removed
+        chart.VisualElements = new List<IChartElement>();
+        Draw();
+        Assert.IsTrue(
+            chart.CoreCanvas.CountGeometries() == g &&
+            chart.CoreCanvas.CountPaintTasks() == p);
+    }
+
+    [TestMethod]
+    public void LineVisual_InChartExercisesMeasureAndInvalidate()
+    {
+        // LineVisual<TGeometry> has no non-generic SkiaSharp counterpart and is missing
+        // from the Dispose() test above; add it here so OnInvalidated + Measure run.
+        var chart = new SKCartesianChart
+        {
+            Width = 400,
+            Height = 400,
+            Series = [
+                new LineSeries<double> { Values = [1d, 2d, 3d] }
+            ],
+            VisualElements = new List<IChartElement>
+            {
+                new LineVisual<LineGeometry>
+                {
+                    X = 10,
+                    Y = 10,
+                    Width = 100,
+                    Height = 60,
+                    Stroke = new SolidColorPaint(SKColors.Red, 2),
+                    Fill = new SolidColorPaint(SKColors.Blue),
+                    LocationUnit = MeasureUnit.Pixels,
+                    SizeUnit = MeasureUnit.Pixels
+                }
+            }
+        };
+
+        using var image = chart.GetImage();
+        Assert.IsNotNull(image);
+    }
+
+    [TestMethod]
+    public void GeometryVisual_WithLabelInChartExercisesLabelPaintBranch()
+    {
+        // Existing VisualElementsTests.Dispose uses GeometryVisual without a Label/LabelPaint,
+        // leaving the label branch in OnInvalidated uncovered. Exercise it here.
+        var chart = new SKCartesianChart
+        {
+            Width = 400,
+            Height = 400,
+            Series = [
+                new LineSeries<double> { Values = [1d, 2d, 3d] }
+            ],
+            VisualElements = new List<IChartElement>
+            {
+                new GeometryVisual<RectangleGeometry>
+                {
+                    X = 10, Y = 10, Width = 50, Height = 50,
+                    Fill = new SolidColorPaint(SKColors.Blue),
+                    Label = "hello",
+                    LabelPaint = new SolidColorPaint(SKColors.Red),
+                    LabelSize = 12,
+                    LocationUnit = MeasureUnit.Pixels,
+                    SizeUnit = MeasureUnit.Pixels
+                }
+            }
+        };
+
+        using var image = chart.GetImage();
+        Assert.IsNotNull(image);
+    }
+}

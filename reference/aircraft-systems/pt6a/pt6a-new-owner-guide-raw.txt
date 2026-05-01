@@ -1,0 +1,1850 @@
+Key
+NEW
+OWNER
+WISDOm
+YOUR PT6A
+turboprop
+Key
+NEW
+OWNER
+WISDOm
+YOUR PT6A
+turboprop
+1
+1 1
+Congratulations on your acquisition of an aircraft powered by the
+Pratt & Whitney Canada Corp. (P&WC) dependable PT6A Turboprop
+Engine! Just like you, operators around the globe have made the
+PT6A engines their choice in the business and general aviation
+market – engines known to provide exceptional power, performance
+and peace of mind. By making this wise choice, you are benefiting
+from 45 years and 300 million hours of in-service experience
+resulting in unmatched reliability.
+This handbook has been designed to give you a brief overview
+of the PT6A engine as well as some maintenance and power
+management recommendations. Always refer to the Pilots Operating
+Handbook (POH), Aircraft Flight Manual (AFM), Engine Maintenance
+Manual (EMM), Service Bulletin’s (SB) or other service information
+documentation for a complete text of the approved / recommended
+procedures and latest information.
+Know your pt6A turboprop
+Congratulations on your acquisition of an aircraft powered by the
+Pratt & Whitney Canada Corp. (P&WC) dependable PT6A Turboprop
+Engine! Just like you, operators around the globe have made the
+PT6A engines their choice in the business and general aviation
+market – engines known to provide exceptional power, performance
+and peace of mind. By making this wise choice, you are benefiting
+from 45 years and 300 million hours of in-service experience
+resulting in unmatched reliability..
+This handbook has been designed to give you a brief overview
+of the PT6A engine as well as some maintenance and power
+management recommendations. Always refer to the Pilots Operating
+Handbook (POH), Aircraft Flight Manual (AFM), Engine Maintenance
+Manual (EMM), Service Bulletin’s (SB) or other service information
+documentation for a complete text of the approved / recommended
+procedures and latest information.
+Know your pt6A turboprop
+2
+2 2
+Should you require additional information related to:
+AOG / critical emergency services
+Technical / maintenance consultation
+Warranty
+Publications
+Field Service Representative (FSR) contact info
+Rental Engines
+Engine status in any P&WC Service Centre
+Eagle Service Plan®
+(ESP®
+)
+AOG Parts After Hours,
+our Customer FIRST Centre is available 24 hours a day,
+7 days a week to assist you.
+In Canada and the United States:
+Tel: 1-800-268-8000
+International:
+Tel: International Access Code + 8000-268-8000
+Other Numbers:
+Tel: (450) 647-8000 Fax: (450) 647-2888
+Email:
+cfirst@pwc.ca
+Visit our website at:
+www.pwc.ca
+Know your pt6A turboprop
+Should you require additional information related to:
+AOG / critical emergency services
+Technical / maintenance consultation
+Warranty
+Publications
+Field Service Representative (FSR) contact info
+Rental Engines
+Engine status in any P&WC Service Centre
+Eagle Service Plan®
+(ESP®
+)
+AOG Parts After Hours,
+our Customer FIRST Centre is available 24 hours a day,
+7 days a week to assist you.
+In Canada and the United States:
+Tel: 1-800-268-8000
+International:
+Tel: International Access Code + 8000-268-8000
+Other Numbers:
+Tel: (450) 647-8000 Fax: (450) 647-2888
+Email:
+cfirst@pwc.ca
+Visit our website at:
+www.pwc.ca
+Know your pt6A turboprop
+3
+3 3
+Know your pt6A turboprop
+Take note of your PT6A engine model and serial number.
+This will help us to coordinate our support in a timely manner.
+Engine Model:
+Engine Serial Number:
+Engine Logbook:
+Each engine is supplied with a logbook(s) to record all maintenance
+actions as well as engine running times and cycles. The logbook(s)
+must accompany the engine or module each time they are sent to an
+approved service or overhaul facility.
+Know your pt6A turboprop
+Take note of your PT6A engine model and serial number.
+This will help us to coordinate our support in a timely manner.
+Engine Model:
+Engine Serial Number:
+Engine Logbook:
+Each engine is supplied with a logbook(s) to record all maintenance
+actions as well as engine running times and cycles. The logbook(s)
+must accompany the engine or module each time they are sent to an
+approved service or overhaul facility.
+5
+5 5
+Disclaimer
+Disclaimer
+The information contained herein has been set out in summary
+form and is provided for general reference purposes only and may
+be changed without prior notice. It should not be construed as
+creating any obligation on the part of Pratt & Whitney Canada Corp.
+While every care has been taken to avoid errors, Pratt & Whitney
+Canada Corp. makes no representations about the accuracy of
+these guidelines and accepts no responsibility for any error herein.
+In no event shall P&WC be liable for any damages whatsoever
+resulting from the misuse, misinterpretation, analysis,
+interpretation or application of any of the guidelines contained
+herein. The information contained herein does not replace or
+supersede the information contained in the appropriate airframe or
+engine maintenance manuals or other official publications.
+Always refer to the Pilot’s Operating Handbooks (POH), Aircraft
+Flight Manuals (AFM), Engine Maintenance Manuals (EMM),
+Service Bulletins (SB) or other Service Information documentation
+for a complete text of the approved / recommended procedures
+and latest information.
+PT6 and PT6A are trademarks of Pratt & Whitney Canada Corp.
+© 
+Copyright Pratt & Whitney Canada Corp. May not be reproduced, in whole
+or in part, without prior written consent
+Disclaimer
+Disclaimer
+The information contained herein has been set out in summary
+form and is provided for general reference purposes only and may
+be changed without prior notice. It should not be construed as
+creating any obligation on the part of Pratt & Whitney Canada Corp.
+While every care has been taken to avoid errors, Pratt & Whitney
+Canada Corp. makes no representations about the accuracy of
+these guidelines and accepts no responsibility for any error herein.
+In no event shall P&WC be liable for any damages whatsoever
+resulting from the misuse, misinterpretation, analysis,
+interpretation or application of any of the guidelines contained
+herein. The information contained herein does not replace or
+supersede the information contained in the appropriate airframe or
+engine maintenance manuals or other official publications.
+Always refer to the Pilot’s Operating Handbooks (POH), Aircraft
+Flight Manuals (AFM), Engine Maintenance Manuals (EMM),
+Service Bulletins (SB) or other Service Information documentation
+for a complete text of the approved / recommended procedures
+and latest information.
+PT6 and PT6A are trademarks of Pratt & Whitney Canada Corp.
+© 
+Copyright Pratt & Whitney Canada Corp. May not be reproduced, in whole
+or in part, without prior written consent
+6
+6 6
+Nomenclature
+ADAS Aircraft Data Acquisition System
+AFM Aircraft Flight Manual
+AGB Accessory Gearbox
+AOG Aircraft On Ground
+CT Compressor Turbine
+ECTM®
+Engine Condition Trend Monitoring®
+EESP Extended Engine Service Policy
+EPL Emergency Power Lever
+ESP®
+Eagle Service Plan®
+FOD Foreign Object Damage
+FSR Field Service Representative
+HSI Hot Section Inspection
+ITT Interturbine Temperature
+LCF Low Cycle Fatigue
+MOR Manual Override
+Ng Gas Generator Speed
+Nomenclature
+ADAS Aircraft Data Acquisition System
+AFM Aircraft Flight Manual
+AGB Accessory Gearbox
+AOG Aircraft On Ground
+CT Compressor Turbine
+ECTM®
+Engine Condition Trend Monitoring®
+EESP Extended Engine Service Policy
+EPL Emergency Power Lever
+ESP®
+Eagle Service Plan®
+FOD Foreign Object Damage
+FSR Field Service Representative
+HSI Hot Section Inspection
+ITT Interturbine Temperature
+LCF Low Cycle Fatigue
+MOR Manual Override
+Ng Gas Generator Speed
+7
+7 7
+Np Propeller Speed
+PPSP Primary Parts Service Policy
+PLA Power Lever Assembly
+POH Pilot’s Operating Handbook
+PT Power Turbine
+RPM Rotations Per Minute
+SB Service Bulletin
+SHP Shaft Horsepower
+SIL Service Information Letter
+STOL Short Takeoff and Landing
+TBO Time Between Overhaul
+TSO Time Since Overhaul
+TTSN Total Time Since New
+TCSN Total Cycles Since New
+UAC United Aircraft Corporation
+Wf Fuel Flow Rate
+Nomenclature
+Np Propeller Speed
+PPSP Primary Parts Service Policy
+PLA Power Lever Assembly
+POH Pilot’s Operating Handbook
+PT Power Turbine
+RPM Rotations Per Minute
+SB Service Bulletin
+SHP Shaft Horsepower
+SIL Service Information Letter
+STOL Short Takeoff and Landing
+TBO Time Between Overhaul
+TSO Time Since Overhaul
+TTSN Total Time Since New
+TCSN Total Cycles Since New
+UAC United Aircraft Corporation
+Wf Fuel Flow Rate
+Nomenclature
+8
+8 8
+Initial Customer Support Presentation
+P&WC offers a three-part introduction to the company, engine maintenance
+and our aftermarket support logistics. You have the option of scheduling a
+meeting at your convenience or we will be happy to send you an information
+kit with brochures and a copy of the presentation that you may review at
+your leisure. When the time comes, your local FSR can provide guidance
+on such things as fuel nozzle exchange, boroscope inspection of the hot
+section or other maintenance areas.
+Publications
+P&WC offers a package of high-quality technical publications for new
+aircraft operators. Moreover, a free two-year revision service is provided
+for each new publications subscription. Additional publications may also
+be purchased. The price list for commercial publications is available upon
+request by contacting Publications Customer Services.
+For additional details on our Technical Publications, including contact info,
+please visit us at our website, www.pwc.ca
+Warranty
+P&WC prides itself in offering transferable warranty coverage that is
+amongst the best in the aerospace business. The new engine warranty is
+comprised of the Basic Coverage Period and may be supplemented by one
+or both of the following available service policies:
+·	
+The Primary Parts Service Policy (PPSP) is a renewable pro-rata warranty
+coverage for the repair or replacement of specific engine parts damaged
+due to a defect in material or manufacturing workmanship during their
+P&WC commercially-supported class life.
+·	
+The Extended Engine Service Policy (EESP) applies for a premature,
+engine-chargeable event when an overhaul is required.
+Know your pt6A turboprop
+Initial Customer Support Presentation
+P&WC offers a three-part introduction to the company, engine maintenance
+and our aftermarket support logistics. You have the option of scheduling a
+meeting at your convenience or we will be happy to send you an information
+kit with brochures and a copy of the presentation that you may review at
+your leisure. When the time comes, your local FSR can provide guidance
+on such things as fuel nozzle exchange, boroscope inspection of the hot
+section or other maintenance areas.
+Publications
+P&WC offers a package of high-quality technical publications for new
+aircraft operators. Moreover, a free two-year revision service is provided
+for each new publications subscription. Additional publications may also
+be purchased. The price list for commercial publications is available upon
+request by contacting Publications Customer Services.
+For additional details on our Technical Publications, including contact info,
+please visit us at our website, www.pwc.ca
+Warranty
+P&WC prides itself in offering transferable warranty coverage that is
+amongst the best in the aerospace business. The new engine warranty is
+comprised of the Basic Coverage Period and may be supplemented by one
+or both of the following available service policies:
+·	
+The Primary Parts Service Policy (PPSP) is a renewable pro-rata warranty
+coverage for the repair or replacement of specific engine parts damaged
+due to a defect in material or manufacturing workmanship during their
+P&WC commercially-supported class life.
+·	
+The Extended Engine Service Policy (EESP) applies for a premature,
+engine-chargeable event when an overhaul is required.
+Know your pt6A turboprop
+9
+9 9
+Once we have been informed of a new PT6A engine delivery to an aircraft
+operator, a copy of the applicable new engine warranty will be sent
+to the new owner by the P&WC Warranty Administration department.
+Notification of new aircraft sales is normally received directly from aircraft
+manufacturers, their licensed dealers or directly from the owner. Note
+that warranty coverage is attached to the engine serial number, not to
+the owner. For any warranty questions, please feel free to email us at
+warranty@pwc.ca.
+If your aircraft is involved in an incident which affects the engine (e.g. prop
+strike, hard landing), you must inform P&WC Warranty by filling out the
+form included in SIL GEN-039. This will ensure that your warranty policy is
+reinstated following the corrective maintenance actions.
+Customer Portal
+Pratt & Whitney Canada is committed to providing global support services
+that delights our customers. The P&WC Customer portal is just one of the
+many ways in which we collaborate with our customers. The portal will give
+access to an increasing list of on-line services and information.
+Register today on our website, www.pwc.ca, free of charge, to receive
+the P&WC Extranet Application URL, username and password once the
+registration request has been approved and processed.
+Know your pt6A turboprop
+Once we have been informed of a new PT6A engine delivery to an aircraft
+operator, a copy of the applicable new engine warranty will be sent
+to the new owner by the P&WC Warranty Administration department.
+Notification of new aircraft sales is normally received directly from aircraft
+manufacturers, their licensed dealers or directly from the owner. Note
+that warranty coverage is attached to the engine serial number, not to
+the owner. For any warranty questions, please feel free to email us at
+warranty@pwc.ca.
+If your aircraft is involved in an incident which affects the engine (e.g. prop
+strike, hard landing), you must inform P&WC Warranty by filling out the
+form included in SIL GEN-039. This will ensure that your warranty policy is
+reinstated following the corrective maintenance actions.
+Customer Portal
+Pratt & Whitney Canada is committed to providing global support services
+that delights our customers. The P&WC Customer portal is just one of the
+many ways in which we collaborate with our customers. The portal will give
+access to an increasing list of on-line services and information.
+Register today on our website, www.pwc.ca, free of charge, to receive
+the P&WC Extranet Application URL, username and password once the
+registration request has been approved and processed.
+Know your pt6A turboprop
+10
+10 10
+PT6A Engine Overview
+Unmatched versatility, dependability and performance have made the PT6A
+engine the most thoroughly proven and popular turboprop engine family
+in the 500- to 1,700-shp class, covering a diverse range of applications
+across all aircraft markets. We continually invest in technology to make our
+engines the most environmentally friendly and to offer even greater value in
+the form of higher performance and digital engine control.
+The PT6 engine, a lightweight free turbine engine incorporating a reverse
+flow combustion path, is designed for aircraft propulsion use. It utilizes two
+counter-rotating turbines; one driving the compressor and the other driving
+the propeller through a reduction gearbox. The latter turbine is “free”
+or independent of the compressor turbine. More recent, higher powered
+models incorporate a two-stage power turbine.
+Over the years, the PT6 engine has evolved and adapted to a multitude of
+uses. The PT6A engine is the turboprop designation, powering commuter,
+corporate and utility aircraft, aerobatic trainers, agricultural aircraft, short
+takeoff and landing (STOL) aircraft and water bombers. This handbook is
+dedicated to the PT6A variant.
+The PT6B, C & T (Twin-Pac®) engines are turboshaft variants, providing
+reliable power to many of the worlds helicopters and more recently to
+tiltrotors.
+The ST6 engine is an industrial variant of the PT6 engine, originally
+developed for the United Aircraft Corporation (UAC) TurboTrain and
+intended for stationary application.
+PT6A engine General
+PT6A Engine Overview
+Unmatched versatility, dependability and performance have made the PT6A
+engine the most thoroughly proven and popular turboprop engine family
+in the 500- to 1,700-shp class, covering a diverse range of applications
+across all aircraft markets. We continually invest in technology to make our
+engines the most environmentally friendly and to offer even greater value in
+the form of higher performance and digital engine control.
+The PT6 engine, a lightweight free turbine engine incorporating a reverse
+flow combustion path, is designed for aircraft propulsion use. It utilizes two
+counter-rotating turbines; one driving the compressor and the other driving
+the propeller through a reduction gearbox. The latter turbine is “free”
+or independent of the compressor turbine. More recent, higher powered
+models incorporate a two-stage power turbine.
+Over the years, the PT6 engine has evolved and adapted to a multitude of
+uses. The PT6A engine is the turboprop designation, powering commuter,
+corporate and utility aircraft, aerobatic trainers, agricultural aircraft, short
+takeoff and landing (STOL) aircraft and water bombers. This handbook is
+dedicated to the PT6A variant.
+The PT6B, C & T (Twin-Pac®) engines are turboshaft variants, providing
+reliable power to many of the worlds helicopters and more recently to
+tiltrotors.
+The ST6 engine is an industrial variant of the PT6 engine, originally
+developed for the United Aircraft Corporation (UAC) TurboTrain and
+intended for stationary application.
+PT6A engine General
+11
+11 11
+Modularity
+The design of the PT6A engine allows it to be split into two major parts
+called the power section assembly and the gas generator assembly. Only
+certain engine models are defined as being modular, which allows the
+interchange and tracking of each module. Three criteria must be met for the
+engine to be modular.
+1. 
+Each major assembly is equipped with a data plate and a third data
+plate is located on the inlet case for the complete engine assembly.
+2. There is a logbook for each module.
+3. 
+In the appropriate SB on service lives, there will be an overhaul interval
+quoted for each module and the engine assembly.
+On non-modular PT6A engines, the power section assembly can be removed
+and sent for service, but must be returned and installed on the same gas
+generator assembly.
+Small PT6A Engine
+Modularity
+The design of the PT6A engine allows it to be split into two major parts
+called the power section assembly and the gas generator assembly. Only
+certain engine models are defined as being modular, which allows the
+interchange and tracking of each module. Three criteria must be met for the
+engine to be modular.
+1. 
+Each major assembly is equipped with a data plate and a third data
+plate is located on the inlet case for the complete engine assembly.
+2. There is a logbook for each module.
+3. 
+In the appropriate SB on service lives, there will be an overhaul interval
+quoted for each module and the engine assembly.
+On non-modular PT6A engines, the power section assembly can be removed
+and sent for service, but must be returned and installed on the same gas
+generator assembly.
+Small PT6A Engine
+12
+12 12
+Advantages of the PT6A engine Design
+A number of advantages are derived from the design of the PT6A engine
+which have proven valuable in routine field operation.
+During an engine start, only the compressor section of the PT6A engine
+needs be rotated by the starter-generator. By comparison, a fixed-shaft
+engine must spin all rotating components including the reduction gearbox
+and propeller during an engine start, resulting in a requirement for heavier
+starting systems.
+The PT6A engine free turbine design allows the propeller RPM to be reduced
+and the propeller feathered during ground operation without shutting
+down the engine. This facilitates fast passenger loading and permits very
+quiet ground operation. Propeller RPM can also be varied in flight (on most
+applications) permitting propeller RPM to be set for quieter cruise and
+optimum efficiency.
+Advantages of the PT6A engine Design
+A number of advantages are derived from the design of the PT6A engine
+which have proven valuable in routine field operation.
+During an engine start, only the compressor section of the PT6A engine
+needs be rotated by the starter-generator. By comparison, a fixed-shaft
+engine must spin all rotating components including the reduction gearbox
+and propeller during an engine start, resulting in a requirement for heavier
+starting systems.
+The PT6A engine free turbine design allows the propeller RPM to be reduced
+and the propeller feathered during ground operation without shutting
+down the engine. This facilitates fast passenger loading and permits very
+quiet ground operation. Propeller RPM can also be varied in flight (on most
+applications) permitting propeller RPM to be set for quieter cruise and
+optimum efficiency.
+13
+13 13
+Principles of Operation
+The PT6A engine consists of two main sections, the gas generator section
+and the power section.
+The gas generator section compresses and delivers air to the combustion
+chamber where it is mixed with fuel and ignited. The resulting hot gases
+turn the compressor turbine which provides the power to run the compressor
+and the accessory gearbox located at the rear of the engine. The hot gases
+continue on to the power turbine where the remaining energy is extracted to
+turn the propeller.
+Principles of Operation
+The PT6A engine consists of two main sections, the gas generator section
+and the power section.
+The gas generator section compresses and delivers air to the combustion
+chamber where it is mixed with fuel and ignited. The resulting hot gases
+turn the compressor turbine which provides the power to run the compressor
+and the accessory gearbox located at the rear of the engine. The hot gases
+continue on to the power turbine where the remaining energy is extracted to
+turn the propeller.
+14
+14 14
+Air is directed to a compressor consisting of three axial stages (Four
+axial stages on large PT6A engine models) and one centrifugal stage.
+Compressed air leaving the compressor passes through diffuser pipes
+which turn the flow 90 degrees, reduce its speed and direct the air into the
+combustion chamber.
+In the annular combustion chamber the air is mixed with fuel and burned.
+Two igniter plugs are used to light the fuel/air mixture when the engine is
+started. They are not required to maintain the combustion process and can
+be shut off once the engine has reached idle speed.
+The expanding hot gases are directed first through the compressor turbine
+and then through the power turbine. After passing through the power
+turbine, the gases are exhausted through ports on each side of the engine.
+(Some engines are fitted with a single-port exhaust.) The exhaust stubs
+fitted to the engine are normally directed to utilize the remaining energy of
+the gases in the form of thrust for additional aircraft propulsion.
+Two bleed air systems are incorporated in the PT6A engine. Automatic bleed
+air from the compressor prevents compressor stall during acceleration from
+low engine speeds or deceleration from high engine speeds. For aircraft
+use, air may be bled for heating or pressurizing aircraft cabins.
+Airflow
+Medium PT6A Engine
+Air is directed to a compressor consisting of three axial stages (Four
+axial stages on large PT6A engine models) and one centrifugal stage.
+Compressed air leaving the compressor passes through diffuser pipes
+which turn the flow 90 degrees, reduce its speed and direct the air into the
+combustion chamber.
+In the annular combustion chamber the air is mixed with fuel and burned.
+Two igniter plugs are used to light the fuel/air mixture when the engine is
+started. They are not required to maintain the combustion process and can
+be shut off once the engine has reached idle speed.
+The expanding hot gases are directed first through the compressor turbine
+and then through the power turbine. After passing through the power
+turbine, the gases are exhausted through ports on each side of the engine.
+(Some engines are fitted with a single-port exhaust.) The exhaust stubs
+fitted to the engine are normally directed to utilize the remaining energy of
+the gases in the form of thrust for additional aircraft propulsion.
+Two bleed air systems are incorporated in the PT6A engine. Automatic bleed
+air from the compressor prevents compressor stall during acceleration from
+low engine speeds or deceleration from high engine speeds. For aircraft
+use, air may be bled for heating or pressurizing aircraft cabins.
+Airflow
+Medium PT6A Engine
+15
+15 15
+A shaft connects the power turbine to the two-stage planetary reduction
+gearbox. The first stage reduction ring gear floats axially against a hydraulic
+torquemeter cylinder. The oil pressure in this cylinder is proportional to
+output torque which is displayed on the torque indicator in the cockpit.
+Bevel gears located forward of the second stage planetary gears drive the
+following accessories mounted on the forward reduction gearbox case:
+· propeller governor or constant speed unit
+· propeller overspeed governor
+· tachometer-generator
+The accessory gearbox, mounted on the rear of the engine, is used to drive
+the following engine accessories:
+· High-pressure fuel pump
+· Fuel control unit
+· Oil scavenge and oil pressure pumps.
+Space is also provided for aircraft manufacturer provided accessories such
+as the starter-generator, gas generator tachometer-generator, fuel boost
+pumps or hydraulic pumps.
+Power Train
+Large PT6A Engine
+A shaft connects the power turbine to the two-stage planetary reduction
+gearbox. The first stage reduction ring gear floats axially against a hydraulic
+torquemeter cylinder. The oil pressure in this cylinder is proportional to
+output torque which is displayed on the torque indicator in the cockpit.
+Bevel gears located forward of the second stage planetary gears drive the
+following accessories mounted on the forward reduction gearbox case:
+· propeller governor or constant speed unit
+· propeller overspeed governor
+· tachometer-generator
+The accessory gearbox, mounted on the rear of the engine, is used to drive
+the following engine accessories:
+· High-pressure fuel pump
+· Fuel control unit
+· Oil scavenge and oil pressure pumps.
+Space is also provided for aircraft manufacturer provided accessories such
+as the starter-generator, gas generator tachometer-generator, fuel boost
+pumps or hydraulic pumps.
+Power Train
+Large PT6A Engine
+16
+16 16
+Support of the main shafts in the PT6A engine is accomplished by a
+combination of ball and roller bearings. Ball bearings support axial and
+radial loading, while the roller bearings support only radial loads, allowing
+for thermal expansion.
+Propeller Shaft Power Turbine Compressor
+No. 5: Roller No. 3: Roller No. 1: Ball
+No. 6: Ball No. 4: Ball No. 2: Roller
+No. 7: Roller**
+** Smaller reduction gearboxes do not utilize a No. 7 bearing.
+Bearings
+Support of the main shafts in the PT6A engine is accomplished by a
+combination of ball and roller bearings. Ball bearings support axial and
+radial loading, while the roller bearings support only radial loads, allowing
+for thermal expansion.
+Propeller Shaft Power Turbine Compressor
+No. 5: Roller No. 3: Roller No. 1: Ball
+No. 6: Ball No. 4: Ball No. 2: Roller
+No. 7: Roller**
+** Smaller reduction gearboxes do not utilize a No. 7 bearing.
+Bearings
+17
+17 17
+FOD Protection
+Inertial Separator
+The nacelle inlet of many aircraft models includes an inertial separator
+provided by the aircraft manufacturer to prevent heavy particles from
+entering the engine inlet. Most installations incorporate two moveable
+vanes, one upstream of the engine inlet and the other blocking the bypass
+duct. For bypass operation, the inlet vane is lowered and the bypass
+duct vane is opened permitting maximum separating efficiency. In some
+installations, the vanes are fixed in the bypass mode.
+As shown in the sketch, air entering the engine inlet must turn sharply past
+the inlet vane (shown in the lowered position). Particles heavier than air
+are carried straight through, by their own inertia, into the bypass duct and
+dumped overboard.
+The aft radial inlet design provides many advantages such as superior
+anti-icing utilizing the principle of inertial separation, low noise levels and
+unequalled protection from FOD.
+FOD Protection
+Inertial Separator
+The nacelle inlet of many aircraft models includes an inertial separator
+provided by the aircraft manufacturer to prevent heavy particles from
+entering the engine inlet. Most installations incorporate two moveable
+vanes, one upstream of the engine inlet and the other blocking the bypass
+duct. For bypass operation, the inlet vane is lowered and the bypass
+duct vane is opened permitting maximum separating efficiency. In some
+installations, the vanes are fixed in the bypass mode.
+As shown in the sketch, air entering the engine inlet must turn sharply past
+the inlet vane (shown in the lowered position). Particles heavier than air
+are carried straight through, by their own inertia, into the bypass duct and
+dumped overboard.
+The aft radial inlet design provides many advantages such as superior
+anti-icing utilizing the principle of inertial separation, low noise levels and
+unequalled protection from FOD.
+18
+18 18
+The fuel system is designed to deliver clean fuel to the engine at the
+pressure and flow that are necessary for all engine operating conditions.
+The airframe fuel system contains the necessary boost pumps, transfer
+pumps, selector/shutoff valves, strainers and filters required to supply fuel
+to the engine(s) and to manage the fuel load distribution in the airplane.
+The engine is equipped with a fuel system which consists of a fuel heater,
+high-pressure fuel pump, fuel filter, fuel control unit, start control or flow
+divider unit and a manifold with fuel injection nozzles.
+The fuel control unit is either a hydro-pneumatic or a hydro-mechanical
+system which meters the correct amount of fuel to the engine to maintain
+the gas generator speed selected by the pilot via the power control lever. It
+also controls fuel flow scheduling during engine starting, acceleration and
+deceleration.
+The PT6A engine is approved for operation with all commercial jet fuels,
+JP-4, JP-5 and for a maximum of 150 hours during any overhaul period with
+all grades of aviation gasoline. Specific grades of diesel fuel are approved
+as alternate fuels for restricted use. No engine adjustments are required
+in changing from one fuel to another, nor is it necessary to purge the fuel
+system when changing fuels, except when using alternate fuels.
+For listings of approved fuels and fuel additives refer to the appropriate
+Service Bulletins for each PT6A engine model.
+Fuel System
+The fuel system is designed to deliver clean fuel to the engine at the
+pressure and flow that are necessary for all engine operating conditions.
+The airframe fuel system contains the necessary boost pumps, transfer
+pumps, selector/shutoff valves, strainers and filters required to supply fuel
+to the engine(s) and to manage the fuel load distribution in the airplane.
+The engine is equipped with a fuel system which consists of a fuel heater,
+high-pressure fuel pump, fuel filter, fuel control unit, start control or flow
+divider unit and a manifold with fuel injection nozzles.
+The fuel control unit is either a hydro-pneumatic or a hydro-mechanical
+system which meters the correct amount of fuel to the engine to maintain
+the gas generator speed selected by the pilot via the power control lever. It
+also controls fuel flow scheduling during engine starting, acceleration and
+deceleration.
+The PT6A engine is approved for operation with all commercial jet fuels,
+JP-4, JP-5 and for a maximum of 150 hours during any overhaul period with
+all grades of aviation gasoline. Specific grades of diesel fuel are approved
+as alternate fuels for restricted use. No engine adjustments are required
+in changing from one fuel to another, nor is it necessary to purge the fuel
+system when changing fuels, except when using alternate fuels.
+For listings of approved fuels and fuel additives refer to the appropriate
+Service Bulletins for each PT6A engine model.
+Fuel System
+19
+19 19
+Oil System
+The PT6A engine has a self-contained oil system with the exception of the
+oil cooler, air duct and associated plumbing. The oil level should be verified
+after engine shutdown and while the oil is still hot, using either a dipstick
+or a sightglass.
+For more information related to the oil system, please refer to page 29.
+Oil System
+The PT6A engine has a self-contained oil system with the exception of the
+oil cooler, air duct and associated plumbing. The oil level should be verified
+after engine shutdown and while the oil is still hot, using either a dipstick
+or a sightglass.
+For more information related to the oil system, please refer to page 29.
+20
+20 20
+Typical PT6A Engine Instrumentation
+Incorporated into the design of the PT6A engine are accurate and reliable
+torque and ITT measuring systems that give the pilot an accurate
+indication of the primary engine operating parameters.
+Torque Pressure is sensed by a torque pressure transducer mounted on the
+reduction gearbox, to indicate the torque being developed by the engine.
+Torque is the primary parameter used to set power for takeoff and cruise
+operation for specified propeller speeds.
+ITT is monitored to ensure that combustion gas temperature limits of the
+engine are not exceeded.
+Two tachometer-generators are installed on the engine: one on the
+reduction gearbox monitors propeller speed (Np), and the other on the
+accessory gearbox monitors gas generator speed, (Ng).
+Pressure and temperature gauges monitor the oil system.
+Typical PT6A Engine Instrumentation
+Incorporated into the design of the PT6A engine are accurate and reliable
+torque and ITT measuring systems that give the pilot an accurate
+indication of the primary engine operating parameters.
+Torque Pressure is sensed by a torque pressure transducer mounted on the
+reduction gearbox, to indicate the torque being developed by the engine.
+Torque is the primary parameter used to set power for takeoff and cruise
+operation for specified propeller speeds.
+ITT is monitored to ensure that combustion gas temperature limits of the
+engine are not exceeded.
+Two tachometer-generators are installed on the engine: one on the
+reduction gearbox monitors propeller speed (Np), and the other on the
+accessory gearbox monitors gas generator speed, (Ng).
+Pressure and temperature gauges monitor the oil system.
+21
+21 21
+Controls
+Cockpit Powerplant Controls
+PT6A engine applications use the engine power management system
+and propeller beta control capability to obtain optimum airplane flight
+and ground handling capability. The powerplant functions are typically
+commanded from the cockpit by means of three control levers and push-
+pull cables.
+In some applications where certain powerplant functions are not required,
+simplified systems using two or even one cockpit control lever may be used.
+Control Location Control Function
+Condition Fuel control unit
+(or start control)
+Fuel cut-off and idle
+speed(s)
+Power Fuel control unit Gas Generator speed
+Propeller Propeller governor Prop speed and feathering
+Controls
+Cockpit Powerplant Controls
+PT6A engine applications use the engine power management system
+and propeller beta control capability to obtain optimum airplane flight
+and ground handling capability. The powerplant functions are typically
+commanded from the cockpit by means of three control levers and push-
+pull cables.
+In some applications where certain powerplant functions are not required,
+simplified systems using two or even one cockpit control lever may be used.
+Control Location Control Function
+Condition Fuel control unit
+(or start control)
+Fuel cut-off and idle
+speed(s)
+Power Fuel control unit Gas Generator speed
+Propeller Propeller governor Prop speed and feathering
+22
+22 22
+CONTROLS
+Secondary control inputs located on the propeller governor include the beta
+valve and the fuel governor reset. These controls are used in conjunction
+with the propeller low blade angle feedback system and the engine
+propeller reversing control system for propeller beta control and reverse
+thrust control. A cambox unit is part of the engine control system and its
+purpose is to schedule gas generator speed and propeller angle by means
+of linkages to the fuel control power lever and to the propeller governor
+beta valve and fuel governor reset controls.
+Propeller Low Blade Angle Reset Systems
+During the development program of an airplane, the most desirable
+propeller low pitch limits (primary blade angle) and engine flight idle
+settings required for optimum flight handling are determined. In some
+cases, certain ground operating requirements such as propeller restricted
+speed ranges may dictate a different propeller low pitch limit for ground
+operation. Some installations utilize an airframe-supplied propeller low
+pitch reset system actuated by means of a switch which senses the weight
+of the airplane on the main landing gear. This functionality is integrated
+with the engine-supplied propeller beta control system. The system
+automatically sets the propeller low pitch limit to either the ground or
+light positions.
+Automatic Feathering
+Takeoff performance for multi-engine aircraft is based upon having one
+engine inoperative. Most multi-engine aircraft are equipped with aircraft
+manufacturer provided automatic feathering systems to reduce drag on
+the aircraft. However these systems are normally not armed during most
+other phases of flight. Automatic feathering is not used in single-engine
+PT6A engine applications. Please refer to the applicable AFM for specific
+operating instructions.
+Because the free turbine configuration of the PT6A engine has less rotating
+inertia than a fixed turbine engine, an unfeathered propeller creates less
+in-flight drag. Therefore, negative torque sensing systems are not required.
+CONTROLS
+Secondary control inputs located on the propeller governor include the beta
+valve and the fuel governor reset. These controls are used in conjunction
+with the propeller low blade angle feedback system and the engine
+propeller reversing control system for propeller beta control and reverse
+thrust control. A cambox unit is part of the engine control system and its
+purpose is to schedule gas generator speed and propeller angle by means
+of linkages to the fuel control power lever and to the propeller governor
+beta valve and fuel governor reset controls.
+Propeller Low Blade Angle Reset Systems
+During the development program of an airplane, the most desirable
+propeller low pitch limits (primary blade angle) and engine flight idle
+settings required for optimum flight handling are determined. In some
+cases, certain ground operating requirements such as propeller restricted
+speed ranges may dictate a different propeller low pitch limit for ground
+operation. Some installations utilize an airframe-supplied propeller low
+pitch reset system actuated by means of a switch which senses the weight
+of the airplane on the main landing gear. This functionality is integrated
+with the engine-supplied propeller beta control system. The system
+automatically sets the propeller low pitch limit to either the ground or
+light positions.
+Automatic Feathering
+Takeoff performance for multi-engine aircraft is based upon having one
+engine inoperative. Most multi-engine aircraft are equipped with aircraft
+manufacturer provided automatic feathering systems to reduce drag on
+the aircraft. However these systems are normally not armed during most
+other phases of flight. Automatic feathering is not used in single-engine
+PT6A engine applications. Please refer to the applicable AFM for specific
+operating instructions.
+Because the free turbine configuration of the PT6A engine has less rotating
+inertia than a fixed turbine engine, an unfeathered propeller creates less
+in-flight drag. Therefore, negative torque sensing systems are not required.
+23
+23 23
+CONTROLS
+Propeller Overspeed Governor
+All PT6A turboprop installations are equipped with an airframe-supplied
+propeller overspeed governor. This unit has its own dedicated drive from
+the engine reduction gearbox and is intended to limit the propeller speed
+to a predetermined maximum value in the event of a malfunction of the
+primary propeller governor.
+In most installations which feature an automatic feathering system, the
+automatic propeller feathering function is performed by an electrically-
+activated propeller servo oil dump valve on the overspeed governor.
+Overtorque Limiter
+On some PT6A engine installations an overtorque limiter is installed
+to limit maximum engine output torque to a preset value. This function
+has been utilized on applications where the normal power setting and
+monitoring procedures cannot be used, such as military trainer aircraft
+which are intended to maintain the maximum operational similarity to
+high-performance jet aircraft. Other applications with substantially flat
+rated PT6A engines utilize an overtorque limiter to prevent inadvertent
+excessive power settings by the pilot.
+An electronic limiter system is also installed on some engine models
+intended for military trainer aircraft. This system offers both torque and
+ITT limiting capability.
+Manual Override
+All PT6A engines intended for single-engine aircraft are equipped with a
+manual override function installed on the fuel control unit. The manual
+override can be connected to an Emergency Power Lever (EPL) in the
+cockpit by an airframe-supplied linkage, if required by the aircraft
+manufacturer.
+CONTROLS
+Propeller Overspeed Governor
+All PT6A turboprop installations are equipped with an airframe-supplied
+propeller overspeed governor. This unit has its own dedicated drive from
+the engine reduction gearbox and is intended to limit the propeller speed
+to a predetermined maximum value in the event of a malfunction of the
+primary propeller governor.
+In most installations which feature an automatic feathering system, the
+automatic propeller feathering function is performed by an electrically-
+activated propeller servo oil dump valve on the overspeed governor.
+Overtorque Limiter
+On some PT6A engine installations an overtorque limiter is installed
+to limit maximum engine output torque to a preset value. This function
+has been utilized on applications where the normal power setting and
+monitoring procedures cannot be used, such as military trainer aircraft
+which are intended to maintain the maximum operational similarity to
+high-performance jet aircraft. Other applications with substantially flat
+rated PT6A engines utilize an overtorque limiter to prevent inadvertent
+excessive power settings by the pilot.
+An electronic limiter system is also installed on some engine models
+intended for military trainer aircraft. This system offers both torque and
+ITT limiting capability.
+Manual Override
+All PT6A engines intended for single-engine aircraft are equipped with a
+manual override function installed on the fuel control unit. The manual
+override can be connected to an Emergency Power Lever (EPL) in the
+cockpit by an airframe-supplied linkage, if required by the aircraft
+manufacturer.
+24
+24 24
+Emergency power lever
+Introduction
+The manual override function, when connected to the EPL, is intended for
+use during emergencies or closely monitored training only and must never
+be used during normal engine operation.
+This lever should only be used to modulate engine power to allow the pilot
+to continue flight to the nearest airport in the event of malfunction in the
+fuel control pneumatic system resulting in one of the following conditions:
+1. 
+Uncommanded power roll back and inability to recover with the
+Power Lever Assembly (PLA).
+2. No response to PLA movement, when starting from or around idle.
+3. PLA becomes stuck at or around idle.
+The EPL does not duplicate the function of the PLA and is not to be used as
+an optional means of controlling the engine.
+The EPL overrides all automatic fuel control features and acts directly
+on the fuel valve to directly modulate the fuel flow to the engine. Rapid
+movements of this lever should not be made for any reason whatsoever.
+EPL sensitivity increases with altitude and above 5000 ft., extreme care
+should be exercised.
+Please refer to the applicable AFM or POH for correct operation of the EPL.
+CAUTION:
+WHEN USING THE MANUAL OVERRIDE SYSTEM, THE ENGINE RESPONSE
+MAY BE MORE RAPID THAN WHEN USING THE POWER LEVER. A RAPID
+INCREASE IN EMERGENCY POWER LEVER POSITION TOWARDS MAXIMUM
+IS TO BE AVOIDED, AS THIS CAN CAUSE ENGINE SURGE, ENGINE OVER-
+TEMPERATURE, Ng OVER-SPEED OR OVER-TORQUE.
+Inappropriate use of the EPL will increase maintenance costs and can be a
+contributory factor to CT blade fractures.
+Emergency power lever
+Introduction
+The manual override function, when connected to the EPL, is intended for
+use during emergencies or closely monitored training only and must never
+be used during normal engine operation.
+This lever should only be used to modulate engine power to allow the pilot
+to continue flight to the nearest airport in the event of malfunction in the
+fuel control pneumatic system resulting in one of the following conditions:
+1. 
+Uncommanded power roll back and inability to recover with the
+Power Lever Assembly (PLA).
+2. No response to PLA movement, when starting from or around idle.
+3. PLA becomes stuck at or around idle.
+The EPL does not duplicate the function of the PLA and is not to be used as
+an optional means of controlling the engine.
+The EPL overrides all automatic fuel control features and acts directly
+on the fuel valve to directly modulate the fuel flow to the engine. Rapid
+movements of this lever should not be made for any reason whatsoever.
+EPL sensitivity increases with altitude and above 5000 ft., extreme care
+should be exercised.
+Please refer to the applicable AFM or POH for correct operation of the EPL.
+CAUTION:
+WHEN USING THE MANUAL OVERRIDE SYSTEM, THE ENGINE RESPONSE
+MAY BE MORE RAPID THAN WHEN USING THE POWER LEVER. A RAPID
+INCREASE IN EMERGENCY POWER LEVER POSITION TOWARDS MAXIMUM
+IS TO BE AVOIDED, AS THIS CAN CAUSE ENGINE SURGE, ENGINE OVER-
+TEMPERATURE, Ng OVER-SPEED OR OVER-TORQUE.
+Inappropriate use of the EPL will increase maintenance costs and can be a
+contributory factor to CT blade fractures.
+25
+25 25
+Scheduled Maintenance
+The following information is intended as an overview of maintenance
+practices. For a complete description please refer to the Engine
+Maintenance Manual (EMM).
+Chapter 70-00-00 describes standard practices including servicing the
+engine oil system.
+Chapter 71-00-00 contains information on maintenance practices,
+including adjustment, test and cleaning.
+Chapter 72-00-00 outlines inspection criteria for various sections of the
+engine.
+The inspection procedures are considered a normal function of the
+operating organization and are intended as a guide for minimum
+inspection and maintenance requirements. The aircraft manufacturer
+may have additional requirements or suggest different service intervals.
+See the airframe maintenance manual for details.
+Scheduled Maintenance
+The following information is intended as an overview of maintenance
+practices. For a complete description please refer to the Engine
+Maintenance Manual (EMM).
+Chapter 70-00-00 describes standard practices including servicing the
+engine oil system.
+Chapter 71-00-00 contains information on maintenance practices,
+including adjustment, test and cleaning.
+Chapter 72-00-00 outlines inspection criteria for various sections of the
+engine.
+The inspection procedures are considered a normal function of the
+operating organization and are intended as a guide for minimum
+inspection and maintenance requirements. The aircraft manufacturer
+may have additional requirements or suggest different service intervals.
+See the airframe maintenance manual for details.
+26
+26 26
+Chapter 72-00-00, Table 601, of the EMM contains the minimum
+recommendations for regular inspections of the engine. There are two
+primary intervals, ROUTINE and MINOR. More precise intervals are used for
+specific components when required.
+· 
+ROUTINE inspections coincide with the daily or preflight airframe
+inspection.
+· MINOR inspections coincide with a typical airframe zone inspection.
+The intervals at which these inspections are performed may be altered
+by the aircraft manufacturer’s maintenance program and approved by
+the operator’s local airworthiness authority. Engines operating in sandy
+or dusty environments or in smog or salt-laden atmospheres should be
+subjected to additional inspections for corrosion and compressor erosion.
+The engine maintenance manual quotes recommended intervals, which the
+operator can adjust, based upon operating experience. Typical maintenance
+actions include:
+· Engine washing
+- Compressor Desalination Wash
+- Compressor Turbine Desalination Wash
+- Compressor Performance Recovery Wash
+· Foreign Object Damage (FOD) inspection of the compressor
+- Inspection of Compressor Inlet Case for corrosion
+- Inspect the fuel system based upon environment and fuel quality
+- In-situ fuel nozzle cleaning
+- Fuel nozzle inspection, cleaning and tip replacement
+- Ignition system
+- Oil system flush
+- 
+Borescope inspection of combustion chamber, compressor turbine
+
+vane and blades
+Two areas of the PT6A engine have no scheduled maintenance intervals:
+· Reduction gearbox
+· Propeller control system
+Engine Inspections
+Chapter 72-00-00, Table 601, of the EMM contains the minimum
+recommendations for regular inspections of the engine. There are two
+primary intervals, ROUTINE and MINOR. More precise intervals are used for
+specific components when required.
+· 
+ROUTINE inspections coincide with the daily or preflight airframe
+inspection.
+· MINOR inspections coincide with a typical airframe zone inspection.
+The intervals at which these inspections are performed may be altered
+by the aircraft manufacturer’s maintenance program and approved by
+the operator’s local airworthiness authority. Engines operating in sandy
+or dusty environments or in smog or salt-laden atmospheres should be
+subjected to additional inspections for corrosion and compressor erosion.
+The engine maintenance manual quotes recommended intervals, which the
+operator can adjust, based upon operating experience. Typical maintenance
+actions include:
+· Engine washing
+- Compressor Desalination Wash
+- Compressor Turbine Desalination Wash
+- Compressor Performance Recovery Wash
+· Foreign Object Damage (FOD) inspection of the compressor
+- Inspection of Compressor Inlet Case for corrosion
+- Inspect the fuel system based upon environment and fuel quality
+- In-situ fuel nozzle cleaning
+- Fuel nozzle inspection, cleaning and tip replacement
+- Ignition system
+- Oil system flush
+- 
+Borescope inspection of combustion chamber, compressor turbine
+
+vane and blades
+Two areas of the PT6A engine have no scheduled maintenance intervals:
+· Reduction gearbox
+· Propeller control system
+Engine Inspections
+27
+27 27
+Oil System Inspection and Servicing
+Oil Level Sightglass
+Some PT6A engine models are equipped with a sightglass to simplify the
+inspection of the engine oil level. The sightglass has a centre green zone
+with red on each end. Engine operation is permitted with the oil level at any
+point in the green zone. The oil level dipstick must be checked when the oil
+level is in either the red zone or is not visible in the sightglass.
+Oil Level Check
+Oil level should be checked regularly and replenished as necessary.
+Although consistency is the most important factor when establishing a
+schedule for checking the oil level, P&WC recommends this check be done
+15 minutes after every shutdown.
+Oil Replenishment
+P&WC recommends that the engine not be filled over the “MAX COLD” level
+on the oil level dipstick. This corresponds with the centre of the green band
+on the oil level sightglass. A high oil level may result in an increase in
+either the oil consumption rate or the amount of oil mist passing through
+the engine oil breather. Each engine will seek its own normal operating oil
+level.
+Space is required in the oil tank for expansion as the oil reaches full
+operating temperature. If the oil level is over the “MAX HOT” level, drain
+some of the oil. Refer to the EMM for complete instructions.
+A listing of approved oils is provided in the appropriate Service Bulletins for
+each PT6A model. When switching to another approved oil brand or should
+oil of different brands or viscosities become mixed it is necessary to drain
+and flush the complete oil system.
+Oil System Inspection and Servicing
+Oil Level Sightglass
+Some PT6A engine models are equipped with a sightglass to simplify the
+inspection of the engine oil level. The sightglass has a centre green zone
+with red on each end. Engine operation is permitted with the oil level at any
+point in the green zone. The oil level dipstick must be checked when the oil
+level is in either the red zone or is not visible in the sightglass.
+Oil Level Check
+Oil level should be checked regularly and replenished as necessary.
+Although consistency is the most important factor when establishing a
+schedule for checking the oil level, P&WC recommends this check be done
+15 minutes after every shutdown.
+Oil Replenishment
+P&WC recommends that the engine not be filled over the “MAX COLD” level
+on the oil level dipstick. This corresponds with the centre of the green band
+on the oil level sightglass. A high oil level may result in an increase in
+either the oil consumption rate or the amount of oil mist passing through
+the engine oil breather. Each engine will seek its own normal operating oil
+level.
+Space is required in the oil tank for expansion as the oil reaches full
+operating temperature. If the oil level is over the “MAX HOT” level, drain
+some of the oil. Refer to the EMM for complete instructions.
+A listing of approved oils is provided in the appropriate Service Bulletins for
+each PT6A model. When switching to another approved oil brand or should
+oil of different brands or viscosities become mixed it is necessary to drain
+and flush the complete oil system.
+28
+28 28
+Oil System Inspection and Servicing
+Oil Temperature and Colour
+High oil temperature will accelerate the accumulation of carbon particles
+in the oil and the deterioration of oil additives. Oil colour will darken with
+usage and exposure to light. The rate of colour change is dependent upon
+the oil manufacturer’s formula. A darkening of the oil does not indicate
+deterioration in the lubricity of the base stock. Additives are replenished
+with the addition of oil during level servicing.
+Chip Detectors
+All PT6A engines are fitted with an RGB chip detector, while some models
+also have a chip detector in the AGB housing. AGB chip detectors are not
+equipped with a self-closing valve. When the chip detector is removed,
+the oil in the accessory gearbox will drain from the engine. During normal
+operation, there will be approximately ½ litre (17 oz.) of residual oil.
+Chip detectors should be checked regularly for continuity and any foreign
+material. If the aircraft is equipped with a cockpit indication of the chip
+detector, the whole system should also be checked regularly. Refer to the
+applicable maintenance manuals for inspection intervals.
+Oil Filter Debris Analysis
+The oil filter must be changed or cleaned at scheduled intervals. At the
+same time a visual inspection of the oil filter and chip detectors should
+be done. This is a simple and reliable method of assessing the wear of
+oil-wetted parts. As an extra step, a solvent may be used to flush trapped
+particles from the engine oil filter. The solvent is poured through filter paper
+to collect the debris. This is referred to as a filter “patch” check.
+The filter paper is sent to a laboratory for analysis. Laboratory techniques
+can be used to determine the alloy of the particles which helps determine
+their source. With successive samples, a wear trend for oil-wetted parts
+can be established.
+Oil System Inspection and Servicing
+Oil Temperature and Colour
+High oil temperature will accelerate the accumulation of carbon particles
+in the oil and the deterioration of oil additives. Oil colour will darken with
+usage and exposure to light. The rate of colour change is dependent upon
+the oil manufacturer’s formula. A darkening of the oil does not indicate
+deterioration in the lubricity of the base stock. Additives are replenished
+with the addition of oil during level servicing.
+Chip Detectors
+All PT6A engines are fitted with an RGB chip detector, while some models
+also have a chip detector in the AGB housing. AGB chip detectors are not
+equipped with a self-closing valve. When the chip detector is removed,
+the oil in the accessory gearbox will drain from the engine. During normal
+operation, there will be approximately ½ litre (17 oz.) of residual oil.
+Chip detectors should be checked regularly for continuity and any foreign
+material. If the aircraft is equipped with a cockpit indication of the chip
+detector, the whole system should also be checked regularly. Refer to the
+applicable maintenance manuals for inspection intervals.
+Oil Filter Debris Analysis
+The oil filter must be changed or cleaned at scheduled intervals. At the
+same time a visual inspection of the oil filter and chip detectors should
+be done. This is a simple and reliable method of assessing the wear of
+oil-wetted parts. As an extra step, a solvent may be used to flush trapped
+particles from the engine oil filter. The solvent is poured through filter paper
+to collect the debris. This is referred to as a filter “patch” check.
+The filter paper is sent to a laboratory for analysis. Laboratory techniques
+can be used to determine the alloy of the particles which helps determine
+their source. With successive samples, a wear trend for oil-wetted parts
+can be established.
+29
+29 29
+Over the life of the PT6A engine, the performance charts have evolved in
+name, style and function. Today, a variety of charts can be found. They
+may be titled Power Assurance Check, Performance Check or Ground Power
+Check charts. The charts allow operators of PT6A engines to monitor the
+condition of their engines and the results of maintenance actions.
+The chart may be used over a wide range of ambient temperature and
+altitude.
+The chart is intended to indicate when maintenance action might be
+required and the results of the repair when data is recorded before and
+after the maintenance action. With regular use, the chart can become a
+useful tool for scheduling maintenance.
+Check charts do not appear in all engine maintenance manuals. Some of
+them are published in the airframe maintenance manual.
+The performance check is influenced by the powerplant as a whole, not just
+the engine. The effects of poor nacelle seals, bleed air leaks, accessory
+drive power and instrumentation errors are all reflected in the recorded
+data.
+Do not use the chart to reject engines from service. Engines may remain
+in service provided that no operating limits are exceeded at the certified
+powers. P&WC recommends that troubleshooting and a flight test be done
+at the typical flight altitude to determine engine serviceability and that any
+step changes in parameters be investigated.
+The performance check charts are based upon estimated “average” engine
+performance. Every engine has its own unique characteristics. On certain
+types of performance check charts, this will affect the slope of the lines. By
+recording data at a few different ambient temperatures, within a short time
+of each other, the slope for a particular engine can be determined. P&WC
+recommends that this be done soon after aircraft delivery to establish a
+baseline for investigating future, performance-related issues.
+Performance Check
+Over the life of the PT6A engine, the performance charts have evolved in
+name, style and function. Today, a variety of charts can be found. They
+may be titled Power Assurance Check, Performance Check or Ground Power
+Check charts. The charts allow operators of PT6A engines to monitor the
+condition of their engines and the results of maintenance actions.
+The chart may be used over a wide range of ambient temperature and
+altitude.
+The chart is intended to indicate when maintenance action might be
+required and the results of the repair when data is recorded before and
+after the maintenance action. With regular use, the chart can become a
+useful tool for scheduling maintenance.
+Check charts do not appear in all engine maintenance manuals. Some of
+them are published in the airframe maintenance manual.
+The performance check is influenced by the powerplant as a whole, not just
+the engine. The effects of poor nacelle seals, bleed air leaks, accessory
+drive power and instrumentation errors are all reflected in the recorded
+data.
+Do not use the chart to reject engines from service. Engines may remain
+in service provided that no operating limits are exceeded at the certified
+powers. P&WC recommends that troubleshooting and a flight test be done
+at the typical flight altitude to determine engine serviceability and that any
+step changes in parameters be investigated.
+The performance check charts are based upon estimated “average” engine
+performance. Every engine has its own unique characteristics. On certain
+types of performance check charts, this will affect the slope of the lines. By
+recording data at a few different ambient temperatures, within a short time
+of each other, the slope for a particular engine can be determined. P&WC
+recommends that this be done soon after aircraft delivery to establish a
+baseline for investigating future, performance-related issues.
+Performance Check
+30
+30 30
+Atmospheric pollutants may contaminate the engine gas path, leading to
+a build up of deposits on airfoils, the initiation of corrosion, sulphidation
+or performance deterioration. These effects can be alleviated with engine
+washing. Internal engine washes are done while motoring the engine at
+10-25% Ng speed for a thorough cleaning.
+Compressor Desalination Wash
+Used to remove salt deposits which can cause corrosion, however light
+dirt deposits may also be removed. Wash fluid is drinking quality water,
+provided minimum standards are met. Water is injected into the engine
+intake using either an installed compressor wash ring or a hand held
+wash wand.
+Compressor Turbine Desalination Wash
+Used to remove salt deposits from the compressor turbine blades and
+stator which can cause sulphidation, a reaction between the salt and
+sulphur from the fuel. This wash must be done immediately following a
+compressor desalination or performance recovery wash as contaminants
+will be transferred from the compressor to the hot section during a
+compressor desalination or performance recovery wash. Wash fluid is
+drinking quality water, provided minimum standards are met. Water is
+injected through a wash tube inserted through one of the ignitor ports.
+Compressor Performance Recovery Wash
+Used to remove more stubborn deposits which cannot be removed during
+normal desalination washes. Wash fluid includes an approved detergent.
+This wash should only be done when engine performance loss is noticeable
+or trend monitoring dictates. Wash fluid is injected into the engine intake
+using either an installed compressor wash ring or a hand held wash wand.
+A water rinse of both the compressor and compressor turbine is required
+following the detergent wash.
+Engine Washing
+Atmospheric pollutants may contaminate the engine gas path, leading to
+a build up of deposits on airfoils, the initiation of corrosion, sulphidation
+or performance deterioration. These effects can be alleviated with engine
+washing. Internal engine washes are done while motoring the engine at
+10-25% Ng speed for a thorough cleaning.
+Compressor Desalination Wash
+Used to remove salt deposits which can cause corrosion, however light
+dirt deposits may also be removed. Wash fluid is drinking quality water,
+provided minimum standards are met. Water is injected into the engine
+intake using either an installed compressor wash ring or a hand held
+wash wand.
+Compressor Turbine Desalination Wash
+Used to remove salt deposits from the compressor turbine blades and
+stator which can cause sulphidation, a reaction between the salt and
+sulphur from the fuel. This wash must be done immediately following a
+compressor desalination or performance recovery wash as contaminants
+will be transferred from the compressor to the hot section during a
+compressor desalination or performance recovery wash. Wash fluid is
+drinking quality water, provided minimum standards are met. Water is
+injected through a wash tube inserted through one of the ignitor ports.
+Compressor Performance Recovery Wash
+Used to remove more stubborn deposits which cannot be removed during
+normal desalination washes. Wash fluid includes an approved detergent.
+This wash should only be done when engine performance loss is noticeable
+or trend monitoring dictates. Wash fluid is injected into the engine intake
+using either an installed compressor wash ring or a hand held wash wand.
+A water rinse of both the compressor and compressor turbine is required
+following the detergent wash.
+Engine Washing
+31
+31 31
+External Engine Wash
+Used as an effective method of tracing oil leaks, as well as removing salt
+and other environmental contaminants from the engine external surfaces.
+Wash fluid is drinking quality water, provided minimum standards are met.
+Wash Schedule
+When operating continuously in a salt laden environment (typically within
+10 nautical miles from the sea and under 10,000 ft), it is recommended
+to perform compressor and compressor turbine desalination washes and
+external washes daily, after the last flight of the day to prevent corrosion
+from initiating overnight. For occasionally salt laden operation, weekly
+desalination washes and external washes are recommended. Performance
+recovery washes are only recommended when a noticeable performance
+shift is recorded. In all cases, engine washing frequency should be based
+on operator experience and regular inspections of engine components to
+check for initiation of corrosion.
+Refer to P&WC SIL PT6A-144 for additional information and FAA Advisory
+Circular 43-4A for a comprehensive overview of corrosion. On the next page
+you will find a map of North America showing areas where environmental
+conditions will require particular attention to corrosion. Maps of the rest of
+the world can be found in the above mentioned Advisory Circular.
+Engine Washing
+External Engine Wash
+Used as an effective method of tracing oil leaks, as well as removing salt
+and other environmental contaminants from the engine external surfaces.
+Wash fluid is drinking quality water, provided minimum standards are met.
+Wash Schedule
+When operating continuously in a salt laden environment (typically within
+10 nautical miles from the sea and under 10,000 ft), it is recommended
+to perform compressor and compressor turbine desalination washes and
+external washes daily, after the last flight of the day to prevent corrosion
+from initiating overnight. For occasionally salt laden operation, weekly
+desalination washes and external washes are recommended. Performance
+recovery washes are only recommended when a noticeable performance
+shift is recorded. In all cases, engine washing frequency should be based
+on operator experience and regular inspections of engine components to
+check for initiation of corrosion.
+Refer to P&WC SIL PT6A-144 for additional information and FAA Advisory
+Circular 43-4A for a comprehensive overview of corrosion. On the next page
+you will find a map of North America showing areas where environmental
+conditions will require particular attention to corrosion. Maps of the rest of
+the world can be found in the above mentioned Advisory Circular.
+Engine Washing
+32
+32 32
+Engine Washing
+Los Angeles
+Mild
+Corrosion Severity Zone
+Moderate
+Severe
+Mexico
+Seattle
+Fairbanks
+Montreal
+New York
+Atlanta
+Dallas
+Denver
+Houston
+Havana
+Miami
+Haiti Puerto Rico
+St. Domingo
+Jamaica
+Anchorage
+Figure 1
+North American Corrosion Severity Map,
+extracted from FAA Advisory Circular 43-4A,
+Engine Washing
+Los Angeles
+Mild
+Corrosion Severity Zone
+Moderate
+Severe
+Mexico
+Seattle
+Fairbanks
+Montreal
+New York
+Atlanta
+Dallas
+Denver
+Houston
+Havana
+Miami
+Haiti Puerto Rico
+St. Domingo
+Jamaica
+Anchorage
+Figure 1
+North American Corrosion Severity Map,
+extracted from FAA Advisory Circular 43-4A,
+33
+33 33
+A Hot Section Inspection (HSI) is usually done halfway through the basic
+TBO interval or when performance loss dictates. This involves splitting the
+engine between the compressor and power turbines at “C” Flange. Since it
+is generally not necessary to remove the engine from the aircraft during an
+HSI, the inspection procedure is both simple and fast.
+Hot Section Inspection
+A Hot Section Inspection (HSI) is usually done halfway through the basic
+TBO interval or when performance loss dictates. This involves splitting the
+engine between the compressor and power turbines at “C” Flange. Since it
+is generally not necessary to remove the engine from the aircraft during an
+HSI, the inspection procedure is both simple and fast.
+Hot Section Inspection
+34
+34 34
+The basic Time Between Overhaul (TBO) and Hot Section Inspection (HSI)
+interval is published in the appropriate Service Bulletin for each PT6A
+engine model. Under extreme conditions, maintenance action prior to the
+recommended overhaul life may be necessary.
+The TBO interval depends on the specified operation of the engine.
+The interval can be escalated incrementally with the approval of your
+airworthiness authority, using an “on-condition” or a sampling program.
+The current TBO escalation is limited at 8,000 hours for single-engine
+aircraft and 10,000 hr to 12,500 hr, for twin-engine aircraft, depending on
+the application.
+TBO escalation recommendations take into account the average effect
+of flight duration, time at a given power level, climate, environment,
+maintenance practices, utilization and engine hardware standard.
+Overhaul
+The basic Time Between Overhaul (TBO) and Hot Section Inspection (HSI)
+interval is published in the appropriate Service Bulletin for each PT6A
+engine model. Under extreme conditions, maintenance action prior to the
+recommended overhaul life may be necessary.
+The TBO interval depends on the specified operation of the engine.
+The interval can be escalated incrementally with the approval of your
+airworthiness authority, using an “on-condition” or a sampling program.
+The current TBO escalation is limited at 8,000 hours for single-engine
+aircraft and 10,000 hr to 12,500 hr, for twin-engine aircraft, depending on
+the application.
+TBO escalation recommendations take into account the average effect
+of flight duration, time at a given power level, climate, environment,
+maintenance practices, utilization and engine hardware standard.
+Overhaul
+35
+35 35
+Certain rotating components of the engine have a limited life based upon
+the number of operating cycles they experience. These lives are quoted
+in the Rotating Component Lives Service Bulletin for each PT6A engine
+model. It is important to continuously record the number of operating cycles
+and partial cycles to track rotor lives. Rotor components not supported
+by proper documentation are to be removed from service. Prior to engine
+servicing, the total cycles and all flights and starts must be recorded in the
+appropriate engine logbook.
+At engine overhaul, a calculation will be made of the remaining service life
+for each rotating component. This calculation is based upon the rate of
+cycle accumulation recorded in the engine logbook.
+Cycle Counting
+Certain rotating components of the engine have a limited life based upon
+the number of operating cycles they experience. These lives are quoted
+in the Rotating Component Lives Service Bulletin for each PT6A engine
+model. It is important to continuously record the number of operating cycles
+and partial cycles to track rotor lives. Rotor components not supported
+by proper documentation are to be removed from service. Prior to engine
+servicing, the total cycles and all flights and starts must be recorded in the
+appropriate engine logbook.
+At engine overhaul, a calculation will be made of the remaining service life
+for each rotating component. This calculation is based upon the rate of
+cycle accumulation recorded in the engine logbook.
+Cycle Counting
+36
+36 36
+Engine Condition Trend Monitoring®
+ECTM®
+is a computer software program sold by P&WC that assists in early
+detection of potential problems through continuous monitoring of engine
+operation. The advantage of using ECTM®
+is a savings in troubleshooting
+time, reduced maintenance costs, the ability to schedule corrective action
+and an increased dispatch rate.
+The pilot or an on-board monitoring system must record the readings of the
+aircraft and engine gauges after the aircraft has been flying at a stable
+cruise condition for several minutes. Gauge readings are to be recorded
+daily or once per flight. Alternatively, you may send your recorded trend data
+to a designated analysis centre for processing and recommendations.
+Accurate and consistent readings are crucial to effective trend monitoring;
+the quality of the engine condition evaluation is only as good as the quality
+of the data provided.
+On-board data recording
+Altair Avionics markets a PT6A engine-mounted data recording system
+called TrendCheck Plus+, and the Aircraft Data Acquisition System (ADAS),
+an airframe-mounted engine monitor, for a wide variety of PT6A engine
+applications. These monitors enhance safety and reduce direct operating
+costs through sophisticated aircraft exceedance monitoring and automated
+trend sample collection. Operated in conjunction with Altair’s internet-
+based TurbineTracker™ system, these monitors are a powerful diagnostic
+tool and engine health monitor.
+While both systems monitor the engine parameters of turbine temperature,
+gas generator speed, power turbine speed, torque pressure and fuel flow as
+well as pressure altitude, aircraft airspeed and ambient temperature each
+system has their own unique recording capabilities as well. TrendCheck
+Plus+ system records time history into a storage buffer. The ADAS system
+provides the ability to monitor the airframe parameters of approach flaps,
+landing flaps, gear extended and weight on wheels.
+Engine Condition Trend Monitoring®
+ECTM®
+is a computer software program sold by P&WC that assists in early
+detection of potential problems through continuous monitoring of engine
+operation. The advantage of using ECTM®
+is a savings in troubleshooting
+time, reduced maintenance costs, the ability to schedule corrective action
+and an increased dispatch rate.
+The pilot or an on-board monitoring system must record the readings of the
+aircraft and engine gauges after the aircraft has been flying at a stable
+cruise condition for several minutes. Gauge readings are to be recorded
+daily or once per flight. Alternatively, you may send your recorded trend data
+to a designated analysis centre for processing and recommendations.
+Accurate and consistent readings are crucial to effective trend monitoring;
+the quality of the engine condition evaluation is only as good as the quality
+of the data provided.
+On-board data recording
+Altair Avionics markets a PT6A engine-mounted data recording system
+called TrendCheck Plus+, and the Aircraft Data Acquisition System (ADAS),
+an airframe-mounted engine monitor, for a wide variety of PT6A engine
+applications. These monitors enhance safety and reduce direct operating
+costs through sophisticated aircraft exceedance monitoring and automated
+trend sample collection. Operated in conjunction with Altair’s internet-
+based TurbineTracker™ system, these monitors are a powerful diagnostic
+tool and engine health monitor.
+While both systems monitor the engine parameters of turbine temperature,
+gas generator speed, power turbine speed, torque pressure and fuel flow as
+well as pressure altitude, aircraft airspeed and ambient temperature each
+system has their own unique recording capabilities as well. TrendCheck
+Plus+ system records time history into a storage buffer. The ADAS system
+provides the ability to monitor the airframe parameters of approach flaps,
+landing flaps, gear extended and weight on wheels.
+37
+37 37
+Engine Condition Trend Monitoring®
+Automatic trends can be defined or pilot-initiated samples can be
+captured by the push of a button. Data stored in the Altair Internet based
+TurbineTracker™ system can be used directly with the ECTM®
+program.
+Additional information on these products can be found at www.altair.aero.
+Engine Condition Trend Monitoring®
+Automatic trends can be defined or pilot-initiated samples can be
+captured by the push of a button. Data stored in the Altair Internet based
+TurbineTracker™ system can be used directly with the ECTM®
+program.
+Additional information on these products can be found at www.altair.aero.
+38
+38 38
+The PT6A engine power management system has been designed to give
+the pilot control of the powerplant thrust over the entire airplane flight and
+ground-operating envelope. It is a simple and reliable system, which fully
+compliments the inherent operating flexibility of a free turbine engine.
+Mission
+In conjunction with the Aircraft Manufacturer, a mission profile is
+established for every PT6A engine application. This mission is used to
+analyze and establish engine component lives and durability factors such
+as Low Cycle Fatigue (LCF), Creep, Oxidation and Vibration. Using this data
+and taking into consideration airframe influences such as bleed extraction,
+accessory loading and inlet efficiency, the power setting information is
+established and then published in the POH / AFM.
+Recommended PT6A Engine Power Management
+Take-off
+Climb
+Cruise
+Descent
+Taxi
+Taxi
+SHP
+TIME
+The PT6A engine power management system has been designed to give
+the pilot control of the powerplant thrust over the entire airplane flight and
+ground-operating envelope. It is a simple and reliable system, which fully
+compliments the inherent operating flexibility of a free turbine engine.
+Mission
+In conjunction with the Aircraft Manufacturer, a mission profile is
+established for every PT6A engine application. This mission is used to
+analyze and establish engine component lives and durability factors such
+as Low Cycle Fatigue (LCF), Creep, Oxidation and Vibration. Using this data
+and taking into consideration airframe influences such as bleed extraction,
+accessory loading and inlet efficiency, the power setting information is
+established and then published in the POH / AFM.
+Recommended PT6A Engine Power Management
+Take-off
+Climb
+Cruise
+Descent
+Taxi
+Taxi
+SHP
+TIME
+39
+39 39
+Rating Philosophy
+P&WC’s power rating philosophy is to ensure the maximum likelihood
+that your PT6A engine will deliver the power specified in the POH / AFM
+throughout its overhaul life. To achieve this, all PT6A engine installations
+use torque as the primary power setting parameter. All other engine
+parameters are only monitored to verify they are within acceptable limits.
+The POH / AFM contains power setting information which must be used
+to determine the torque setting for all ratings which vary according to
+altitude, ambient temperature and aircraft weight. This is important
+because the P&WC rating philosophy is based on the engine being operated
+per the POH / AFM and maintained in accordance with the EMM / AMM
+including all applicable periodic inspection recommendations by P&WC.
+Operating the engine in accordance with the POH / AFM will achieve
+optimum reliability and durability while minimizing operating costs.
+Recommended PT6A Engine Power Management
+Rating Philosophy
+P&WC’s power rating philosophy is to ensure the maximum likelihood
+that your PT6A engine will deliver the power specified in the POH / AFM
+throughout its overhaul life. To achieve this, all PT6A engine installations
+use torque as the primary power setting parameter. All other engine
+parameters are only monitored to verify they are within acceptable limits.
+The POH / AFM contains power setting information which must be used
+to determine the torque setting for all ratings which vary according to
+altitude, ambient temperature and aircraft weight. This is important
+because the P&WC rating philosophy is based on the engine being operated
+per the POH / AFM and maintained in accordance with the EMM / AMM
+including all applicable periodic inspection recommendations by P&WC.
+Operating the engine in accordance with the POH / AFM will achieve
+optimum reliability and durability while minimizing operating costs.
+Recommended PT6A Engine Power Management
+40
+40 40
+Performance Margins
+“New Engine” production acceptance limits are designed to allow a
+sufficient margin to carry the engine through a desired overhaul period. Any
+engine overhauled and put back into service must meet similar standards.
+However, with use, the engine performance margins will gradually
+reduce characterized by an increase in ITT, Ng and/or fuel flow (Wf) while
+maintaining POH / AFM specified power
+TIME IN SERVICE - HRS
+Maximum certified operating limit
+Engine deteriorating
+Deterioration margin
+SPEED
+AND TEMP
+Recommended PT6A Engine Power Management
+Performance Margins
+“New Engine” production acceptance limits are designed to allow a
+sufficient margin to carry the engine through a desired overhaul period. Any
+engine overhauled and put back into service must meet similar standards.
+However, with use, the engine performance margins will gradually
+reduce characterized by an increase in ITT, Ng and/or fuel flow (Wf) while
+maintaining POH / AFM specified power
+TIME IN SERVICE - HRS
+Maximum certified operating limit
+Engine deteriorating
+Deterioration margin
+SPEED
+AND TEMP
+Recommended PT6A Engine Power Management
+41
+41 41
+Power Ratings
+The take-off rating is the maximum power certified for takeoff and is time
+limited to five minutes.
+The maximum continuous rating is a certified power setting for in-flight
+emergency use only, typically for twin engine applications where one engine
+is inoperative.
+Maximum climb and maximum cruise ratings are the maximum powers
+approved by P&WC for climb and cruise operation.
+Recommended PT6A Engine Power Management
+TAKE-OFF
+POWER
+MAX.
+CONTINUOUS
+MAX CLIMB
+MAX CRUISE
+Power Ratings
+The take-off rating is the maximum power certified for takeoff and is time
+limited to five minutes.
+The maximum continuous rating is a certified power setting for in-flight
+emergency use only, typically for twin engine applications where one engine
+is inoperative.
+Maximum climb and maximum cruise ratings are the maximum powers
+approved by P&WC for climb and cruise operation.
+Recommended PT6A Engine Power Management
+TAKE-OFF
+POWER
+MAX.
+CONTINUOUS
+MAX CLIMB
+MAX CRUISE
+42
+42 42
+Flat Rating
+At constant ITT, PT6A engine power reduces with both increasing ambient
+temperature and altitude. This represents the thermal capacity of the
+engine or “thermal rating” and is how the engine would perform without
+the mechanical limitations of the reduction gearbox.
+Recommended PT6A Engine Power Management
+TAKE-OFF
+AMBIENT
+TEMPERATURE
+AND ALTITUDE
+POWER
+MAX.
+CONTINUOUS
+MAX CLIMB
+MAX CRUISE
+Flat Rating
+At constant ITT, PT6A engine power reduces with both increasing ambient
+temperature and altitude. This represents the thermal capacity of the
+engine or “thermal rating” and is how the engine would perform without
+the mechanical limitations of the reduction gearbox.
+Recommended PT6A Engine Power Management
+TAKE-OFF
+AMBIENT
+TEMPERATURE
+AND ALTITUDE
+POWER
+MAX.
+CONTINUOUS
+MAX CLIMB
+MAX CRUISE
+43
+43 43
+It is a general characteristic of aircraft that for a particular gross
+weight, the power required for take-off varies comparatively little with
+ambient conditions. PT6A engines are typically “flat rated” to allow for
+the maximum possible take-off power required by the aircraft over a wide
+range of ambient temperatures without having to work the engine harder
+than is necessary at any time.
+The flat-rated power is available up to the thermal capability of the
+engine, specified as an ambient temperature and altitude.
+Recommended PT6A Engine Power Management
+Ambient
+Temperature
+and Altitude
+POWER
+Take-off
+Max.
+Continuous
+Max Climb
+Max Cruise
+Gearbox Limit
+It is a general characteristic of aircraft that for a particular gross
+weight, the power required for take-off varies comparatively little with
+ambient conditions. PT6A engines are typically “flat rated” to allow for
+the maximum possible take-off power required by the aircraft over a wide
+range of ambient temperatures without having to work the engine harder
+than is necessary at any time.
+The flat-rated power is available up to the thermal capability of the
+engine, specified as an ambient temperature and altitude.
+Recommended PT6A Engine Power Management
+Ambient
+Temperature
+and Altitude
+POWER
+Take-off
+Max.
+Continuous
+Max Climb
+Max Cruise
+Gearbox Limit
+44
+44 44
+Recommended PT6A Engine Power Management
+Power Settings
+All PT6A engine applications use engine output torque as the primary power
+setting parameter. The POH / AFM contains power setting information
+which must be used to determine the correct torque settings to achieve
+take off and cruise in accordance with altitude, ambient temperature and
+aircraft weight.
+Recommended PT6A Engine Power Management
+Power Settings
+All PT6A engine applications use engine output torque as the primary power
+setting parameter. The POH / AFM contains power setting information
+which must be used to determine the correct torque settings to achieve
+take off and cruise in accordance with altitude, ambient temperature and
+aircraft weight.
+45
+45 45
+Recommended PT6A Engine Power Management
+The power lever should be set to the position which produces the required
+torque. Other engine parameters such as ITT and Ng are monitored only
+to verify that they are within acceptable limits. Operating the engine in
+accordance with the POH / AFM by using torque as the primary power
+setting parameter will achieve optimum reliability and durability while
+minimizing operating costs.
+0
+ITT
+or
+NG
+Maximum fully deteriorated limit
+POWER
+Torque set as per POH
+LIFE 100%
+MARGIN REDUCING
+Recommended PT6A Engine Power Management
+The power lever should be set to the position which produces the required
+torque. Other engine parameters such as ITT and Ng are monitored only
+to verify that they are within acceptable limits. Operating the engine in
+accordance with the POH / AFM by using torque as the primary power
+setting parameter will achieve optimum reliability and durability while
+minimizing operating costs.
+0
+ITT
+or
+NG
+Maximum fully deteriorated limit
+POWER
+Torque set as per POH
+LIFE 100%
+MARGIN REDUCING
+46
+46 46
+Recommended PT6A Engine Power Management
+Operating the engine beyond the recommended power settings specified
+in the POH / AFM for a prolonged period will result in accelerated margin
+deterioration due to hot section component distress and will affect engine
+reliability and durability. This effect is cumulative and will lead to the
+engine prematurely reaching an operating limit (usually ITT) before the
+recommended power is produced.
+Refer to P&WC SIL PT6A-125 for additional information.
+LIFE 100%
+0
+POWER
+ITT
+or
+NG
+Maximum fully deteriorated limit
+POWER SET AT MAX ITT LIMIT
+Normal torque as per POH
+Actual torque
+PREMATURE OVERHAUL
+Recommended PT6A Engine Power Management
+Operating the engine beyond the recommended power settings specified
+in the POH / AFM for a prolonged period will result in accelerated margin
+deterioration due to hot section component distress and will affect engine
+reliability and durability. This effect is cumulative and will lead to the
+engine prematurely reaching an operating limit (usually ITT) before the
+recommended power is produced.
+Refer to P&WC SIL PT6A-125 for additional information.
+LIFE 100%
+0
+POWER
+ITT
+or
+NG
+Maximum fully deteriorated limit
+POWER SET AT MAX ITT LIMIT
+Normal torque as per POH
+Actual torque
+PREMATURE OVERHAUL
+08-1215 08-1215
+P&WC Customer FIRST Centre
+Global Customer Service,
+24 –hours a day, 7 days a week
+In Canada and the United States:
+Tel: 1-800-268-8000
+International:
+Tel: International Access Code + 8000-268-8000
+Other Numbers:
+Tel: (450) 647-8000 Fax: (450) 647-2888
+Email:
+cfirst@pwc.ca
+Visit our website at:
+www.pwc.ca
+P&WC Customer FIRST Centre
+Global Customer Service,
+24 –hours a day, 7 days a week
+In Canada and the United States:
+Tel: 1-800-268-8000
+International:
+Tel: International Access Code + 8000-268-8000
+Other Numbers:
+Tel: (450) 647-8000 Fax: (450) 647-2888
+Email:
+cfirst@pwc.ca
+Visit our website at:
+www.pwc.ca
+

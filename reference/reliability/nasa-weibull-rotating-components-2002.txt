@@ -1,0 +1,1509 @@
+NASA/TM--2002-211348
+
+
+
+
+Weibull-Based       Design Methodology                               for
+Rotating   Aircraft    Engine Structures
+Erwin    V. Zaretsky    and    Robert   C. Hendricks
+Glenn    Research    Center,    Cleveland,   Ohio
+
+
+Sherry    Soditus
+United    Airlines   Maintenance,      San Francisco,   California
+
+
+
+
+June     2002
+                                                             The NASA               STI Program   Office...        in Profile
+
+
+
+Since     its founding,          NASA        has      been     dedicated              to                       CONFERENCE                    PUBLICATION.                  Collected
+the advancement   of aeronautics    and space                                                                  papers         from    scientific        and    technical
+science.  The NASA Scientific    and Technical                                                                 conferences,           symposia,            seminars,       or other
+Information          (STI) Program             Office        plays     a key part                              meetings           sponsored          or cosponsored             by
+in helping         NASA        maintain        this important               role.                              NASA.
+
+
+The NASA STI Program       Office is operated                                by                                SPECIAL            PUBLICATION.        Scientific,
+Langley Research   Center,  the Lead Center                                 for                                technical,         or historical information       from
+NASA's  scientific and technical   information.                                   The                          NASA       programs,             projects,      and     missions,
+NASA       STI Program            Office     provides           access         to the                          often concerned     with subjects                     having
+NASA       STI Database,           the     largest      collection          of                                 substantial  public   interest.
+aeronautical         and space science STI in the world.
+The Program           Office is also NASA's institutional                                                     TECHNICAL        TRANSLATION.                             English-
+mechanism    for disseminating                    the results   of its                                        language  translations  of foreign                         scientific
+research  and development                    activities.   These results                                      and technical              material       pertinent        to NASA's
+are published          by NASA            in the NASA              STI Report                                 mission.
+Series,   which       includes       the following                report       types:
+                                                                                                         Specialized          services      that     complement            the STI
+     TECHNICAL       PUBLICATION.                             Reports     of                          Program           Office's      diverse        offerings         include
+     completed   research     or a major                      significant                             creating         custom        thesauri,        building         customized
+     phase of research    that present                       the results     of                       data bases, organizing     and publishing                             research
+     NASA       programs           and     include        extensive            data                   results..,  even providing     videos.
+     or theoretical        analysis.         Includes   compilations
+     of significant        scientific        and technical    data and                                For more          information             about       the NASA          STI
+     information     deemed to be of continuing                                                       Program           Office,      see the following:
+     reference   value. NASA's   counterpart    of peer-
+     reviewed        formal       professional            papers         but                         •        Access     the NASA      STI Program                     Home       Page
+     has less stringent            limitations           on manuscript                                        at http://www.sti.nasa.gov
+     length  and extent            of graphic           presentations.
+                                                                                                     •        E-mail      your       question        via the     Intemet        to
+     TECHNICAL             MEMORANDUM.                            Scientific                                  help@sti.nasa.gov
+     and technical         findings         that are preliminary                      or
+     of specialized         interest,       e.g., quick release                                      •        Fax your question  to the NASA                           Access
+     reports,  working    papers,    and bibliographies                                                       Help Desk at 301-621-0134
+     that contain   minimal     annotation.    Does not
+     contain       extensive       analysis.                                                         •        Telephone    the NASA                  Access      Help      Desk       at
+                                                                                                              301-621-0390
+     CONTRACTOR                  REPORT.             Scientific       and
+     technical       findings  by NASA-sponsored                                                              Write     to:
+     contractors        and grantees.                                                                         NASA        Access         Help       Desk
+                                                                                                              NASA Center                for AeroSpace           Information
+                                                                                                              7121 Standard               Drive
+                                                                                                              Hanover,          MD       21076
+NASA         / TMm2002-211348
+
+
+
+
+Weibull-Based                               Design                Methodology         for
+Rotating                     Aircraft                Engine              Structures
+Erwin V. Zaretsky    and            Robert   C. Hendricks
+Glem-L Research   Center,            Cleveland,   Ohio
+
+
+Sherry      Soditus
+United      Airlines     Maintenance,       San      Francisco,   California
+
+
+
+
+Prepared      for the
+Ninth    International         Symposium          on Transport     Phenomena
+and     Dynamics         of Rotating     Machinery
+sponsored         by the Americ an Society             of Mechanical      Engineers
+Honolulu,         Hawaii,  Febrt_ary 10-14,            2002
+
+
+
+
+National       Aeronautics         and
+Space      Administration
+
+
+
+Glenn      Research       Center
+
+
+
+
+June       2002
+                                                    This report contains      preliminary
+                                                     findings,   subject to revision      as
+                                                             analysis   proceeds.
+
+
+
+
+                                                                Available   from
+
+NASA Center     for Aerospace    Information                                                      National   Technical    Information   Service
+7121 Standard    Drive                                                                                                   5285 Port Royal Road
+Hanover,   MD 21076                                                                                                      Springfield, VA 22100
+
+
+
+                                Available      electronically    at ht .tp: //gltrs.grc.nasa.gov/GLTRS
+     Weibull-Based             Design        Methodology                for Rotating             Aircraft       Engine      Structures
+
+                                             Erwin V. Zaretsky and Robert C. Hendricks
+                                           National Aeronautics   and Space Administration
+                                                       Glenn Research Center
+                                                           Cleveland, Ohio
+
+
+                                                              Sherry Soditus
+                                                       United Airlines Maintenance
+                                                        San Francisco, California
+
+
+
+                                                                    Summary
+
+
+      The NASA Energy Efficien         Engine (E3-Engine) is used as the basis of a Weibull-based       life and reliability
+analysis. Each component's       life and thus the engine's life is defined by high-cycle fatigue (HCFt or low-cycle
+fatigue (LCFt. Knowing the cun,ulative life distribution        of each of the components     making up the engine as repre-
+sented by a Weibull slope is a prerequisite      to predicting the life and reliability of the entire engine. As the engine
+Weibull slope increases, the predicted lives decrease. The predicted engine lives L 5 (95-percent probability of sur-
+vival) of approximately     17 000 :nd 32 000 hr do correlate with current engine maintenance          practices without and
+with refurbishment,    respectively    The individual high-pressure    turbine (HPT) blade lives necessary to obtain a
+blade system life L0.1 (99.9-perc,.'nt probability of survival) of 9000 hr for Weibull slopes of 3, 6, and 9, are 47 391,
+20 652, and 15 658 hr, respectively.    For a design life of the HPT disks having probable points of failure equal to or
+greater than 36 000 hr at a probability of survival of 99.9 percent, the predicted disk system life L0. j can va_' from
+9408 to 24 911 hr.
+
+
+
+                                                             Nomenclature
+
+
+C           constant
+
+
+C           stress-life    exponent
+
+
+(           Weibull       slope or Weibull    modulus
+
+h           exponent
+
+            stress intensity     factor
+
+
+L1, L-,     cumulative       life of each engine component,           hr or number      of stress cycles
+
+
+L 1, L 2    engine      life at each pewer    setting, hr or number        of stress cycles
+
+
+L0.1        O. l-percent     life or lift; at which 99.9 percent        of population     survives,   hr or number   of stress cycles
+
+
+L5          5-percent      life or life at which 95 percent         of population    survives,   hr or number    of stress cycles
+
+N           life, hr or number        of ;tress cycles to failure
+
+
+II          exponent       or number of system components
+
+
+P           load-life     exponent
+
+S           probability      of surviv_,.l, fraction   or percent
+
+
+NASA/TM--2002-211348                                                      1
+    T         engine thrust load, N (lbf)
+
+              stressed      volume,    m 3 fin))
+
+
+X             load, time, or stress
+
+
+X_            characteristic      life or strength      at which 63.2 percent         of population   fails, hr or number   of stress cycles,
+              kN/m 2 (ksi)
+
+
+X t, X e      fractional      time at load and/or speed for related lives L t and L_
+
+Z             depth to maximunl           critical shear stress,        m tin.)
+
+              stress or strength,      N/m 2 (psi)
+
+
+              critical     shear stress, N/m 2 (psi)
+
+
+Subscripts:
+
+blade         blade or blades
+
+
+HPT           high-pressure       turbine
+
+t1            number       of components         or elemental       volumes
+
+o             initial value
+
+RE            remainder       of engine     components
+
+ref           reference      point, stress, volume,          or life
+
+ROT.    ST.   rotating     structure   (disks, drums)
+
+
+sys           system or component              probability    of sur_,ival or life
+
+              designates      characteristic       life or stress
+
+
+
+                                                                       Introduction
+
+
+      The classic approach to aircraft engine component design has been deterministic.              The deterministic      method
+assumes that full and certain knowledge exists for the service conditions and the material strength. Specific equa-
+tions with specific material and fluid characteristics      then define an engine component's         operating condition. They
+are coupled with experience-based       safety factors to predict the component's        performance,     life, and reliability. Vari-
+ability in heat treatment, loading, and operating profile, among other variables, is not necessarily factored into these
+equations. This omission can result in large variances in the component's            performance,     life, and reliability from that
+predicted. Being able to design for manufacturing         and operational   variation and to accept a defined risk can be a
+valuable design tool.
+      Palmgren (1924) (Zaretsky, 1998) suggested a probabilistic          approach to predicting the lives of machine compo-
+nents and, more specifically,   rolling-element     bearings. On the basis of his test results, he suggested that an accept-
+able life be defined as that time at which 10 percent of a population of bearings will have failed or 90 percent will
+have survived. He also noted that there was an apparent size effect on life. That is, larger bearings with the same
+equivalent load as smaller bearings had shorter lives than the smaller bearings (Zaretsky,               1998).
+
+
+
+
+NASA/TM--2002-211348                                                              2
+                                                            Ssys = exp - i/v--_';
+
+                                        Ssys
+                                                                                                  /
+                                                                                              /
+                                                                                          /
+                                                                                      /
+                                            S_
+
+
+                                   .°
+
+
+                                   ..
+
+                                           S ref
+
+
+
+
+                                                                         Nref     NI3                 N
+                                                                           InN
+
+                                  Figure 1.--Sketch of Weibull plot where (Weibull) slope
+                                    or tangent of line is c; SI_ is probability of survival
+                                    of 36.8 percent at which N = NI3 or NINI_ = 1 (from
+                                    Melis, Zaretsky, and August, 1999).
+
+
+     Weibuil (1939a,b) published two papers that describe a statistical approach to determining                        the strength of
+solids. Weibull postulated that the dispersion in material or fracture strength for a homogeneous                       group of test speci-
+mens can be expressed according to the following relation:
+
+
+
+                                                                                                                                               tl)
+
+
+
+
+where X = _ and XI3 = Cl_ (Weibull, 1951 ). The derivation of the Weibull distribution     function can be found in Melis,
+Zaretsky, and August (1999).
+      Equation { 1) relates the probability of survival S and the fracture (or rupture) strength cy. When In in (l/S)
+is used as the ordinate and In c; or In N as the abscissa, fracture and fatigue data are assumed to plot as a straight line
+shown in Fig. 1. The slope (tangt nt) of this line is referred         to as the "Weibull         slope" or "Weibull     modulus,"   usually
+designated by the letter c. The _'eibull slope is indicative of the dispersion of the data and its density
+(statistical) distribution. Weibull slopes of 1, 2, and 3.57 are indicative of exponential,   Raleigh, and normal
+(gaussian) distributions,   respecti,_ely (Weibull, 1962). The plot itself is referred to as a "Weibull plot."
+       Weibuli (1939a,b) further related the probability of survival S, the material strength or, and the stressed
+volume   V according    to the following      relation:
+
+
+
+                                                           inl S = Sv ftX)dV                                                               (2a)
+
+
+where for a given probability   of :;urvival S = S,,
+
+
+                                                          In---1 = Co = Vof(X     )                                                        (2b)
+                                                              So
+
+
+
+
+NASA/TM--2002-211348                                               3
+Letting
+
+                                                                        .f(X ) = (_                                                               (3)
+
+
+it follows    that   _ is inversely     related     to _   where the exponent         is the inverse of the Weibull    slope,
+
+                                                                            r    nl/t
+
+                                                                            /c,/                                                               (4a)
+
+
+
+or in general    for an 5, S, V,
+
+
+
+                                                                                                                                               (4b)
+
+
+
+      In 1947. Lundberg and Palmgren (1947) applied Weibull analysis to the prediction                            of rolling-element-bearing
+fatigue life. The Lundberg-Palmgren  theory expressedf(X)  in Eq. (2) as
+
+
+
+                                                                                                                                                  (5)
+
+
+
+where _ is the critical shear stress, N is the number of stress cycles to failure,                    and Z is the depth to the maximum
+critical shear stress in a concentrated (hertzian) contact.
+     For a given      probability     of survival     S,
+
+
+                                                                       -                                                                        (6)
+
+
+
+       In Lundberg and Palmgren (1947) the parameter c/_ is the stress-life exponent. This implies that the inverse
+relation of life with stress is a function of the life scatter or data dispersion. A search of the literature for a wide
+variety   of materials    would     suggest   that the stress-life    exponent     is independent    of Weibull    slope   e. Also, from obser-
+vation and contrary to the Lundberg-Palmgren   assumption, fatigue life appears to be independent of the depth to the
+maximum critical shear stress in a body. Hence, Zaretsky (1994) has modified the Lundberg-Palmgren      theory,
+where
+
+
+                                                                     f(X)   = _C_N_                                                            (7)
+
+
+For a given     probability   of survival     S,
+
+
+
+                                                                                                                                               (8)
+
+
+
+      Zaretsky (1987), as well as Ioannides and Harris (1985), proposed a generalized           Weibull-based   methodology
+for structural life prediction that uses a discrete-stressed-vohime       approach. Zaretsky, Smith, and August (1989)
+applied this methodology      to qualitatively predict the life of a rotating generic disk with circumferentially    placed
+holes as a function of the various Weibull parameters. August and Zaretsky (1993) extended the methodology                 of
+Zaretsky to allow for calculating the local probability of failure within any component's          stressed volume as well
+as within the entire component      based on finite-element    stress analysis. Holland, Zaretsky, and Melis (1998) applied
+this method to predicting the fracture strength and life of a metal-matrix         composite ring using coupon data to
+
+
+
+
+NASA/TM--2002-211348                                                        4
+determine
+       theWeibullparameters.
+                         Zaretsky,
+                                Poplawski,                        and Peters (1996_ and Poplawski, Zaretsky, and Peters
+(2001a,b)   applied   the Zaretsky   method   to predict the lives of ball and roller bearings. Melis and Ogonek (1995)
+implemented    this life prediction methodology  through a computer code called "'Probable Cause."
+      Melis, Zaretsky, and August (1999), using the method of Zaretsky and the computer code Probable Cause.
+analyzed the lives of two differel_t groups of aircraft gas turbine engine compressor  disks for which there existed
+limited fatigue data (Mahorter et al., 1985). These disks were manufactured    from a titanium (Ti-6AI-4V)   alloy.
+A reasonable correlation was obtained between the disk lives predicted by using the computer code Probable Cause
+and those predicted by using a mgdified crack growth life prediction method. For both methods, at a failure probabil-
+ity of 0.1 percent (99.9-percent probability of survival), the life of the first group of disks was slightly over predicted
+and the life of the second group (,f disks was significantly    under predicted. The failure probability analysis for both
+disk groups predicted with reasonable engineering      certainty the failure locations at the bolt holes of each disk. These
+locations correlated with those observed experimentally.
+      Using the Weibull analysis end the Lundberg-Palmgren        theory,, Lewicki et al. (1986) determined       the fatigue
+life of an Allison T56/501-D22A     gearbox based on a typical operating profile. Excellent correlation        was obtained
+between the predicted lives and _ctual field data. To the best of our knowledge, a Weibull-type         reliability, (failure
+probability) analysis similar to that of Lewicki et al. (1986} has not been performed on an aircraft gas turbine engine
+as an entire system.
+     The NASA Lewis Research Center (now Glenn Research Center) developed an experimental            aircraft engine
+incorporating     technologies   new z.t the time. The engine and the program were known as the Energy, Efficient Engine
+or E3-Engine (Fig. 2) (Davis and Steams, 1985). Most of these technologies         have been incorporated    in both currently
+flying commercial and military' engines. Using the E3-Engine as a basis for analysis, it is the objective of the work
+reported herein to (a) demonstrate       and apply a Weibull probability analysis to its rotating components   based upon a
+low- or high-cycle fatigue criteria for removal and (b) determine engine life and reliability based upon the cumula-
+tive life distributions   of individual engine rotating components.
+
+
+
+                                              Weibull      Probability      Analysis
+
+
+      A typical scenario that can be adopted to design an aircraft engine for life and reliability is to assume a typical
+flight (profile) cycle and specify a life in flight hours and a reliability for the engine. Usually an engine is removed
+for cause, degraded performance      and/or because it has reached its specified design life. Any engine event that will
+require removal of the engine frem the aircraft and/or removal of the aircraft from scheduled service can be desig-
+nated a failure. The engine can b,; removed or repaired for cause and/or for an expired time before an anticipated
+failure can occur. A component in the engine can be failed when it is no longer fit for its intended purpose even
+though it is still functional. A component is removed before it can cause secondary damage to the engine.
+      When specifying a design lile. an acceptable reliability also needs to be specified; that is, how ninny incidents
+of engine removal for cause is th_ end user airline willing to experience before the engine design life is reached.
+As an example, if there were a fl,._et of 1000 engines and the end user was willing to accept that 50 engines
+would be removed for cause before the design life was reached, the engine could be considered          to operate at a
+5-percent removal (failure) rate or at a 95-percent probability of survival. This number does not anticipate "'infant
+mortality" or "'human factors" in the analysis. Although, based on experience or a previously existing data base,
+these causes may be factored into a final analysis. However, for the purpose of this paper and the resulting
+analysis, infant mortality, and human factors are not considered.
+      Figure 3 shows, generically,  a typical flight profile for the NASA E3-Engine (Davis and Steams, 1985). There
+are 15 power settings for this en_:ine during the flight cycle. Using the required engine design life for this typical
+flight cycle at a 95-percent probability of survival, the engine life can be determined   at each power setting using
+the linear damage (Palmgren-Langer-Miner)         rule (Palmgren,   1924; Langer, 1937; and Miner, 1945) where
+
+
+                                                       1 _ XL+        X2 +...__ Xn                                                   (9)
+                                                     Lsys  LI         L2        Ln
+
+
+and assuming that the engine life is directly      proportional   to the engine thrust load   T (power   setting)   to a power   p
+where
+
+
+
+
+NASA/TMI2002-211348                                               5
+                                                                                                             1
+                                                                                                      L - --                                                                                           (10)
+                                                                                                          T p
+
+
+       The cumulative              life of each         of the engine               components              illustrated        in the Weibuli          plots   of Fig. 4 can be combined
+
+to determine         the calculated            engine       system       life Lsy s using               the Lundberg-Palmgren                     formula      (Lundberg           and Palmgren,
+ 1947):
+
+
+                                                                                     I            1         1                   1
+                                                                                           -            +-__+       ...+--                                                                             (11)
+                                                                                   G,            q'                           Z/'
+
+Eq.    ( 11 ) is derived        from     Weibull         eq. ( 1t and is found                   in Melis,        Zaretsky,          and August        (1999).
+       The   value      of the Weibull             slope      or modules                 _ can    be different            for each        component         system     and between
+elements       within      a component             system.       Where             the cumulative             distribution           function     of engine      removal           for cause
+as represented          by a Weibull            slope      is not known,                 it is not unreasonable                 to use the value         of the Weibull             slope     of the
+cumulative       distribution            of the lowest          lived    component                system         within        the engine       to represent         that of the engine.
+
+
+
+
+                                                                         Energy                  Efficient           Engine
+
+       The   NASA          E3-Engine           (Fig.    2) was       used      as the basis             of the Weibull-based                  life and reliability         analysis         reported
+in this paper.       The       engine,     which        was     successfully              fabricated          and tested,           was    a "clean-sheet"          derivative       of the GE
+CF6-50C        engine.         A summary           of the NASA               E3-Engine                was    described          by Davis        and Stearns      (1985).         A review        of the
+gas-path     fluid      dynanfics        was     described         by Hall et al. (1998).                     Details         of the rolling-element-bearing                     support     system
+were    described        by Broman             (1982)      and those         of the high-pressure                    turbine         (HPT)      were    described        by Halila,         Lenahan,
+and Thomas           (1982).
+
+
+
+                                 Lightweight            blade           Acoustic           blade/vane            spacing
+                                 containment
+
+
+
+                                                                                                                                                  Five stage LPT
+                                                                                                        Short, stiff core
+                                                                                                                                                                                            Mixed
+                                                                                                                                                                                            flow
+   Acoustic
+                                                                                                                                                                                            exhaust
+   bulk
+
+
+
+
+                                                                                                                                                                                   Two stage
+                                                                                                                                                                                   HPT
+                                                                              :/                                          t
+
+
+
+       32 blade fan
+                                                                                                                     Ten stage                   Active
+                                                                                                                     23:1 HPC                    clearance
+                                                                                                                                                 control
+
+
+
+                                                           Quarter stage fan                                                                           • Two main frames
+                                                           debris separator                                                                            • Five bearings
+                                                                                                                                                       • Core mounted              accessories
+
+                Figure 2._Cutaway                  of E3-Engine             flight propulsion                system illustrating             its features      (from Davis and
+                  Steams, 1985).
+
+
+
+NASA/TM--2002-211348                                                                                    6
+                                                                                                                       TABLE              I.--E3-ENGINE               THRUST           FRACTION        WITH
+                                                                                                                            TYPICAL               FLIGHT           CONDITIONS            OF FIGURE       3
+                                                                                                                                                                                         Maximum          Time       at
+                                                                                                            Flight propulsion                            Thrust,         Engine
+                                                                                                             system based on                            fraction         speed.             cruise        power, a
+                                                                                                                                                                        fraction            thrust,         rain
+                                                                                                                  E -Engine                                                               fraction
+                                                                                                                   condition
+                                                                                                       Takeoff                                            1.00             1.00             1.18              b_
+
+                                                                                                       Maximunl                   climb                    .85              .95              1.00             22
+                                                                        Code:Timein (minutes)          Maximum                    cruise                     .65            .9                  .76           48
+
+      Takeoff                                                               (Timein sec0nds)                                                                                                    .53              5
+                                                                                                       Approach               ¢                              .45            .825
+                                                                                                       Loiter                                                .33            .78                 .39              5
+                                                                             _peak       at 90%
+      Maximum                    (22)                                        of maximum
+                                                                                      takeoff          Flight          idle                                  .25            .76                 .29           d 12
+                           i
+
+
+      climb                                                                   )owerdecreasing          Taxi                                                  .13            .72                 .15              9
+
+                                                                             linearlyio idlein         Ground               idle                             .07            .7                  .08              8.7
+                                                (48)
+      Maximum                                                                15_.
+                                                                                                       Cutoff                                                .05                                .OJ,             1.5+
+      cruise
+                                                                                                       aTotal          flight time.             117.5 min.
+                                                                                                       blncludes              thrust          reverse     20-sec    transienl      5 sec up to 15 sec down.
+
+                                                                                                       CUsuall 3 0.3 thrust                      fraction.
+      45%
+                                                        I           {5tl                               d      .         .                 .
+                                                                                                            Fhght       idle vanes              from      I 1.5 to 16.5 sec.
+      takeoff
+
+      approach
+
+(0       Loiter
+
+      Flightidle
+o                                                                       (0.5)
+0.
+                                                                              15)
+            Taxi
+     Ground
+         idle                                                                     (1+)
+
+
+        Cutoff                                                                                                               $1
+
+                                                                                                      •_'          c
+       Math                                     0,85M                                                             --         S2
+       number              0.38to0.8M0.60
+                                        to0,85M 0.65M0.5M190KCAS
+
+                                                                                                      "_                     $3                                                             3
+       Altitude     t06K       0t035K       15t040K         40t0   5K     0t06K
+                                                             5K                                       o_                    Sref
+                   'Knotscalculatedair speed                                         Downtime
+
+
+
+
+                   _-                          117.Stain-                         _i (minimum)
+                                                                                                                                                                   Nre f N 1 N 2 N 3 N
+Figure 3.mE3-Engine                     typical flight cycle (from Davis and                                                                                                    In N
+  Stearns, 1985).
+                                                                                                                                                         Increasing       life
+
+
+
+                                                                                                      Figure 4.--Sketch of multiple Weibull plots where each
+                                                                                                        numbered plot represents cumulative distribution of
+                                                                                                        each component in a system and the system Weibull
+                                                                                                        plot represents combined distribution of plots 1, 2,
+                                                                                                        3, etc. All plots are assumed to have same Weibull
+                                                                                                        slope c (from Melis, Z.aretsky, and August, 1999).
+
+
+
+
+      NASA/TM--2002-211348                                                                        7
+                                    TABLE         2.--E3-ENGINE                    COMPONENTS              AND     TODAY'S        NEW   ENGINE
+                                      TECHNOLOGY                      AND/OR            EXPERIENCE-BASED               LIFE      ASSESSMENT
+                                      Major      rotating         components                      Nunlber          Today's  new technology     engines
+                                                                                                      of             before parts removed     and/or
+                                                                                                                                repaired
+                                                                                                  elements
+                                                                                                                    Allowable,            Typical,
+                                                                                                                       cycles                hr
+
+                        FAN
+
+                        HUB                                                                                    1      20 000
+                        Blades/stators                                                             32/34                                   25 000
+                        COMPRESSOR-LOW
+
+                         I/4-STA     GE- LOW-Dmtm                    (3507      rt_m)
+                        Disk                                                                                   1      20 000               25 000
+                        Stators/blades                                                             60/56                                   25 000
+                        INLET       GUIDE         VANES             (IGV)                               64                                 25 000
+
+                        COMPRESSOR-HPC-Drum-                                   11 600 rpm
+                        Forward       shaft sn_b                                                               1     20 000
+                        Inlet Guide       Vanes          (if]V)                                         32                                 25 000
+                        Disks                                                                              11        20 000
+
+                        Stage     1 stators/blades                                                 50/28                                   25 000
+
+                       Stage      2 stators/blades                                                 68/38                                   25 000
+
+                        Stage     3 stators/blades                                                 82/50                                   25 000
+
+                        Stage 4 stators/blades                                                     92/60                                   25 000
+
+                        Stage 5 stators/blades                                                    110/70                                   25O0O
+
+                        Stage 6 stators/blades                                                    120/80                                   25 000
+
+                        Stage 7 stators/blades                                                    112/82                                   25 1300
+                        Stage 8 stators/blades                                                    104/84                                   25 000
+                        Stage 9 stators/blades                                                    118/88                                   25 000
+                        Stage     10 stators/blades                                               140/96                                   25 000
+                        SEAL-BOLT              FLANGE-DISK                                                  1        20 000
+                        COMBUSTOR                TRANSITION                   DRUM                          1        20 0O0
+                        TURBINE-HPT-Drum
+                        Disks                                                                              2         20 000
+                        Nozzles/blades                                                             46/76                                  25 000
+
+                        TI-T2     Inner   Seal Bolt Flange                  Disk                           1         20 000
+
+                        Stage    2 stators/blades                                                  48/70                                  25 000
+                        T2 Seal Bolt Disk Bearing                    Flange                                I         20 000
+                        TURBINE-LPT-Drum
+                        Disks                                                                              5         20 000               50 000
+
+                        Stage    3 stators/blades                                              72/120                                     50000
+
+                        Stage 4 stators/blades                                                t02/122                                     50 000
+
+                        Stage 5 stators/blades                                                 96/122                                     50 000
+
+                        Stage 6 stators/blades                                                114/156                                     50O0O
+
+                        Stage 7 stators/blades                                                120/110                                     25 000
+                        BEARING           SYSTEM
+
+                        No. 1 angular          contact       ball: engine          support                 1
+                        No. 2 angular          contact       ball: core thrust                             1
+                       No. 3 cylindrical           roller:        liP-spool                                1
+                        No. 4 cylindrical          roller:     I/P-spool                                   1
+                       No.     5 cylindrical       roller:     engine         support                      1
+
+
+
+
+NASA/TM--2002-211348                                                                          8
+     A typical flight cycle for the E3-Engine flight propulsion system (FPS) is shown in Fig. 3. Table 1 summarizes
+the engine thrust load and time a each power setting shown in Fig. 3. The E3-FPS engine cycle pressure ratio at
+maximum climb is 38.4 with a bypass ratio of 6.7. The fan pressure ratio at maximum climb is 1.7 with a turbine
+inlet temperature of 1343 °C _2450 °F) static warm-day takeoff. The installed engine-specific  fi_el consumption at
+maximum cruise is 0.0575 kg/N-hr (0.564 Ib-fuel/lb-thrust-hr)  with a thrust range 162.4 to 173.5 kN f36 500 to
+39 000 lbf). The rotating    comporents    of interest   are as follows:
+
+           i.   Fan
+          2.    Quarter-stage     fan )ooster
+          3.    High-pressure     compressor   (HPC)
+          4.    High-pressure     turbine
+          5.    Low-pressure      turbine (LPT)
+          6.    Rolling-element      b,-arings
+
+     Each of the component        sysk ms cited above is summarized        in Table 2. For example,   the number   of elements     in
+the fan represents    the number of blades. The hours are representative of the service life of that element ior elements               l
+of the component.      Davis and Ste lrns (1985) and Halila, Lenahan, and Thomas     (1982) define an engine cycle as
+1 flight hour.
+      The fan has shrouded    blades and a quarter-stage      booster   under an untrapped   island with outlet guide vanes an
+integral part of the fan frame. The low-aspect-ratio      fan blade is to meet bird-ingestion   requirements and the quarter-
+stage fan booster configuration   i,. to mitigate foreign object damage (FOD) to the core and compressor.
+      The compressor   achieves a :'3: l-compression     ratio in 10 stages with the inlet guide vane (IGV) and the first
+four stators variable. Active clea "ance control is used to enhance cruise performance        and reduce deterioration. The
+unboosted configuration     in comlrination   with the two-stage turbine provides better specific fuel consumption     (sfc).
+      The combustor is a double annular arrangement        providing low emissions and shorter engine length. Because
+combustor removal is usually fo_ reasons other than fatigue, the combustor life is not included in this investigation.
+      The two-stage, high-pressur,.' turbine has a high wheel speed (e.g., 12 627 rpm, nominal 518 m/s (! 700 ft/sec)
+tip speed) and extended life requirements      requiring a clean design with 56 percent of the HPT power extracted by
+the first stage. The blades/vanes    are moderately loaded. Compressor    discharge air cools the first stage, and seventh
+stage air cools the second stage, l"he case clearance is actively controlled from the fan duct air.
+      The five-stage, low-pressure    turbine is also moderately loaded. It is a low throughflow   design close coupled
+with the high-pressure   turbine. The case is full round rather than split with high-aspect-ratio,   tip-shrouded  blades
+and disks connected to form a dram supported by a single cylindrical roller bearing. The LPT cooling air is fifth-
+stage compressor   air. Active     clearance control (ACC) also uses fan bleed air.
+     The engine is supported       on a forward ball bearing at the fan and an aft roller bearing within the LPT. The
+loads are carried out through      the fan and turbine struts to the pylon mountings on the wing. The high-spool forward
+support   is by a roller bearing near the HPC inlet guide vane and an aft roller bearing near the LPT inlet. The thrust
+bearing   in the vicinity of the HPC inlet guide vane is a split-inner-ring, angular-contact ball bearing.
+
+
+
+                                             Engine       Maintenence          Practice
+
+                                                             Service    Life
+
+
+     The service life of an aircralt gas turbine engine is based upon deterministic calculations   of low-cycle fatigue
+(LCF) and previous field experience with like and similar engines. It is probable that no two engine companies
+determine the life of their engines in the same way or apply the same experience and/or safety factors to their
+designs. This can be readily illustrated in the reported life estimates of the NASA E3-Engine. Davis and Stearns
+(1985) determined the life of the engine based upon its similarity to their maintenance    experience with a commercial
+engine having similarly designed components.    These life estimates are shown in Table 3.
+     The life in hours shown assumes that before the times shown, there will be no failures.             Hence, where the service
+life is listed as 9000 hr, the engine is removed from the aircraft and inspected. Routine maintenance              is performed.
+The component designated under the column "Service life" is either repaired and/or replaced.
+
+
+
+
+NASA/TM--2002-211348                                               9
+                                           TABLE      3.--E3-ENGINE            FLIGHT       PROPULSION
+                                           SYSTEM        LIFE    BASED ON 1985 TECHNOLOGY
+                                                                AND EXPERIENCE
+                                                       [From    Davis    and Ste,'u'ns. 1985.]
+                                                                                  Service      Total        life
+                                                                                    life,       with   repair,
+                                                                                     hr                hr
+                                          Combustor                                9 000          18 000
+
+                                          HPT rotating     structure              18 000          36 000
+                                          HPT blading                              9 000          18 000
+                                          Remainder      of engine                                36 000
+
+
+
+     In the column "'Total life with repair," the part is removed from service and/or the usable life of the engine
+has been reached. This scenario assumes that all engines will operate and fail in a like and similar manner at a desig-
+nated time and that removal is required before that time is reached. Table 3 does not anticipate any cause for engine
+removal prior to those times listed except from engine performance     degradation.
+
+
+
+                                                      Causes         of Engine     Removal
+
+
+   Engine Performance     Degradation.--There     are numerous factors to consider before an engine is repaired or
+refurbished.  The primary reason for engine removal is performance       deterioration.  This condition can be tracked with
+relative ease and the engine removal can be planned and scheduled. Performance          deterioration  can be a decline in
+engine efficiency in either the compressors   or the turbines, loss of engine stability or surge margin, and/or exhaust
+gas temperature    (EGT) limits that can cause "'overtemping" of the turbines. Deteriorating         engine efficiency and
+rising EGT in most cases are a steady progression           and can be monitored through engine condition-monitoring
+(ECM) programs. Deterioration        or loss in engine stability cannot be tracked through ECM. The engine has to be
+periodically  tested to check for sufficient surge margin (not all engine types will experience         this condition).
+      Engine performance     degradation    is measured in terms of EGT margin. During the engine development,           a single
+probe or multiple probes are placed downstream           of the HTP to protect it (and nozzles) from excessive turbine inlet
+temperatures    (T41 ). A baseline correlation    is established between the temperature measurement         downstream   of the
+HPT and the T41. An EGT margin of 17 °C (30 °F) might be correlated with an 83 °C (150 °F) change in T41. So
+the T41 red line may be at 1538 °C (2800 °F), and an EGT margin of 17 °C (30 °F) would indicate operation at a
+T41 of 1455 °C (2650 °F). This temperature          may affect engine operations so that clearances begin to erode, blades
+roughen, coatings degrade, bearings wear, and/or fuel nozzles clog and/or coke as engine efficiency deteriorates.
+To maintain the same thrust level required of the flight profile, more fuel loading is required (increases emissions
+as well) and the engine speed is increased. Increased fuel loading then increases T41, for example, to 1482 °C
+(2700 °F). The EGT margin takes into consideration             all the combinations of adverse conditions that the engine may
+encounter. As an engine approaches        a 0-EGT margin, it is removed for refurbishment       as a precaution to operating
+under adverse conditions.
+      When the engine is pulled for refurbishment,    all components are inspected and damaged components   are
+replaced or repaired. The engine is reassembled    and a new performance    EGT margin is determined on the engine
+test stand. There are three important things to note:
+
+
+    1. No two engines perform alike whether they are new or are refurbished     and/or are repaired.
+    2. EGT margins characterize  each engine and, like a fingerprint, are not the same but can be averaged             over the
+       fleet.
+    3. EGT margins of today's new engines are on the average higher than those for refurbished and/or repaired
+       engines: 12 000 to 20 000 hr on a new engine versus 5000 to 15 000 hr on a refurbished and/or a repaired
+       engine. Some engines can be repaired on the wing.
+
+
+   Foreign Object Damage.mFOD       can cause an engine to be removed from service depending upon the extent of
+the damage. However, if the damage is light, the engine can be left on the wing and the damage repaired. One of the
+most common causes of FOD is ingestion of birds. All engines are required through the certification        process to be
+able to ingest a predetermined amount of birds without incurring engine shutdown. However, even with the design
+requirements,  an engine may ingest a flock of birds or on the rare occasion ingest a larger-than-designed-for-bird
+
+
+NASA/TMI2002-211348                                                       10
+anddamage
+       totheengine blades may result. Other causes of FOD are accreted            ice and runway' debris that the engine
+picks up and ingests during takeoff or landing.
+   Hardware Deterioration.--     Atthough an engine is operating properly, it can experience some form of hardware
+deterioration that requires engint removal. One good example is the deterioration    of the HPT blades. An engine is
+borescoped periodically to detennine its health. It is not uncommon to find that the HPT blades deteriorate in service
+because of the extreme operating conditions they encounter. Depending upon the condition of the deterioration,    an
+engine may be allowed to remair in service on a decreased-cycle inspection interval until it is determined that the
+deterioration is beyond limits and the engine must be removed.
+   Oil Consumption.mA     high oi consumption   IHOC) condition will cause an engine to be removed from service.
+The causes of an HOC condition are numerous and include broken oil lines, oil leakage around the mainline bearing
+carbon     seals, and coking   in bearing   compartments       because       of an air leak. Significant   loss of oil during   flight will
+cause an engine to be shut down and subsequently   removed                    from service.
+  Other Causes.mAn     engine in service may be performing                    perfectly but may be removed       because   one or more of
+its rotating parts has run up agailtst a hard time or cycle limit. On rare occasions, an engine may be included in what
+is considered a quality escape, wherein it has been determined      that there is a problem with a batch of parts used in
+assembling a group of engines.
+     Another cause of engine removal is the failure of a component or rotating                     part that causes an in-flight shutdown
+(IFSD) event or an uncontained  lailure. Finally, due to a known safety-related                    problem, an engine may be removed
+because     of a Federally   mandated   airworthiness      directive   (AD) note.
+
+
+
+                                            Engine      Repair         and     Refurbishment
+
+
+     Operation of the airline industry is very expensive and the profit margin is extremely small. In general, new
+technology,   first-run engines will get upward of 20 000 hr of operation before refurbishment.        Operating times for
+second-run engines before refurbishment       are less than those of first-run engines. Each and every engine that is
+brought in for repair or refurbishment    is given special consideration     so that the work scope of the engine is correct.
+     The following is a general gaide for module refurbishment         for engines removed for performance      deterioration:
+
+     Fan               Fan refurbishment    each time; a big driver in performance     and relatively inexpensive    to do
+    LPC                Minor refurbistlment    at first engine visit and major refurbishment     every other visit; generally,
+                       severe conditions not seen by LPC
+     HPC               Refurbished at a major shop visit: tip clearances restored, restored efficiency
+     HPT               Refurbished   at a major shop visit; most deterioration    seen by the component
+     LPT               Refurbished ex ery other major shop visit: not a big driver in performance       deterioration
+     Bearings          Bearings refurbished    or restored at each major shop visit: rolling-element    fatigue tspalling)
+                       possibly exper enced by number 1 angular-contact        ball bearing (Generally, beatings run well
+                       and trouble free and rarely are the cause of engine removal.)
+
+
+     When an engine is removed from service and shipped to the refurbishment            shop, the engine and its individual
+module performance      are evaluated and the root cause of removal determined.       If an engine is removed for perfor-
+mance or hardware deterioration      or a major part failure, the engine will be, in most cases, completely    broken down
+into modules. Then, each module will be refurbished.         Generally, the high-spool section of the engine (the HPC,
+combustor, T l-nozzles,    and HPq) will be refurbished      at every major engine shop visit. The low-spool section of the
+engine (fan, LPC, and LPT) will be individually    evaluated as to the need or level of refurbishment required. Because
+the low-spool section does not e'_perience conditions as severe as those of the high-spool, the level of refurbishment
+can be less and the time between refurbishment    can be extended.
+      It is always good practice to refurbish the fan blades during the engine shop visit. With the large-bypass-fan
+engines, restoring the efficiency of the fan is relatively easy and results in a big return on investment in service.
+      If an engine has been remo_ ed for cause, such as an IFSD event, HOC, quality escape, maintenance          errors, or
+the like, the cause for the engine removal will be evaluated together with the age of the engine and each module and
+the current performance    of the engine and each module. A good performing       engine may just have the cause of the
+engine removal fixed and return_:d to service for another couple of years, or the refurbishment      of the engine may be
+more extensive.
+
+
+
+NASA/TM--2002-211348                                                     11
+   Themajornonrotatingstructure
+                             ofanengine
+                                      canbeusedindefinitely
+                                                         aslongasthecomponentsarereplaced
+andrepaired,andthenewperformanceEGTmarginispositive.
+                                                  Hence,
+                                                       theserialnumber
+                                                                     lifecanbeconsidered
+indefinite.
+
+
+                                                     Results     and        Discussion
+
+
+      The NASA      E3-Engine     (Fig. 2t was used as the basis of the Weibull-based         life and reliability   analysis   reported
+in this paper. The engine, which was successfully fabricated and tested, was a clean-sheet derivative of the
+GE CF6-50C engine. Each of the component         systems of interest for this investigation    and analysis is summarized
+in Table 3, which represents   1985 engine technology    and experience in comparison       with Table 2, which summarizes
+typical hours of service for today' s engine technology before parts are inspected and/or are repaired on comparable
+components.
+
+
+
+                                                            Failure     Criteria
+
+
+      In practice, the various engine companies have different methods to determine component and system lives
+and reliabilities.   That is, it would not be unreasonable    to expect that the life and reliability of the same component
+will have distinctly different values were they to be calculated or determined         by each of the independent        companies.
+These numbers are based on stress analysis, laboratory test data, field experience,          life factors, and engineering     judg-
+ment. They are for the most part deterministic       and do not assume or anticipate incipient failure or cause for removal
+prior to the designated time.
+      Many design engineers use a probabilistic       approach wherein a normal or log-normal distribution           is assumed
+about a calculated or experimental      mean value of life and a 99.9-percent     probability of survival is calculated. As
+previously    discussed, this would imply that 1 in 1000 of the same components          would be removed for cause prior
+to reaching the calculated or projected time.
+      Davis and Steams (1985) and Halila, Lenahan, and Thomas             (1982) discuss the mechanical       analytical methods
+and procedures for turbine engine and HPT design. The designs for the engine components                  are based on life predic-
+tions by using material test curves that relate life in cycles and/or time (hours) as a function of stress. Six criteria for
+failure were presented:
+
+
+     1.   Stress rupture
+     2.   Creep
+     3.   Yield
+     4.    Low-cycle    fatigue   (LCF)
+     5.   High-cycle fatigue      (HCF)
+     6.   Fracture mechanics
+
+
+      A discussion of each criterion above is beyond the scope of this paper. However, it can reasonably be concluded
+that items 1 and 2 are defined by steady-state         stress and time at load and temperature.          Items 3 and 6 are defined by
+stress and temperature and are generally considered              independent of time. Where limits are placed on stress, tempera-
+ture, and time for a component's         design, the criteria that will define the component's          life and thus the engine's life
+will be either HCF or LCF. At high temperature,             it is difficult to determine a fatigue limit or a stress below which
+no failure will occur for most aerospace materials. Failures are statistically distributive;                that is, the ratio of time
+between the first component        failure and the last in a population can be 1 or 2 orders of magnitude. All materials
+and/or components      will not have the same cumulative            failure distribution curve (Weibull slope).
+      A major omission by many in determining             the life and reliability of the various components           is consideration
+of the component     size (stressed volume) and the number of components                 of a given type and design in the operating
+system. This omission was recognized by Weibull (1939a,b) and is incorporated                      as a stressed-volume       effect in
+Eqs. (2) to (8) discussed in the Introduction.       As an example, for a given stress distribution,            a turbine disk having less
+material volume and/or a smaller number of bolt holes will have a longer LCF life at a given probability of survival
+
+
+
+
+NASA/TM--2002-211348                                                   12
+thanalargerdiskofthesame
+                       design(Zaretsky. Smith, and August,                1989). In many designs, the life of a single com-
+ponent is incorrectly based on tht' life of the stressed-volume   having the highest single-stressed    value independent
+of other stressed points in the body. This can result in over predicting the component's      life (Melis, Zaretsky, and
+August, 1999). It is also not possible to accurately relate individual coupon fatigue and fracture strength data to
+component    life and reliability wi hout considering the effect of stressed volume oz"the number of elements in the
+system (Zaretsky,          1987).
+
+
+
+                                                Effect of Weibull        Slope on Life Estimation
+
+
+     Referring     to Eq. (1), the WeJbuil         slope is designated      by the symbol         e and is indicative   of the dispersion   of
+engine     and/or component         failure   and/or replacement       data for an entire engine or a single component            when plotted      on
+Weibull     coordinates.      As previou.',ly    discussed,    Weibull    slopes      : of 1, 2, and 3.57 are representative      of exponential,
+Raleigh,    and normal (gaussian) distributions.  The life distribution                   of a component and thus the Weibull slope is a
+function    of the material from wh ch it is made, the manufacturing                      process including tolerances, and operating
+variables that deviate from defint_d steady-state conditions. Because of the lack of a definitive statistical data base,
+the statistical distributions and thus the Weibull slope of most, if not all, engine components     is assumed and/or is
+estimated. The effect of this estir aation on life and reliability prediction prior to this paper has not been evaluated.
+
+
+
+                                                                       Engine      Life
+
+
+      Referring to Eq. (11 ), when 9redicting engine life and reliability, knowing the Weibull slope of each of the
+components     making up the engiwe is a prerequisite to predicting the life and reliability of the entire engine. It is also
+important for logistic planning tc determine the rate at which components         and engines will need replacement   and/or
+repair. As previously discussed, !)avis and Stearns (1985) and Halila. Lenahan, and Thomas (1982) determined             the
+life of the engine based upon its :;imilarity to their maintenance     experience  with a commercial  engine having simi-
+larly designed components.      These life estimates are shown in Table 3. We assumed that the life estimates in Table 3
+represent the 99.9-percent    probability of survival for each of the component systems. Using Eq. ( 11 ), we calculated
+the life of the entire engine at a 95- and a 99.9-percent   probability of sur_,ival for assumed combinations    of Weibull
+slopes shown in Table 4 for the HPT blade, HPT rotating structure, and the remainder of the engine as follows:
+
+
+                                                     1             1                      !              1
+                                                           -                --t-                  +--                                               (12)
+                                                   L_Sys       Ltl               _ "_                    _"_
+                                                     ys         HPT blade       LI-IPT ROT. ST.         ERE
+
+
+     Since we assumed that the general cause for removal of the combustor       is erosion wear and not fatigue, we did
+not include it in our life calculations. The Weibull slope for the entire engine system was assumed to be the same as
+that for the turbine blades. Accozding to Davis and Steams (1985) and Halila, Lenahan. and Thomas (1982), the
+HPT blades are the lowest lived ,:omponents in this engine.
+      The results of our analysis are shown in Table 4. The Lo. l and L 5 lives are the times on or before which 0.1
+and 5 percent of the engines will be removed fi'om service because of cause, respectively.      That is, out of 1000
+engines, 1 engine will be removed at the L0.1 life and 50 engines will have been removed at the L 5 life. The least
+variation and highest predicted lives occur with an assumed engine Weibull slope of 3. This is nearly a normal
+distribution.  As the engine Weiball slope increases, the predicted lives decrease, and there is greater variation and
+sensitivity to variation in the ind vidual component Weibull slope. Although, with reasonable engineering        certainty,
+we do not know that these assurr ed distributions   (Weibuil slopes) actually represent those found in an engine, they
+show that vast differences and elrors in predicted life and engine replacement can occur. The predicted L 5 lives of
+~ 17 000 and 32 000 hr, which are dependent on the Weibull slopes assumed, do correlate with current engine main-
+tenance practices without and with refurbishment,    respectively. That is, it can be reasonably anticipated that at one
+of these time intervals, 5 percent of the engines in service will have been removed for repair and/or refurbishment
+for cause.
+
+
+
+
+NASA/TM--2002-211348                                                         13
+                                      TABLE          4.--EFFECT                  OF    CUMULATIVE                    DISTRIBUTION
+                                      OF        INDIVIDUAL              COMPONENT                       LIVES        ON     PREDICTED
+                                                ENGINE        LIFE      AND           RELIABILITY                BASED         UPON
+
+                                                    COMPONENT                    L_, 1 LIVES             FROM        TABLE       3
+                                                                                                                Predicted     engine         lili:.
+                                                         Weibull      slope.                                                  hr
+
+                                     Turbine               Turbine           [        All   other                LO.I                  L5
+                                      blades                disks            ]   components
+
+                                                                    Engine        Weibull           slope,      =3
+
+                                           "_                  3                            3                    8606            32     01")9
+
+                                                                                            6                    8645            32     154
+
+                                                                                            9                    8645            32     158
+
+                                                               6                            3                    8945            33     27O
+
+                                                                                            6                   8991             33 471
+
+                                                                                            9                   8992             33 445
+
+                                                               9                            3                   8945             33     270
+
+                                                                                            6                   8992             33 445
+                                         1.
+                                                                                            9                   8992             33 445
+
+
+                                                                    Engine        Weibull        slope.         =6
+
+                                         6                     3                            3                        131               252
+
+                                                                                            6                        134               258
+
+                                                                                            9                        134               258
+
+                                                                                            3                        189               364
+
+                                                                                            6                   8943             17 237
+
+                                                                                            9                   8944             17 239
+
+                                                                                            3                        189               364
+
+                                                                                            6                   8967             17 283
+
+                                                                                            9                   8967             17 283
+
+
+                                                                    Engine       Weibull         slope,      _ = 9
+
+                                        9                      3                                                     26                 40
+
+                                                                                                                     26                 40
+
+                                                                                                                     26                 4O
+                                           !                  6                                                      33                 51
+
+                                                                                                                  685                1 061
+
+                                                                                                                  686                1 062
+
+                                                                                                                     30                 51
+
+                                                                                                                1090                 1 688
+
+                                                                                                                8990             13 923
+
+
+
+
+                                                                    Component                       Lives
+
+
+      Turbine Disk Life.EAn      error that is frequently made in life prediction, whether for aerospace or nonaerospace
+application,   is the assumption that the life of a combination   of the same components    in a system will be the same as
+that of the single lowest lived component      in that system. For a single component,   the life of the component is incor-
+rectly taken as the life of the highest stressed element in the body or what is referred to as the "probable point of
+failure" (ppf). This error can be illustrated for the E3-Engine high-pressure     turbine disk life calculations for TI and
+T2 disk stress concentrations   shown in Fig. 5 (Halila, Lenahan, and Thomas, 1982) and summarized        in Table 5.
+      Halila, Lenahan, and Thomas (1982) imply that the design life of the disk is equal to or greater than 36 000 hr
+at a probability of survival of 99.9 percent based on the calculated life at the location of the forward arm air hole
+for the T1 disk (see Table (5(a) and Fig. 5(a)). Using the Halila, Lenahan, and Thomas (1982) data which only
+accounts for the ppf, we recalculated   the disk fives individually and as a system based upon Eq. (11). For our calcu-
+lations, we assumed Weibull slopes of 3, 6, and 9 and that the section shown in Fig. 5 repeats in 15 ° segments of the
+disk, accounting for multiple elements. The results are shown in Table 6. From this table, one sees that the predicted
+Lo. l system life can vary from 9408 to 24 911 hr depending                                     on the Weibull                slope (distribution)    assumed.
+
+
+
+
+NASA/TM--2002-211348                                                                    14
+                          TABLE         5.--V-     :.NGINE HIGH-PRESSURE                  TURBINE    DISK STRESS CONCENTRATION             AND
+                                                     LOW-CYCLE    FATIGUE                (LCFJ LIFE. MATERIAL   RENI_ 95.
+                                                                 [From Halila,         Lenahan. and Thomas.     1082.1
+                                  Location                     Nominal stress+               Stress     Critical time, a   Temperature.   LCF b life,
+                                                                 MPa Iksi+                 intensity                          °C c'FJ
+                                                                                                                sec                       kilocycles
+                                                                                            factor,
+
+                                                                                             Ktrs,
+                                                                                          Mpa    Iksi i
+
+
+
+                                                                                la_ TI disk (Fig. 51all.
+
+                   1.   Fopa, ard ,'u'm air-                      448 _051                 841 C1221          875           541 11006)       > 100
+
+                        passage     slot
+
+                   2.   Forward      am1 llante air-              269139)                  731 1106)           40           427 1800i        >100
+                        passage     slot and s,:allop
+
+                   3.   Forward        am1 ring                   331_481                 945_137)             4O           458 18571        >100
+                        container
+
+
+                   4.   Forward        ann scall)p                393 (57)                 565 (82_           875           545 (1013_       >100
+
+
+                   5,   Fopa,ard     am1 air h )le                455_66)                 1103 1160)          875           544 11012_        36
+
+
+                   6.   Aft arm aJr-passafe             slot      400_58_                 469_68_             875           553 11027)       >100
+
+
+                   7.   Forward        arnl bolt     lole         421161)                 9381136)            875           541 (1006)       >100
+
+
+                   8.   Aft arm bolt hole                         434f63}                  9311135)           875           552 11025_       >100
+
+
+                   9,   Disk post notch                           270_40)                  8271120)            40           527 ¢980)        >100
+
+
+
+                                                                                Ibl T2 disk (Fig. 51b)).
+
+
+
+                   1. Forward       ,'win air-passage             407    i59)              476_69)             875          552(1025)        >100
+                      slot
+
+                   2. Forward       arm air hoe                   427    (621             10821157)            875          451(1023)         45
+
+
+                   3. Aft arm flange         double               441    (641              731¢106)            875          513(9551         >100
+                      slot
+
+
+                   4. Aft arm flange         air slot             648 (04)                 752_109)            875          518 (965i        >100
+
+                                                                                           931(135)            875          552 (1005_       >100
+                   5. Forward       ,-u'm fl,'mge bolt            427 (62)
+                      hole
+
+
+                   6. Aft arm flange         bolt hole            455 166)                 993(144)            875          517(963)          60
+
+
+                   7. Disk post notch                             234 (64)                 7031102)            4O           338(6401         >100
+
+
+                   acritical    time. time fr_,m throttle        burst   at takeoff.
+
+                   bLow-cycle        fatigue.
+
+
+
+
+NASA/TM--2002-21                1348                                                        15
+  r--1
+
+
+                                                                                     r0
+
+                                                                                                                                                                                              _     " "---- 4
+
+
+
+                                                                                                                                                             l                                _l View
+
+
+
+
+                                                                                     a)
+
+                                                                                                                                                                                             b)
+
+  Figure 5.BCross-sectional     schematic   of high-pressure turbine disk stress concentration                                                                       and LCF life locations.
+    (a) T1 disk; (b) T2 disk. See Table 5 for locations and definitions (from Halila, Lenahan,                                                                      and Thomas, 1982).
+
+
+
+
+                                                            TABLE           6.--PREDICTED              LIFE      OF        HIGH-PRESSURE
+                                                                            TURBINE         DISKS        AS    FUNCTION            OF
+                                                                                          WEIBULL             SLOPE
+
+                                                            Weibull         slope.                       0.1 -percent life,
+                                                                                                                 L0.1       a
+                                                                       (
+                                                                                                                      hr
+                                                                                                                 Disk 2                 System
+
+                                                                                                               (Fig. 5(b))
+
+                                                                       3                   11 228                12646                  9408
+
+                                                                       6                  21 136                25 634                  20 195
+
+                                                                       q                  25 288                31 346                  24 911
+
+                                                         " 99.9-pementprobability                   ofsu_,ivN.
+
+
+
+
+         Blade   LtJ'e.mThe          HPT    blades     present             a similar      problem             with     regard       to determining          their    lives.     Initially,        the
+time     to removal      of these      blades      is determined               by a creep         criterion            that     is deterministic        or, at least,         is not   assumed
+to be probabilistic.          This    criterion      is dependent               on time         exposure             at stress     and temperature.              Material       test   data       are
+used     to predict    rupture       life based      upon      calculated              stress    and temperature.                   Since      throughout         an engine        cycle      these
+combinations          of stress      and temperature            will        vary,      the linear        damage             (Palmgren-Langer-Miner)                    rule     (Eq.    (9)) can
+be applied       to determine         retirement      times       for the blade.
+
+
+
+
+NASA/TM--2002-211348                                                                                16
+     Blade coating life is another time-limiting criterion for removal and repair. The blades are usually removed
+when the engine is removed trorl service for other reasons and, as necessary, the remaining coating is removed
+by chemical stripping and/or ma,:hining and is replaced. The coating life usually does not dictate blade replacement,
+only repair.
+     Besides creep, the limiting tmle for blade replacement  is HCF. As with LCF, HCF is probabilistic.     The blades
+are subject to vibrator3,' stresses _ombined with mechanical  stresses from centrifugal loads, gas aerodynamic   loads,
+and thermal loads. Because of the variation in operating conditions, the linear damage rule can also be applied to the
+operating profile of the blades to determine their system life.
+      For the E3-Engine, the HPT blades were designed for a system life of 18 000 hr with repairs permissible    after
+the first 9000 hr of engine operalion. No reliability was specified by Davis and Stearns t 1985) or Halila, Lenahan,
+and Thomas (1982) for the 9000 hr service design life. However, we assumed for this discussion and for subsequent
+calculations that the designated time is at a 99.9-percent reliability for the combination           of the total of all the blades
+contained on disks I and 2. On disks 1 and 2, there are 76 and 70 blades, respectively,             for a total of 146 blades.
+Again, assuming Weibull slopes of 3, 6, and 9, we determined            the life of an individual   blade at a 99.9-percent    prob-
+ability of survival using Eq. ( 11 ):
+
+
+
+                                             Lblade =/n_ys)         = (146 X 9000'   )ll',)                                           (13)
+
+
+
+     The individual blade lives n ,_cessary to obtain a blade system life of 9000 hr at a 99.9-percent    probability of
+survival for Weibull slopes of 3, 6, and 9, were 47 391.20 652, and 15 658 hr, respectively.       Based on 1000 engines
+with a system blade life of 9000 hr and a retirement time for the blades of 18 000 hr constituting      the total blade life
+with repair, it would be expected that 8, 64, o1"512 blades would be removed for cause prior to this time for Weibull
+slopes of 3.6, or 9, respectively.
+      Other Components.--A       sindlar analysis can be perfornaed for the fan blades and hub, quarter-stage     fan booster
+disks and blades, high-pressure     _ ompressor disks and blades, low-pressure   turbine disks and blades, and rolling-
+element bearings. In fact, this type of analysis has been performed to determine the life of rolling-element        bearings
+individually  and as a system for aearly 5 decades (Zaretsky,      1992). Once all the component   lives are determined     at
+a given probability of survival (c r at a given replacement rate), the removal rate for cause of the entire engine can be
+predicted    with reasonable   engin_ ering certainty.
+
+
+
+                                                         General   Comments
+
+
+     The use of deterministic  me hods to predict engine component   life and reliability can improperly predict both
+the actual removal rate of the component in service and the resultant service life of the engine. The use of mean
+and/or median lives coupled with an assumed statistical distribution  can distort the life prediction process. Field data
+can be significantly   less than the predicted lives, a situation that can result in economic- and safety-related      issues for
+the airlines. Conversely, comporent       lives that are too low can be predicted, which can result in premature compo-
+nent removal and heavy costs to the airlines.
+      The key to economic viability and flight safety is to predict with reasonable engineering        certainty individual
+component and resultant engine lives and to be able to remove them from service for repair and/or refurbishment
+before secondary damage can occur from a failed part. As was pointed out in this paper, it is a condition precedent
+to engine life prediction to know the statistical distribution    of removal for cause of each component together with
+that of the entire engine. To a tinfited extent, these data can be obtained from full-scaie component testing, but this
+method is not economically      viable or time efficient. However, these data are available from airline maintenance
+records together with the engine flight profiles.
+      By using the method advoc_ ted by Zaretsky (1987) and illustrated by Melis, Zaretsky, and August (1999) for
+aircraft engine turbine disks, it i., possible to extract the necessary engineering    and reliability parameters from avail-
+able airline data bases to allow the design engineer to predict the reliability of future products and engines. This
+method also allows the airlines t,) predict engine life and reliability for their own engines based on their own flight
+profiles    independent   of the engir e manufacturer.
+
+
+
+
+NASA/TM--2002-211348                                               17
+                                                  Summary          of Results
+
+
+      The NASA Energy Efficient Engine (E3-Engine) was used as the basis of a Weibull-based             life and reliability
+analysis. When limits are placed on stress, temperature,      and time for a component's    design, the criterion that will
+define the component's   life and thus the engine's life will be either high-cycle or low-cycle fatigue. Based upon the
+engine manufacturer's  original component     life calculations,  the engine's life and reliability were determined      on the
+basis of assumed values of each of the component's   cumulative life distributions as represented by a Weibull slope.
+The lives of the high-pressure turbine (HPT) disks and blades were also evaluated as a system and individually.
+The following results were obtained:
+
+
+      I. Knowing the cumulative    statistical distribution (Weibull slope) of each of the engine components   is a prereq-
+uisite to accurately predicting the life and reliability of an entire engine. As the engine Weibull slope increases, the
+predicted lives decrease.
+      2. The predicted engine lives L5 of approximately    17 000 and 32 000 hr, which depend on the assumed Weibull
+slope, do correlate with current engine maintenance     practices without and with refurbishment,  respectively. That is,
+it can be reasonably anticipated that at one of these time intervals, 5 percent of the engines in service will have been
+removed for repair or refurbishment   for cause.
+     3. The individual HPT blade lives necessary- to obtain a blade system life L0.1 of 9000 hr for Weibull slopes
+of 3, 6, and 9, were 47 391, 20 652, and 15 658 hr, respectively.      Based on 1000 engines and a retirement time for
+the blades of 18 000 hr constituting   the entire blade life with repair, it would be expected that 8, 64, or 512 blades
+would be removed for cause prior to this time for Weibull slopes of 3, 6, or 9, respectively.
+     4. For a design life of each of two HPT disks having probable points of failure equal to or greater than
+36 000 hr at a probability of survival of 99.9 percent,   the predicted    disk system   life L0A can vary, from 9408 to
+24 911 hr depending on the Weibull slope assumed.
+
+
+
+
+NASA/TM--2002-211348                                          18
+                                                       References
+
+
+August,   R., and Zaretsky, E.V., _1993), "Incorporating  Finite Element Analysis Into Component Life and Reliabil-
+       ity," Trans. ASME, J. Mezhanical      Design, Vol. 115. No. 4, pp. 706-710.
+Broman, C.L., (1982), "Energy Efficient Engine ICLS Engine Bearings, Drives, and Configuration:       Detail Design
+       Report," NASA CR-167_       71.
+Davis. D.Y., and Steams, E.M.,,    1985), "'Energy   Efficient    Engine    Flight Propulsion        System    Final Design     and
+        Analysis," NASA CR-16_219.
+Halila, E.E., Lenahan, D.T., and Thomas,    T.T., (1982j,    "Energy       Efficient   Engine   High Pressure      Turbine    Test
+       Hardware: Detailed Desi_ n Report," NASA CR-167955.
+Hall, E.J., Lynn, S.R., Heidegger, N.J., and Delaney, R.A., (1998), "'Energy             Efficient    Engine    Low Pressure      Sub-
+        system Flow Analysis,"   NASA/CR--1998-206597.
+Holland, Jr., F.A., Zaretsky, E.V., and Melis, M.E., (1998), "Probabilistic Failure Prediction of SCS-6/Ti-15-3
+        MMC Ring," Trans. AS1V E, J. Mechanical Design, Vol. 120, No. 4, pp. 714-720.
+Ioannides, E., and Harris, T.A., t 1q85t, "'A New Fatigue Life Model for Rolling Bearing," Trans. ASME, J. Tribol-
+       ogy, Vol. 107, No. 3, pp. _67-378.
+Langer,  B.F., (1937), "'Fatigue F lilure From Stress Cycles of Varying Amplitude,"  Trans. ASME, J. Applied
+       Mechanics, Vol. 59, pp. ,a,160-A162.
+Lewicki, D.G., Black, J.D., Savage, M., and Coy, J.J., (1986), "Fatigue Life Analysis of a Turboprop   Reduction
+       Gearbox," Trans. ASME, J. Mechanisms,        Transmissions, Automation,  and Design. Vol. 108, No. 2,
+       pp. 255-262.
+Lundberg, G., and Palmgren, A.. (I 947),"Dynamic     Capacity of Rolling Bearings," Acta Polytechnica,    Mechanical
+       Engineering  Series, Vol. , No. 3, Stockholm.
+Mahorter, R., London, G., Fowler, S., and Salvino J., 11985), "Life Prediction Methodology    for Aircraft Gas
+       Turbine Engine Disks," P_'oceedings of AIAA, SAE, ASME, ASEE 21 st Joint Propulsion Conference,
+       Monterey, CA. July 8-10 1985, AIAA Paper 85-1141.
+Melis, M.E., and Ogonek, J.A., 11995), "'A Life Prediction Algorithm Implemented      in P3 Using PCL,'" Paper 19,
+       Proceedings of MSC Woeld Users Conference,        MacNeal-Schwendler,   Los Angeles.
+Melis, M.E., Zaretsky, E.V., and August, R., _1999), "Probabilistic  Analysis of Aircraft Gas Turbine Disk Life and
+       Reliability," AIAA Trans, J. Propulsion and Power, Vol. 15, No. 5, pp. 658-666.
+Miner, M.A., (1945), "'Cumulative Damage in Fatigue," Trans. ASME, J. Applied Mechanics, Vol. 12, No. 3, 1945,
+       pp. A159-AI64.
+Palmgren, A., (1924), "The Service Life of Ball Bearings," Zectsckrift des Vereines Deutscher Ingenieure. Vol. 68,
+       No. 14, pp. 339-341.
+Poplawski, J.V., Zaretsky, E.V., and Peters, S.M., (2001a), "Effect of Roller Profile on Cylindrical  Roller Bearing
+       Life Prediction--Part I: Comparison of Bearing Life Theories," STLE Tribology      Trans., Vol. 44. No. 3,
+        pp. 339-350.
+Poplawski, J.V., Zaretsky, E.V., and Peters, S.M., (200 lb), "'Effect of Roller Profile on Cylindrical    Roller Bearing
+        Life Prediction--Part II: Comparison of Roller Profiles," STLE Tribology Trans., Vol. 44, No. 3. pp. 471-427.
+Weibull, W., (1939a), "'A Statist cal Theory of the Strength of Materials,"   lngeniors Vetanskaps     Akademien-
+        Handlinger, No. 151.
+Weibuil, W., (1939bt, "The Phenomenon         of Rupture in Solids," Ingeniors Vetanskaps   Akademien-Handlinger,
+        No. 153.
+Weibull, W,, (1951 ), "'A Statistk al Distribution  Function of Wide Applicability,"   Trans. ASME, J. Applied                    Mechan-
+        ics, Voi. 18, No. 3, pp. 293-297.
+Weibull, W., (1962), "Efficient Ivlethods for Estimating Fatigue Life Distribution              of Rolling     Bearings,"     Rolling
+        Contact Phenomena, J.B. Bidwell, ed., Elsevier, New York, pp. 252-265.
+Zaretsky, E.V., (1987), "Fatigue Criterion to System Design, Life and Reliability," Trans. AIAA, J. Propulsion and
+        Power, Vol. 3, No. 1, 1987, pp. 76-83.
+Zaretsky, E.V., ed., (1992), STLE Life Factors for Rolling Bearings, STLE Publication SP-34, Society of Tribolo-
+        gists and Lubrication Engineers, Park Ridge, IL.
+Zaretsky, E.V., 11994), "Design for Life, Plan for Death,"        Machine      Design,   Vol. 66, No. 15, pp. 55-59.
+
+
+
+
+NASA/TM--2002-211348                                             19
+Zaretsky,
+       E.V.,Poplawski,J.V.,andPeters,  S.M.,(1996), "'Comparisons  of LifeTheories  forRoiling-Element
+     Bearings,"
+              STLETribology   Trans.,
+                                    Vol.39,No.2,pp.237-248       and501-503.
+Zaretsky,
+       E.V.,(1998),
+                 "'A. Palmgren RevisitedIA    Basis for Beating Life Prediction," Lubrication Engineering,
+       J. STLE, Vol. 54, No. 2, pp. 18-24.
+Zaretsky, E.V., Smith. T.E., and August, R., (1989), "'Effect of Design Variables, Temperature   Gradients and Speed
+        on Life and Reliability of a Rotating Disk," Trans. ASME, J. Vibration, Acoustics, Stress and Reliability in
+        Design, Vol. 111, No. 3, pp. 311-317.
+
+
+
+
+NASA/TM--2002-211348                                     20
+                                                                                                                                                                                                                                                 Form      Approved
+                                        REPORT                                 DOCUMENTATION                                                           PAGE
+                                                                                                                                                                                                                                                OMB        No. 0704-0188
+
+ Public    reporting       burden       for     this collection    of information    is estimated       to average                         1 hour      per    response,        including         the time      for revtewing     instructions,            searching         existing      data   sources,
+ gathering      and     maintaining           the data     needed,    and completing       and    reviewing     the                     collection      of    information,         Send         comments,        regarding   this burden             estimate      or     any other       aspect    of this
+ collection      of information,          including       suggestions      for reducing     this                  burden,   to Washington             Headquarters             Services,         Directorate      for     Information       Operations     and     Reports,             1215   Jefferson
+  Davis     Highway,     Suite        1204,    Arlington.      VA     22202-4302.       and   to                 the Office   of Management              and    Budget,          Paperwork           Reduction          Prolect     (0704-0188),       Washington,        DC            20503.
+
+
+! 1. AGENCY                  USE ONLY                 (Leave         blank)                       2. REPORT                 DATE                                         3.     REPORT                 TYPE       AND DATES                    COVERED
+                                                                                                                        June       2002                                                                               Technical             Memorandum
+ 4. TITLE          AND SUBTITLE                                                                                                                                                                                             5. FUNDING                NUMBERS
+
+
+           Weibull-Based                            Design             Methodology                         for      Rotating            Aircraft             Engine            Structures
+
+
+                                                                                                                                                                                                                                   WU-323-71-00-00
+ 6,    AUTHOR(S)
+
+
+           Erwin V. Zaretsky, Robert C. Hendricks, and Sherry Soditus
+
+ 7.    PERFORMING                      ORGANIZATION                           NAME(S)               AND ADDRESS(ES)                                                                                                        8. PERFORMING ORGANIZATION
+                                                                                                                                                                                                                              REPORT NUMBER
+           National              Aeronautics                        and       Space              Administration
+           John         H.      Glenn              Research                 Center           at Lewis               Field
+                                                                                                                                                                                                                                  E-13091
+           Cleveland,                  Ohio               44135-3191
+
+
+
+ 9. SPONSORING/MONITORING                                              AGENCY                NAME(S)              AND ADDRESS(ES)                                                                                          10.    SPONSORING/MONITORING
+                                                                                                                                                                                                                                  AGENCY REPORT NUMBER
+
+           National             Aeronautics                         and       Space              Administration
+           Washington,                      DC             20546-0001                                                                                                                                                             NASA               TM--2002-211348
+
+
+
+
+11.     SUPPLEMENTARY                               NOTES
+
+           Prepared              for        the       Ninth           International                     Symposium                   on     Transport                  Phenomena                       and     Dynamics                of       Rotating             Machinery,                 spon-
+
+           sored         by      the      American                    Society               of     Mechanical                  Engineers,                Honolulu,                  Hawaii,              February                10-14,          2002.         Erwin             V. Zaretsky
+           and         Robert          C.      Hendricks,                     NASA                Glenn           Research           Center:             Sherry              Soditus,             United           Airlines              Maintenance,                     San         Francisco,
+
+           California.                 Responsible                         person.           Erwin           V. Zaretsky,                 organization                   code        5900,             216---433-3241.
+
+12a.      DISTRIBUTION/AVAILABILITY                                            STATEMENT                                                                                                                                   12b.     DISTRIBUTION                     CODE
+
+           Unclassified - Unlimited
+           Subject Category: 37                                                                                                             Distribution:                       Nonstandard
+           Available            electronically                    at hnp://gltrs.m-c.nasa._ov/GLTRS
+
+          This     publication                is available                 from      the NASA               Center          for AeroSpace               Information.                301_021_0390.
+13.    ABSTRACT                  (Maximum                   200 words)
+
+
+          The          NASA            Energy                   Efficient            Engine             (E3-Engine)                 is used            as the          basis        of      a Weibull-based                        life        and    reliability                analysis.           Each
+
+          component's                       life          and      thus       the       engine's             life       is defined            by      high-cycle                 fatigue              (HCF)           or     low-cycle               fatigue            (LCF).           Knowing
+          the      cumulative                      life     distribution                    of each          of      the     components                  making                up    the         engine          as      represented                 by    a Weibull                  slope       is a
+
+          prerequisite                  to predicting                        the     life         and      reliability           of the         entire          engine.             As      the       engine            Weibull            slope       increases,                 the      predicted
+
+          lives         decrease.              The              predicted            engine              lives      L 5 (95-percent                    probability                  of     survival)             of        approximately                   17 000              and       32    000         hr
+
+          do      correlate             with              current           engine           maintenance                     practices               without           and       with           refurbishment,                    respectively.                 The            individual            high-
+
+          pressure              turbine              (HPT)            blade             lives       necessary               to obtain             a blade             system             life     L0.1      (99.9-percent                      probability                of     survival)           of
+          9000          hr    for      Weibull                   slopes        of       3, 6, and            9, are         47     391,       20      652,        and         15 658            hr,     respectively.                    For     a design               life     of     the    HPT
+
+          disks         having              probable                points           of     failure          equal          to or       greater          than         36      000        hr at a probability                        of     survival            of    99.9         percent,           the
+
+          predicted                disk       system                life      L0. l can             vary         from       9408        to 24         911       hr.
+
+
+
+
+14.    SUBJECT                TERMS                                                                                                                                                                                                            15.    NUMBER               OF PAGES
+                                                                                                                                                                                                                                                                                26
+          Life         prediction;                  Rotating                 structures;                Weibull             analysis;          Design              methods                                                                     16.    PRICE CODE
+
+
+17.    SECURITY  CLASSIFICATION                                                   18.     SECURITY  CLASSIFICATION                                              19. SECURITY CLASSIFICATION                                                    20.     LIMITATION                 OF ABSTRACT
+       OF REPORT                                                                          OF THIS PAGE                                                              OF ABSTRACT
+
+                   Unclassified                                                                           Unclassified                                                               Unclassified
+NSN    7540-01-280-5500                                                                                                                                                                                                              Standard   Form 298 (Rev. 2-89)
+                                                                                                                                                                                                                                     Prescribed by ANSI Std. Z39-18
+                                                                                                                                                                                                                                     298-102
+

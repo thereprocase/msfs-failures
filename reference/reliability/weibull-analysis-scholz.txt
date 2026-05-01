@@ -1,0 +1,2895 @@
+             Weibull Reliability Analysis
+
+=⇒ http://www.rt.cs.boeing.com/MEA/stat/reliability.html
+
+
+
+
+                          Fritz Scholz (425-865-3623, 7L-22)
+                          Boeing Phantom Works
+                          Mathematics & Computing Technology
+
+
+
+                                      Weibull Reliability Analysis—FWS-5/1999—1
+Wallodi Weibull
+
+
+
+
+                  Weibull Reliability Analysis—FWS-5/1999—2
+Seminal Paper
+
+
+
+
+                Weibull Reliability Analysis—FWS-5/1999—3
+                    The Weibull Distribution
+
+
+• Weibull distribution, useful uncertainty model for
+  – wearout failure time T
+       when governed by wearout of weakest subpart
+  – material strength T
+       when governed by embedded flaws or weaknesses,
+• It has often been found useful based on empirical data (e.g. Y2K)
+• It is also theoretically founded on the weakest link principle
+
+                         T = min (X1, . . . , Xn) ,
+ with X1, . . . , Xn statistically independent random strengths or
+ failure times of the n “links” comprising the whole.
+ The Xi must have a natural finite lower endpoint,
+ e.g., link strength ≥ 0 or subpart time to failure ≥ 0.     ,→
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—4
+                                                   Theoretical Basis
+
+• Under weak conditions Extreme Value Theory shows1 that for
+  large n
+                                                                      β 
+                                t−τ                                     
+      P (T ≤ t) ≈ 1 − exp −                 for t ≥ τ, α > 0, β > 0
+                                                      
+                                                      
+                                                            
+                                                                        
+                                 α
+• The above approximation has very much the same spirit as the
+  Central Limit Theorem which under some weak conditions on
+  the Xi asserts that the distribution of T = X1 + . . . + Xn is
+  approximately bell-shaped normal or Gaussian
+• Assuming a Weibull model for T , material strength or cycle time to
+  failure, amounts to treating the above approximation as an equality
+                                                                                β 
+                                                                       t−τ        
+       F (t) = P (T ≤ t) = 1 − exp −                                              for t ≥ τ, α > 0, β > 0
+                                                                         α
+1
+    see: E. Castillo, Extreme Value Theory in Engineering, Academic Press, 1988
+
+
+                                                                                         Weibull Reliability Analysis—FWS-5/1999—5
+                   Weibull Reproductive Property
+
+
+If X1, . . . , Xn are statistically independent
+                          with Xi ∼ Weibull(αi, β) then
+
+    P (min(X1, . . . , Xn) > t) = P (X1 > t) × · · · × P (Xn > t)
+                                                                                      
+                                       n          t   β        n  t β 
+                                       Y                    X
+                                =     exp −    = exp −   
+                                                    
+
+                                  i=1             αi          i=1 αi
+                                             β 
+                                            t  
+                                = exp −  
+                                          
+                                           
+                                             α
+
+Hence T = min(X1, . . . , Xn) ∼ Weibull(α, β) with
+                                                 
+                                     n                 −1/β
+                              α=    X
+                                            αi−β 
+                                       i=1
+                                                               Weibull Reliability Analysis—FWS-5/1999—6
+                       Weibull Parameters
+
+    The Weibull distribution may be controlled by 2 or 3 parameters:
+•   the threshold parameter       τ
+    T ≥ τ with probability 1
+      τ =0    =⇒     2-parameter Weibull model.
+
+•   the characteristic life or scale parameter            α>0
+                                       
+                                      α  β
+         P (T ≤ τ + α) = 1 − exp −
+                                         = 1 − exp(−1) = .632
+                                           
+
+                                      α
+      regardless of the value β > 0
+
+•   the shape parameter         β > 0,    usually β ≥ 1
+
+
+
+
+                                              Weibull Reliability Analysis—FWS-5/1999—7
+                   2-Parameter Weibull Model
+
+
+
+• We focus on analysis using the 2-parameter Weibull model
+
+• Methods and software tools much better developed
+
+• Estimation of τ in the 3-parameter Weibull model
+ leads to complications
+
+• When a 3-parameter Weibull model is assumed,
+ it will be stated explicitly
+
+
+
+
+                                            Weibull Reliability Analysis—FWS-5/1999—8
+          Relation of α & β to Statistical Parameters
+
+
+• The expectation or mean value of T
+                               Z
+                                   ∞
+                 µ = E(T ) = 0 t f (t) dt = αΓ(1 + 1/β)
+
+                                                Z
+                                                    ∞
+                                   with Γ(t) = 0 exp(−x) xt−1 dx
+
+
+• The variance of T
+                      Z                                             
+                       ∞
+  σ = E(T − µ) =
+   2             2
+                      0 (t − µ) f (t) dt = α Γ(1 + 2/β) − Γ (1 + 1/β)
+                               2            2              2
+
+
+
+
+• p-quantile tp of T , i.e., by definition P (T ≤ tp) = p
+
+  tp = α [− log(1 − p)]1/β , for p = 1 − exp(−1) = .632                =⇒ tp = α
+
+                                                    Weibull Reliability Analysis—FWS-5/1999—9
+                            Weibull Density
+
+
+
+• The cumulative distribution function F (t) = P (T ≤ t) is just
+  one way to describe the distribution of the random quantity T
+
+• The density function f (t) is another representation (τ = 0)
+                                            β−1                   β 
+                            dF (t) β  t                         t
+         f (t) = F 0(t) =
+                                                                      
+                                  =               exp −             t≥0
+                             dt    α α                            α
+
+
+                       P (t ≤ T ≤ t + dt) ≈ f (t) dt
+
+
+                                     Z
+                                         t
+                              F (t) = 0 f (x) dx
+
+
+                                                       Weibull Reliability Analysis—FWS-5/1999—10
+    Weibull Density & Distribution Function
+
+
+
+
+                         Weibull density α = 10000, β = 2.5
+                                         total area under density = 1
+
+
+
+
+              p
+
+
+
+
+1
+
+
+
+
+p
+                         cumulative distribution function
+0
+
+
+    0        5000     10000                        15000                20000
+                      cycles
+
+
+
+
+                                                   Weibull Reliability Analysis—FWS-5/1999—11
+                          Weibull Densities: Effect of τ
+
+
+
+
+                            τ=0     τ = 1000       τ = 2000
+
+
+
+
+                                                                    α = 1000, β = 2.5
+probability density
+
+
+
+
+                      0            2000                          4000
+
+                                          cycles
+
+
+
+                                                              Weibull Reliability Analysis—FWS-5/1999—12
+                      Weibull Densities: Effect of α
+
+
+
+
+                      α = 1000
+
+
+
+
+                                                          τ = 0, β = 2.5
+probability density
+
+
+
+
+                                 α = 2000
+
+                                            α = 3000
+
+
+
+
+                 0        2000              4000         6000              8000
+
+                                                cycles
+
+
+
+                                                                Weibull Reliability Analysis—FWS-5/1999—13
+                                   Weibull Densities: Effect of β
+
+
+
+
+                                    β=7
+
+
+
+
+                          β = .5
+probability density
+
+
+
+
+                                    β=4
+
+
+
+                      β=1
+                                   β=2
+                                                   τ = 0, α = 1000
+
+
+
+
+                      0            1000   2000   3000        4000
+
+                                                 cycles
+
+
+
+                                                                     Weibull Reliability Analysis—FWS-5/1999—14
+                 Failure Rate or Hazard Function
+
+
+
+• A third representation of the Weibull distribution is through the
+  hazard or failure rate function
+                                              
+                                f (t)    β  t β−1
+                       λ(t) =          =  
+                              1 − F (t) α α
+• λ(t) is increasing t for β > 1 (wearout)
+• λ(t) is decreasing t for β < 1
+• λ(t) is constant for β = 1 (exponential distribution)
+                                  P (t ≤ T ≤ t + dt)    f (t) dt
+   P (t ≤ T ≤ t + dt|T ≥ t) =                        ≈           = λ(t) dt
+                                       P (T ≥ t)       1 − F (t)
+
+                   Z          !                                            Z                  !
+                    t                                                     t
+ F (t) = 1−exp   − 0 λ(x) dx          and     f (t) = λ(t) exp         − 0 λ(x) dx
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—15
+                    Exponential Distribution
+
+
+
+• The exponential distribution is a special case: β = 1 & τ = 0
+                                           
+                                         t
+            F (t) = P (T ≤ t) = 1 − exp − 
+                                       
+                                                      for t ≥ 0
+                                         α
+
+
+• This distribution is useful when parts fail due to
+   random external influences and not due to wear out
+• Characterized by the memoryless property,
+   a part that has not failed by time t is as good as new,
+   past stresses without failure are water under the bridge
+• Good for describing lifetimes of electronic components,
+   failures due to external voltage spikes or overloads
+
+                                                Weibull Reliability Analysis—FWS-5/1999—16
+                       Unknown Parameters
+
+
+• Typically will not know the Weibull distribution: α, β unknown
+• Will only have sample data =⇒ estimates α,    c  βc
+   get estimated Weibull model for failure time distribution
+   =⇒ double uncertainty
+   uncertainty of failure time & uncertainty of estimated model
+• Samples of failure times are sometimes very small,
+    only 7 fuse pins or 8 ball bearings tested until failure,
+    long lifetimes make destructive testing difficult
+• Variability issues are often not sufficiently appreciated
+    how do small sample sizes affect our confidence in
+    estimates and predictions concerning future failure experiences?
+
+
+
+                                                Weibull Reliability Analysis—FWS-5/1999—17
+                         Estimation Uncertainty
+
+
+
+          A Weibull Population: Histogram for N = 10,000 & Density
+0.00004
+
+
+
+
+                          63.2% 36.8%
+                                          characteristic life = 30,000
+                                          shape = 2.5
+0.00002
+
+
+
+
+                                                                 true model
+                                                                 estimated model from 9 data points
+0.0
+
+
+
+
+                  • •           • •• •     •     • •
+
+            0           20000            40000             60000             80000
+
+                                               cycles
+
+
+
+                                                                    Weibull Reliability Analysis—FWS-5/1999—18
+      Weibull Parameters & Sample Estimates
+
+
+
+                shape parameter β = 4
+
+
+
+
+                                                    63.2%      36.8%
+
+
+
+
+                                         characteristic life α = 30,000
+
+p=P(T < t )
+                     t =t p p-quantile
+                            • •• •           •• •     •       •           •
+                                •    •               • • • ••                 •       ••
+                                     ••             • ••••• •                     •
+   25390      3.02                                  33860   4.27                      29410   5.01
+
+                          parameter estimates from three samples of size n = 10
+
+
+
+
+                                                                                       Weibull Reliability Analysis—FWS-5/1999—19
+                 Generation of Weibull Samples
+
+
+• Using the quantile relationship tp = α [− log(1 − p)]1/β
+ one can generate a Weibull random sample of size n by
+  –   generating a random sample U1, . . . , Un
+         from a uniform [0, 1] distribution
+
+  –   and computing Ti = α [− log(1 − Ui)]1/β , i = 1, . . . , n.
+
+  –   Then T1, . . . , Tn can be viewed as a random sample of size n
+         from a Weibull population or Weibull distribution
+         with parameters α & β.
+
+• Simulations are useful in gaining insight on estimation procedures
+
+                                                  Weibull Reliability Analysis—FWS-5/1999—20
+                           Graphical Methods
+
+
+• Suppose we have a complete Weibull sample of size n:                     T1, . . . , Tn
+
+• Sort these values from lowest to highest: T(1) ≤ T(2) ≤ . . . ≤ T(n)
+• Recall that the p-quantile is tp = α [− log(1 − p)]1/β
+
+• Compute tp1 < . . . < tpn for pi = (i − .5)/n, i = 1, . . . , n
+
+• Plot the points (T(i), tpi ), i = 1, . . . , n and expect
+
+       these points to cluster around main diagonal
+
+
+
+
+                                                     Weibull Reliability Analysis—FWS-5/1999—21
+Weibull Quantile-Quantile Plot: Known Parameters
+
+
+                                                                                                                               •
+                                                                                                                           •
+         15000                                                                                                        •
+                                                                                                                          •
+                                                                                                          •      •
+                                                                                                     •• ••
+                                                                                                    ••
+                                                                                               • ••
+                                                                                                 •
+                                                                                              ••
+                                                                                       •• •••
+         10000
+
+
+
+
+                                                                                      ••
+                                                                                 •••••
+                                                                                   •
+                                                                               •
+                                                                            • ••
+    tp
+
+
+
+
+                                                                          ••
+                                                                      •••
+                                                             •   ••• ••
+                                                     •• ••••••
+                                                •• •
+                                         •• •••
+         5000
+
+
+
+
+                                      •••
+                             •   •   ••
+                           •••
+                         ••
+                     •
+         0
+
+
+
+
+                 0                   5000                               10000                                 15000
+
+                                                                    T
+
+
+
+
+                                                                                     Weibull Reliability Analysis—FWS-5/1999—22
+              Weibull QQ-Plot: Unknown Parameters
+
+
+
+• Previous plot requires knowledge of the unknown parameters α & β
+
+• Note that
+      log (tp) = log(α) + wp/β ,        where wp = log [− log(1 − p)]
+
+
+                               
+• Expect points log[T(i)], wpi , i = 1, . . . , n, to cluster around line
+       with slope 1/β and intercept log(α)
+
+• This suggests estimating α & β from a fitted least squares line
+
+
+
+                                                   Weibull Reliability Analysis—FWS-5/1999—23
+                 Maximum Likelihood Estimation
+
+
+• If t1, . . . , tn are the observed sample values one can contemplate
+ the probability of obtaining such a sample or of values nearby, i.e.,
+
+ P (T1 ∈ [t1 − dt/2, t1 + dt/2], . . . , Tn ∈ [tn − dt/2, tn + dt/2])
+
+    = P (T1 ∈ [t1 − dt/2, t1 + dt/2]) × · · · × P (Tn ∈ [tn − dt/2, tn + dt/2])
+
+    ≈ fα,β (t1)dt × · · · × fα,β (tn)dt
+
+
+ where f (t) = fα,β (t) is the Weibull density with parameters (α, β)
+
+• Maximum likelihood estimation maximizes this probability
+                                                                 c
+ over α & β      =⇒ maximum likelihood estimates (m.l.e.s) α
+                                                           c and β
+
+
+
+
+                                                   Weibull Reliability Analysis—FWS-5/1999—24
+                General Remarks on Estimation
+
+
+• MLEs tend to be optimal in large samples (lots of theory)
+
+• Method is very versatile in extending to may other data scenarios
+      censoring and covariates
+
+• Least squares method applied to QQ-plot is not entirely appropriate
+      tends to be unduly affected by stray observations
+      not as versatile to extend to other situations
+
+
+
+
+                                              Weibull Reliability Analysis—FWS-5/1999—25
+                                Weibull Plot: n = 20
+
+
+              .990
+                                                                        •
+              .900                                                 ••
+                                                              •   ••
+               .632
+                                                           • ••
+                                                         •
+              .500
+                                                      • ••
+                                                     •
+              .200                                 ••
+probability
+
+
+
+
+                                                   •
+                                              •
+              .100
+                                          •
+
+                                     •
+              .010                                true model, Weibull( 100 , 3 )
+                                                  m.l.e. model, Weibull( 108 , 3.338 )
+                                                  least squares model, Weibull( 107.5 , 3.684 )
+
+
+
+              .001
+
+
+                      10   20            50              100            200                500        1000
+
+
+                                              cycles/hours
+
+
+
+                                                                            Weibull Reliability Analysis—FWS-5/1999—26
+                            Weibull Plot: n = 100
+
+
+              .990                                                                           •
+                                                                                      •• •
+                                                                                    •
+                                                                                    •
+              .900
+                                                                                 •••
+                                                                                •
+               .632
+                                                                          •••••••
+                                                                            •
+                                                                        •••
+              .500
+                                                                  •••••••
+                                                              ••••
+                                                          •••••
+              .200                                      ••
+probability
+
+
+
+
+                                                      •••
+              .100                                   ••
+                                               •   • •
+                                            ••
+                                            •
+                                        •
+                                    •
+              .010                                            true model, Weibull( 100 , 3 )
+                                                              m.l.e. model, Weibull( 102.8 , 2.981 )
+                                •
+                                                              least squares model, Weibull( 102.2 , 3.144 )
+
+
+
+              .001
+
+
+                      10   20                      50                 100                    200            500        1000
+
+
+                                                             cycles/hours
+
+
+
+                                                                                             Weibull Reliability Analysis—FWS-5/1999—27
+                                           Tests of Fit (Graphical)
+
+
+• The Weibull plots provide an informal diagnostic
+         for checking the Weibull model assumption
+
+• The anticipated linearity is based on the Weibull model properties
+
+• Strong nonlinearity indicates that the model is not Weibull
+
+• Sorting out nonlinearity from normal statistical point scatter
+         takes a lot of practice and a good sense for the effect
+         of sample size on the variation in point scatter
+
+• Formal tests of fit are available for complete samples2
+         and also for some other censored data scenarios
+2
+    R.B. D’Agostino and M.A. Stephens, Goodness-of-Fit Techniques, Marcel Dekker 1986
+
+
+                                                                                        Weibull Reliability Analysis—FWS-5/1999—28
+                    Formal Goodness-of-Fit Tests
+
+
+• Let Fα,
+       b βb (t) be the fitted Weibull distribution function
+
+
+               #{Ti ≤ t; i=1,...,n}
+• Let F
+      d
+       n (t) =          n           be the empirical distribution function
+• Compute a discrepancy metric D between Fα,
+                                          b β
+                                                   d
+                                             b and Fn ,
+
+
+                b , Fn ) = sup F b b (t) − Fn (t)
+                    d                      d
+       DKS (Fα,
+             b β                α,β                      Kolmogorov-Smirnov
+                             t
+                        Z                     !
+                         ∞                        2
+                                 b (t) − Fn (t)
+               d                         d
+ DCvM (Fα,
+        b βb , Fn ) =
+                        0    Fα,
+                              b β                     fα,
+                                                       b βb (t) dt Cramer-von Mises
+                                              !
+                                                  2
+                                 b (t) − Fn (t)
+                                        d
+              d
+                     Z
+                        ∞  Fα,b β
+ DAD (Fα,
+       b βb , Fn ) =                                fα,
+                                                     b βb (t) dt Anderson-Darling
+                       0
+                          Fα,
+                           b βb (t)(1  − F   b
+                                           b β
+                                          α,   (t))
+• The distributions of D, when sampling from a Weibull population,
+ are known and p-values of observed values d of D can be calculated
+ p = P (D ≥ d) =⇒            BCSLIB: HSPFIT
+
+                                                          Weibull Reliability Analysis—FWS-5/1999—29
+      Kolmogorov-Smirnov Distance
+
+
+
+1.0
+      n = 10
+
+0.8
+
+               K-S distance
+0.6
+0.4
+0.2
+0.0
+
+
+
+
+                  •••         •• • •• •                 •
+
+        0        50               100     150         200           250
+
+
+
+                                            Weibull Reliability Analysis—FWS-5/1999—30
+                                                    Weibull Plots: n = 10
+      p(KS) = 0.62                                  •         p(KS) = 0.28                       •        p(KS) = 0.88                                     •        p(KS) = 0.88                              •
+
+
+1
+
+
+
+
+                                                         1
+
+
+
+
+                                                                                                     1
+
+
+
+
+                                                                                                                                                               1
+      p(CvM) = 0.54                                           p(CvM) = 0.27                               p(CvM) = 0.62                                             p(CvM) = 0.64
+                                              •                                                  •                                                •                                                       •
+      p(AD) = 0.62                                            p(AD) = 0.35                                p(AD) = 0.66                                              p(AD) = 0.69
+                                          •                                             •                                                     •                                                       •
+0                                     •                                                 •                                                 •                                                   •
+
+
+
+
+                                                         0
+
+
+
+
+                                                                                                     0
+
+
+
+
+                                                                                                                                                               0
+                             •                                                          •                                         •                                                          •
+                         •                                                       •                                           •                                                              •
+                        •                                                        •                                      •                                                               •
+-1
+
+
+
+
+                                                         -1
+
+
+
+
+                                                                                                     -1
+
+
+
+
+                                                                                                                                                               -1
+                       •                                                     •                                  •                                                                 •
+
+           •                                                                 •                                  •                                                             •
+-2
+
+
+
+
+                                                         -2
+
+
+
+
+                                                                                                     -2
+
+
+
+
+                                                                                                                                                               -2
+     •                                                        •                                           •                                                         •
+-3
+
+
+
+
+                                                         -3
+
+
+
+
+                                                                                                     -3
+
+
+
+
+                                                                                                                                                               -3
+                                              n = 10
+
+
+     3.8       4.2                4.6              5.0            4.0            4.4         4.8          3.8               4.4                   5.0               3.8       4.2           4.6       5.0
+
+      p(KS) = 0.72                                  •         p(KS) = 0.16                       •        p(KS) = 0.34                                     •        p(KS) = 0.86                              •
+1
+
+
+
+
+                                                         1
+
+
+
+
+                                                                                                     1
+
+
+
+
+                                                                                                                                                               1
+      p(CvM) = 0.53                                           p(CvM) = 0.21                               p(CvM) = 0.23                                             p(CvM) = 0.56
+                                               •                                             •                                                             •                                              •
+      p(AD) = 0.6                                             p(AD) = 0.32                                p(AD) = 0.22                                              p(AD) = 0.57
+                                              •                                              •                                                            •                                       •
+                                  •                                                      •                                                            •                                           •
+0
+
+
+
+
+                                                         0
+
+
+
+
+                                                                                                     0
+
+
+
+
+                                                                                                                                                               0
+                              •                                                          •                                            •                                                    •
+                             •                                                     •                                              •                                                       •
+                        •                                                         •                                              •                                                       •
+-1
+
+
+
+
+                                                         -1
+
+
+
+
+                                                                                                     -1
+
+
+
+
+                                                                                                                                                               -1
+                   •                                                             •                                  •                                                                   •
+
+               •                                                        •                                       •                                                         •
+-2
+
+
+
+
+                                                         -2
+
+
+
+
+                                                                                                     -2
+
+
+
+
+                                                                                                                                                               -2
+     •                                                        •                                           •                                                         •
+-3
+
+
+
+
+                                                         -3
+
+
+
+
+                                                                                                     -3
+
+
+
+
+                                                                                                                                                               -3
+     4.0               4.4                    4.8                 3.8       4.2        4.6                    4.0            4.4                      4.8               3.8           4.2         4.6
+
+
+
+                                                                                                                            Weibull Reliability Analysis—FWS-5/1999—31
+                                                       Weibull Plots: n = 20
+      p(KS) = 0.55                                     •         p(KS) = 0.13                                    •         p(KS) = 0.12                                 •        p(KS) = 0.46                             •
+                                                   •                                                         •                                                      •                                                     •
+
+1
+
+
+
+
+                                                           1
+
+
+
+
+                                                                                                                     1
+
+
+
+
+                                                                                                                                                                            1
+      p(CvM) = 0.49                                              p(CvM) = 0.027                                            p(CvM) = 0.053                                        p(CvM) = 0.39
+                                               •                                                             •                                     •                                                                     •
+      p(AD) = 0.49                           •                   p(AD) = 0.028
+                                                                                                        ••                 p(AD) = 0.048
+                                                                                                                                                  ••                             p(AD) = 0.38                        •
+                                           •••                                                        •••                                     • •                                                                • ••
+0                                        •                                                                                                 ••                                                                  •
+
+
+
+
+                                                           0
+
+
+
+
+                                                                                                                     0
+
+
+
+
+                                                                                                                                                                            0
+                                     •• •                                                           •••                                  ••                                                           ••
+                                                                                                                                                                                                           •
+                                  ••                                                              ••                                   ••                                                           ••
+                                 •                                                            •                                       •                                                            •
+-1
+
+
+
+
+                                                           -1
+
+
+
+
+                                                                                                                     -1
+
+
+
+
+                                                                                                                                                                            -1
+                                 •                                                       •                                            •                                                           •
+                         •                                                           •                                            •                                                               •
+               •                                                                •                                             •                                                           •
+-2
+
+
+
+
+                                                           -2
+
+
+
+
+                                                                                                                     -2
+
+
+
+
+                                                                                                                                                                            -2
+               •                                                               •                                          •                                                          •
+           •                                                           •                                                  •                                                      •
+-3
+
+
+
+
+                                                           -3
+
+
+
+
+                                                                                                                     -3
+
+
+
+
+                                                                                                                                                                            -3
+      •                                       n = 20             •                                                        •                                                      •
+
+     3.5           4.0            4.5              5.0               2.5       3.5             4.5                                4.2                  4.6                       3.8     4.2            4.6           5.0
+
+      p(KS) = 0.46                                     •         p(KS) = 0.47                                 •            p(KS) = 0.85                                 •        p(KS) = 0.04                             •
+                                                      •                                                      •                                                      •                                                    •
+1
+
+
+
+
+                                                           1
+
+
+
+
+                                                                                                                     1
+
+
+
+
+                                                                                                                                                                            1
+      p(CvM) = 0.41                                              p(CvM) = 0.63                                             p(CvM) = 0.6                                          p(CvM) = 0.017
+                                                     •                                                 •                                                            •                                             •
+      p(AD) = 0.41                                 ••            p(AD) = 0.69
+                                                                                                 ••                        p(AD) = 0.64
+                                                                                                                                                               ••                p(AD) = 0.023
+                                                                                                                                                                                                             ••
+                                                  ••                                          ••
+                                                                                                 •
+                                                                                                                                                           ••
+                                                                                                                                                             •
+                                                                                                                                                                                                          ••
+                                                                                                                                                                                                            •
+                                              •••
+0
+
+
+
+
+                                                           0
+
+
+
+
+                                                                                                                     0
+
+
+
+
+                                                                                                                                                                            0
+                                            •                                           •   ••                                                           •••                                            •••
+                                          ••                                         ••                                                            •   •                                            •   •
+                                      •                                             •                                                             •                                                 •
+-1
+
+
+
+
+                                                           -1
+
+
+
+
+                                                                                                                     -1
+
+
+
+
+                                                                                                                                                                            -1
+                                  •                                                 •                                                            •                                                  •
+                                  •                                            •                                                             •                                                 •
+                             •                                                 •                                                         •                                                     •
+-2
+
+
+
+
+                                                           -2
+
+
+
+
+                                                                                                                     -2
+
+
+
+
+                                                                                                                                                                            -2
+                     •                                                     •                                                            •                                                     •
+                     •                                                     •                                                      •                                                           •
+-3
+
+
+
+
+                                                           -3
+
+
+
+
+                                                                                                                     -3
+
+
+
+
+                                                                                                                                                                            -3
+      •                                                          •                                                        •                                                      •
+
+      3.6          4.0             4.4             4.8          3.0            4.0                      5.0               4.0            4.4                  4.8                3.6     4.0            4.4           4.8
+
+
+
+                                                                                                                                             Weibull Reliability Analysis—FWS-5/1999—32
+                                         Weibull Plots: n = 50
+      p(KS) = 0.7                         •         p(KS) = 0.22                           •         p(KS) = 0.15                          •            p(KS) = 0.76                             •
+                                         •
+                                         •                                               •••                                             •••                                                ••
+      p(CvM) = 0.41
+                                       ••           p(CvM) = 0.35                                    p(CvM) = 0.23                                      p(CvM) = 0.49
+                                                                                                                                                                                           ••
+
+1
+
+
+
+
+                                              1
+
+
+
+
+                                                                                               1
+
+
+
+
+                                                                                                                                                  1
+                                      ••                                               •••                                               •
+                                                                                                                                       •••                                                 •
+      p(AD) = 0.43
+                                    ••
+                                     •              p(AD) = 0.32
+                                                                                    •• •             p(AD) = 0.12
+                                                                                                                                   ••••                 p(AD) = 0.52
+                                                                                                                                                                                       ••
+                                                                                                                                                                                          •
+0                                  ••                                              ••                                          •• •                                                 ••••
+
+
+
+
+                                              0
+
+
+
+
+                                                                                               0
+
+
+
+
+                                                                                                                                                  0
+                                ••••                                          ••••
+                                                                                •                                           •••                                                    ••
+                              ••                                             ••                                           ••                                                     •••
+                              •                                            ••                                        ••••                                                     •• •
+                             •                                        ••••                                                                                                  ••
+-1
+
+
+
+
+                                              -1
+
+
+
+
+                                                                                               -1
+
+
+
+
+                                                                                                                                                  -1
+                            •                                                                                        •
+                          •••                                        ••                                         •• •                                                     ••••
+                       •••                                         ••                                         •••                                                       ••
+                      •                                            •                                                                                                 •••
+                     ••                                         ••                                           ••
+-2
+
+
+
+
+                                              -2
+
+
+
+
+                                                                                               -2
+
+
+
+
+                                                                                                                                                  -2
+                     •                                        •                                            •                                                       •
+                    •                                       •                                            •                                                      •
+                   •                                       •                                             •                                                   •
+-3
+
+
+
+
+                                              -3
+
+
+
+
+                                                                                               -3
+
+
+
+
+                                                                                                                                                  -3
+                   •                                  •                                                 •                                                  •
+-4
+
+
+
+
+                                              -4
+
+
+
+
+                                                                                               -4
+
+
+
+
+                                                                                                                                                  -4
+     •                            n = 50           •                                                •                                                   •
+
+     2.0       3.0         4.0        5.0              3.0             4.0             5.0              3.5       4.0         4.5                            3.5                  4.5
+
+      p(KS) = 0.88                       •          p(KS) = 0.27                        •            p(KS) = 0.85                             •         p(KS) = 0.18                             •
+      p(CvM) = 0.66                   •••           p(CvM) = 0.22                     ••
+                                                                                      •              p(CvM) = 0.56                      ••
+                                                                                                                                          •             p(CvM) = 0.035                   ••
+                                                                                                                                                                                            •
+1
+
+
+
+
+                                              1
+
+
+
+
+                                                                                               1
+
+
+
+
+                                                                                                                                                  1
+                                    •••                                            ••                                               ••••
+                                                                                                                                                                                     •••
+                                                                                                                                                                                        ••
+      p(AD) = 0.72               ••
+                                 •
+                                                    p(AD) = 0.23
+                                                                              • ••••                 p(AD) = 0.62
+                                                                                                                                  ••                    p(AD) = 0.039
+                                                                                                                                                                                  •• •
+                               •                                                                                                 ••                                             •
+                              ••                                            ••                                                 ••                                               •
+                                                                                                                                                                              •••
+0
+
+
+
+
+                                              0
+
+
+
+
+                                                                                               0
+
+
+
+
+                                                                                                                                                  0
+                           ••••                                           ••
+                                                                          •                                                   ••                                           •••
+                        •••                                             ••                                                  •
+                                                                                                                           ••                                             •
+                       •                                             • ••                                               •••                                             •••
+                                                                                                                                                                    ••••
+-1
+
+
+
+
+                                              -1
+
+
+
+
+                                                                                               -1
+
+
+
+
+                                                                                                                                                  -1
+                     ••                                            •                                                   •
+                   ••                                            •••                                                  •
+                                                                                                                     ••
+                  ••                                          •• •                                                 ••                                             •
+                                                                                                                                                                 ••
+              •• •                                            •                                                  •••                                           •••
+                                                             ••
+-2
+
+
+
+
+                                              -2
+
+
+
+
+                                                                                               -2
+
+
+
+
+                                                                                                                                                  -2
+              •                                                                                                 •
+            •                                               •                                                  •                                             •
+            •                                             •                                                  •                                             •
+          •                                          •                                                   •                                                 •
+-3
+
+
+
+
+                                              -3
+
+
+
+
+                                                                                               -3
+
+
+
+
+                                                                                                                                                  -3
+        •                                           •                                                 •                                                  •
+-4
+
+
+
+
+                                              -4
+
+
+
+
+                                                                                               -4
+
+
+
+
+                                                                                                                                                  -4
+     •                                             •                                                •                                                   •
+
+     3.5         4.0          4.5                  3.5        4.0         4.5          5.0          3.5       4.0        4.5         5.0               3.5      4.0         4.5         5.0
+
+
+
+                                                                                                                    Weibull Reliability Analysis—FWS-5/1999—33
+                                              Weibull Plots: n = 100
+       p(KS) = 0.58                               •        p(KS) = 0.86                            •         p(KS) = 0.61                              •         p(KS) = 0.21                            •
+                                             ••                                              •••                                                     ••                                               •••
+       p(CvM) = 0.26                       •
+                                           •••             p(CvM) = 0.68
+                                                                                          ••••               p(CvM) = 0.48                         •••           p(CvM) = 0.26
+                                                                                                                                                                                                    •••
+                                         •
+       p(AD) = 0.3                     •••                 p(AD) = 0.72                  ••
+                                                                                       •••                   p(AD) = 0.55                       •••              p(AD) = 0.43                      ••
+                                                                                                                                                                                               •••••
+                                    •••
+                                    •                                                 •                                                      •••
+                                                                                                                                             •                                               ••
+0                                  •                                               ••••                                                   •••                                               ••
+
+
+
+
+                                                      0
+
+
+
+
+                                                                                                        0
+
+
+
+
+                                                                                                                                                            0
+                                •••                                             ••••                                                 ••••••                                             ••••
+                              •••                                             •••                                                   •                                                  ••
+                             ••
+                             •                                             • ••                                                    ••                                                ••
+                          •••                                             ••                                                   ••••                                              ••••
+                       ••••                                             ••                                                  •••                                               ••••
+-2
+
+
+
+
+                                                      -2
+
+
+
+
+                                                                                                        -2
+
+
+
+
+                                                                                                                                                            -2
+                                                                        •
+                    ••                                               •••                                                  •••                                               •••
+                  ••                                             •••                                                   ••                                                 ••
+              • •                                              ••                                                   ••                                                   ••
+           •                                                •                                                     •                                                     •
+           •                                                •                                                    •                                                     •
+-4
+
+
+
+
+                                                      -4
+
+
+
+
+                                                                                                        -4
+
+
+
+
+                                                                                                                                                            -4
+          •                                                •                                                   •                                                    •
+
+      •                                n = 100             •                                                 •                                                   •
+
+     3.0              4.0                  5.0                 3.5                4.5                        3.0               4.0               5.0                  3.5                     4.5
+
+       p(KS) = 0.47                               •        p(KS) = 0.053                            •        p(KS) = 0.87                               •        p(KS) = 0.72                                     •
+                                             ••                                                    •                                                  ••                                                         •
+       p(CvM) = 0.3
+                                           •••             p(CvM) = 0.025
+                                                                                                ••••         p(CvM) = 0.58
+                                                                                                                                                    •••          p(CvM) = 0.45
+                                                                                                                                                                                                               •••
+                                          •
+                                          •                                                    ••                                                                                                             •
+                                        ••                                                    ••                                                  •••                                                       •••
+       p(AD) = 0.37
+                                      •••
+                                                           p(AD) = 0.032
+                                                                                             •
+                                                                                                             p(AD) = 0.6
+                                                                                                                                              ••••
+                                                                                                                                              •
+                                                                                                                                                                 p(AD) = 0.43
+                                                                                                                                                                                                          •••
+                                  •••
+                                     •
+                                     •                                                     •••                                            ••••
+0
+
+
+
+
+                                                      0
+
+
+
+
+                                                                                                        0
+
+
+
+
+                                                                                                                                                            0
+                                •••                                                    •••••                                            ••
+                                                                                                                                         •
+                                                                                                                                                                                                         •
+                                                                                                                                                                                                       •••
+                                •                                                    •••                                             ••••                                                            •••
+                               •                                                   •••                                              ••
+                          •••••                                                 ••••                                             •
+                                                                                                                                ••
+                                                                                                                                  ••                                                              ••••
+                         ••                                                    •                                               ••                                                               •••
+                       •••                                                  ••••                                            • •
+                                                                                                                                                                                              ••
+                                                                                                                                                                                                •
+-2
+
+
+
+
+                                                      -2
+
+
+
+
+                                                                                                        -2
+
+
+
+
+                                                                                                                                                            -2
+                      •
+                      •                                                   ••                                               ••
+                   •• •                                                 •••                                              •••                                                              ••••
+                •• •                                                •••                                                ••                                                             •
+               •                                                   •                                                ••                                                               ••
+              •                                                   •                                                •                                                            •
+            •                                               •                                                    •                                                             •
+-4
+
+
+
+
+                                                      -4
+
+
+
+
+                                                                                                        -4
+
+
+
+
+                                                                                                                                                            -4
+          •                                                •                                                    •                                                          •
+
+      •                                                    •                                                 •                                                   •
+
+      3.0              4.0               5.0               3.0               4.0               5.0           3.5                     4.5                             2.5            3.5           4.5
+
+
+
+                                                                                                                              Weibull Reliability Analysis—FWS-5/1999—34
+           Estimates and Confidence Bounds/Intervals
+
+
+• For a target θ
+  θ = α,    θ = β,         θ = tp = α[− log(1 − p)]1/β ,       or θ = Pα,β (T ≤ t)
+       one gets corresponding m.l.e θc by replacing (α, β) by (α, c
+                                                               c β)
+
+
+
+
+• Such estimates vary around the target due to sampling variation
+• Capture the estimation uncertainty via confidence bounds
+• For 0 < γ < 1 get 100γ% lower/upper confidence bounds θcL,γ & θcU,γ
+                                                                
+                P θL,γ ≤ θ = γ
+                       c
+                                             or   P θ ≤ θU,γ = γ
+                                                             c
+
+
+
+• For γ > .5 get a 100(2γ − 1)% confidence interval by [θcL,γ , θcU,γ ]
+                                             
+                           P θL,γ ≤ θ ≤ θU,γ = 2γ − 1 = γ ?
+                                 c       c
+
+
+
+
+                                                        Weibull Reliability Analysis—FWS-5/1999—35
+Confidence Bounds & Sampling Variation, n = 10
+
+
+                                        L: Lawless Exact Method (RAP);   B: Bain Exact Method (Tables);   M: MLE Approximate Method
+  90% confidence intervals
+
+                             35000
+
+                                                                                                                      true α
+                             25000
+
+
+
+
+                                                 L BM
+
+
+                                     samples     1                  2                    3                   4                 5
+                             8
+  90% confidence intervals
+
+                             6
+
+
+
+
+                                                                                                                      true β
+                             4
+                             2
+
+
+
+
+                                                 L BM
+                             0
+
+
+
+
+                                                 1                  2                    3                   4                 5
+
+
+
+                                                                                                                 Weibull Reliability Analysis—FWS-5/1999—36
+Confidence Bounds & Sampling Variation, n = 10
+
+
+
+                                25000
+  95% lower confidence bounds
+
+                                15000
+
+
+
+
+                                                                                                                    true 10-percentile
+                                5000
+
+
+
+
+                                                    L BM
+
+                                           L: Lawless Exact Method (RAP);   B: Bain Exact Method (Tables);   M: MLE Approximate Method
+                                0
+
+
+
+
+                                        samples     1                  2                    3                   4                    5
+  95% upper confidence bounds
+
+
+
+
+                                                    L BM
+                                0.20
+
+
+
+
+                                                                                                                     true P(T < 10,000)
+                                0.10
+                                0.0
+
+
+
+
+                                                    1                  2                    3                   4                    5
+
+
+
+                                                                                                                    Weibull Reliability Analysis—FWS-5/1999—37
+                                   Confidence Bounds & Effect of n
+
+                                   •
+
+
+                           35000
+95% confidence intervals
+                                             •    •
+                                        •                   •     •
+                                                  •               •          ••             ••
+                                                            •     •           •              •
+                                             •    •         •
+                                        •
+                           25000
+
+                                   •         •                                    true α
+                                        •
+                                   •
+                           15000
+
+
+
+
+                                   5    10   20   50       100   200        500            1000
+                                                  sample size
+
+                                   •
+                           7
+95% confidence intervals
+
+
+
+
+                                        •
+                           6
+
+
+
+
+                                             •
+                           5
+
+
+
+
+                                   •              •
+                                        •                   •     •          •              ••
+                                             •                    •          •
+                           4
+
+
+
+
+                                                  •         •                •               •
+                                                                  •
+                                                  •         •
+                           3
+
+
+
+
+                                             •                                    true β
+                                        •
+                           2
+
+
+
+
+                                   •
+                           1
+
+
+
+
+                                                                      Weibull Reliability Analysis—FWS-5/1999—38
+                                      Confidence Bounds & Effect of n
+
+                                      •
+95% upper confidence bounds
+
+                              0.15
+
+                                           •
+                                                                                true P(T < 10000)
+                                                •
+                              0.05
+
+
+
+
+                                                     •         •
+                                      •    •    •    •         •     ••          ••             •
+                              0.0
+
+
+
+
+                                      5    10   20   50       100   200         500            1000
+                                                     sample size
+                              20000
+95% lower confidence bounds
+
+
+
+
+                                                     •         •     •           •              ••
+                                      •         •                    •           •
+                                           •
+                                                     •         •
+                                                                                  true t .10
+                                                •
+                              10000
+
+
+
+
+                                           •
+
+                                      •
+                              5000
+
+
+
+
+                                                                          Weibull Reliability Analysis—FWS-5/1999—39
+          Incomplete Data or Censored Failure Times
+
+
+• Type I censoring or time censoring:
+  units are tested until failure or until a prespecified time has elapsed
+
+• Type II censoring or failure censoring:
+  only the r lowest values of the total sample of size n become known
+  this shows up when we put n units on test simultaneously and
+  terminate the test after the first r units have failed
+
+• Interval censoring, inspection data, grouped data:
+  ith unit is only known to have failed between two known
+  inspection time points, i.e., failure time Ti falls in (si, ei]
+  only bracketing intervals (si, ei), i = 1, . . . , n, become known
+
+
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—40
+  Incomplete Data or Censored Failure Times (continued)
+
+• Random right censoring:
+  units are observed until failed or removed from observation
+  due to other causes (different failure modes, competing risks)
+
+• Multiple right censoring:
+  units are put into service at different times
+  and times to failure or censoring are observed
+
+• Data can also combine several of the above censoring phenomena
+
+• It is important that the censoring mechanism should not correlate
+  with the (potential) failure times,
+  i.e., no censoring of anticipated failures
+
+• All data (censored & uncensored) should enter analysis
+                                              Weibull Reliability Analysis—FWS-5/1999—41
+Type I or Time Censored Data: n = 10
+
+
+unit
+10                                    X
+
+ 9                                                                ?
+
+ 8                                                                ?
+
+ 7                                                    X
+
+ 6                                                X
+
+ 5                                                                ?
+
+ 4                                X
+
+ 3                                    X
+
+ 2                                                                ?
+
+ 1                                                                ?
+
+       0   2000   4000   6000             8000            10000
+
+                         cycles
+
+
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—42
+Type II or Failure Censored Data: n = 10
+
+
+ unit
+ 10                                                                    ?
+
+  9                                                                    ?
+
+  8                                                                    ?
+
+  7                                                                    ?
+
+  6                                                              X
+
+  5                                                          X
+
+  4                                             X
+
+  3                                         X
+
+  2                                     X
+
+  1         X
+
+      0   2000   4000   6000        8000            10000
+
+                               cycles
+
+
+
+                                                      Weibull Reliability Analysis—FWS-5/1999—43
+           Interval Censored Data: n = 10
+
+
+unit
+10                                                                             ?
+
+ 9                                       (               •]
+
+ 8                                                                             ?
+
+ 7                                                  (         •                ?
+
+ 6                                   (            • ]
+
+ 5                                                                             ?
+
+ 4                                           (•                   ]
+
+ 3                                                       (        •            ?
+
+ 2                                                                             ?
+
+ 1                          (    •       ]
+
+       0      2000   4000       6000              8000                10000
+
+                                cycles
+
+
+
+                                                         Weibull Reliability Analysis—FWS-5/1999—44
+ Multiply Right Censored Data: n = 10
+
+
+unit
+10                                                                   ?
+
+ 9                                                                   ?
+
+ 8                                                                   ?
+
+ 7                                                                   ?
+
+ 6                                  X
+
+ 5                                                   X
+
+ 4                              X
+
+ 3                                             X
+
+ 2                                                                   ?
+
+ 1                                                  X
+
+       0   2000   4000   6000           8000         10000
+
+                         cycles
+
+
+
+                                               Weibull Reliability Analysis—FWS-5/1999—45
+                     Nonparametric MLEs of CDF
+
+• For complete, type I & II censored data the nonparametric MLE is
+                    d      #{Ti ≤ t; i = 1, . . . , n}
+                   F (t) =                             ,
+                                      n
+  −∞ < t < ∞ for complete sample,
+  −∞ < t ≤ t0 for type I censored (at t0) sample,
+  −∞ < t ≤ T(r) for type II censored (at T(r), rth smallest failure time)
+• For multiply right censored data with failures at t?1 < . . . < t?k the
+   nonparametric MLE (Kaplan-Meier or Product Limit Estimator) is
+                                                                      
+                                                                       1 for t ≤ t
+                 "                                      #             
+                                                                               ?
+     F (t) = 1 − (1 − p̂1)
+     d                    δ1 (t)
+                                 · · · (1 − p̂k )δk (t)
+                                                          , δi(t) =          i
+                                                                        0 for t?i > t
+  where p̂i = di/ni, ni = # units known to be at risk just prior to t?i
+  and di = # units that failed at t?i
+• The nonparametric MLE for interval censored data is complicated
+
+                                                       Weibull Reliability Analysis—FWS-5/1999—46
+      Empirical CDF (complete samples)
+
+
+      empirical and true
+0.8   and Weibull mle
+
+
+
+
+                                                0.8
+      distribution functions
+0.4
+
+
+
+
+                                                0.4
+                                       n = 10                                   n = 30
+0.0
+
+
+
+
+                                                0.0
+      0     5000               15000    25000         0   5000      15000        25000
+0.8
+
+
+
+
+                                                0.8
+0.4
+
+
+
+
+                                                0.4
+
+                                       n = 50                                  n = 100
+0.0
+
+
+
+
+                                                0.0
+
+
+
+
+      0     5000               15000    25000         0   5000      15000        25000
+
+
+
+
+                                                            Weibull Reliability Analysis—FWS-5/1999—47
+Nonparametric MLE for Type I Censored Data
+
+
+         nonparametric mle of CDF
+   0.8   Weibull mle of CDF
+
+
+
+
+                                                     0.8
+         and true CDF
+   0.4
+
+
+
+
+                                                     0.4
+                                            n = 10                                                  n = 30
+   0.0
+
+
+
+
+                                                     0.0
+                                ...                                      ... .                 .
+
+
+         0    5000                  15000    25000         0   5000       15000                      25000
+   0.8
+
+
+
+
+                                                     0.8
+   0.4
+
+
+
+
+                                                     0.4
+
+                                            n = 50                                                 n = 100
+   0.0
+
+
+
+
+                                                     0.0
+
+
+                                . . .. ..                               ... ....... . ..   .
+
+
+         0    5000                  15000    25000         0   5000       15000                      25000
+
+
+
+
+                                                                 Weibull Reliability Analysis—FWS-5/1999—48
+Nonparametric MLE for Type II Censored Data
+
+
+         nonparametric mle of CDF
+   0.8   Weibull mle of CDF
+
+
+
+
+                                                        0.8
+         and true CDF
+   0.4
+
+
+
+
+                                                        0.4
+                                               n = 10                                                      n = 30
+   0.0
+
+
+
+
+                                                        0.0
+                           ..             .                                       ... . ...       .
+
+
+         0    5000                   15000      25000         0   5000             15000                    25000
+   0.8
+
+
+
+
+                                                        0.8
+   0.4
+
+
+
+
+                                                        0.4
+
+                                               n = 50                                                     n = 100
+   0.0
+
+
+
+
+                                                        0.0
+
+
+                          ... . .. .. . . ..                             .. . ........ .. ... .       .
+
+
+         0    5000                   15000      25000         0   5000             15000                    25000
+
+
+
+
+                                                                    Weibull Reliability Analysis—FWS-5/1999—49
+Kaplan-Meier Estimates (multiply right censored samples)
+
+
+              Kaplan-Meier CDF
+        0.8   Weibull mle for CDF
+
+
+
+
+                                                                       0.8
+              true CDF
+        0.4
+
+
+
+
+                                                                       0.4
+                                                              n = 10                                                                      n = 30
+        0.0
+
+
+
+
+                                                                       0.0
+                  . .           . ..          .. .                                        .. . .. . . .. . . . .
+
+
+              0     5000                              15000    25000         0       5000                                        15000     25000
+        0.8
+
+
+
+
+                                                                       0.8
+        0.4
+
+
+
+
+                                                                       0.4
+
+                                                              n = 50                                                                     n = 100
+        0.0
+
+
+
+
+                                                                       0.0
+
+
+                        .. ........ .... . .. . . .     .                        .. . ..... ................. .......... . ...    .
+
+
+              0     5000                              15000    25000         0       5000                                        15000     25000
+
+
+
+
+                                                                                                   Weibull Reliability Analysis—FWS-5/1999—50
+Nonparametric MLE for Interval Censored Data
+
+
+
+        1.0
+              superimposed is the true Weibull(10000,2.5)
+              that generated the 1,000 interval censored data cases
+        0.8
+
+
+
+              inspection points roughly 3000 cycles apart
+        0.6
+  CDF
+
+        0.4
+        0.2
+        0.0
+
+
+
+
+              0                        5000                           10000                15000
+
+                                                     cycles
+
+
+
+
+                                                                          Weibull Reliability Analysis—FWS-5/1999—51
+Nonparametric MLE for Interval Censored Data
+
+
+
+        1.0
+              superimposed is the true Weibull(10000,2.5)
+              that generated the 10,000 interval censored data cases
+        0.8
+
+
+
+              inspection intervals randomly generated from same Weibull
+        0.6
+  CDF
+
+        0.4
+        0.2
+        0.0
+
+
+
+
+              0                    5000                     10000                 15000
+
+                                                    cycles
+
+
+
+
+                                                                          Weibull Reliability Analysis—FWS-5/1999—52
+                                        Application to Y2K Questionnaire Return Data
+                                      1.0
+probability of questionnaire return
+
+                                      0.8
+
+
+
+
+                                            8124 cases
+                                      0.6
+                                      0.4
+                                      0.2
+
+
+
+
+                                                                           estimated .99-quantile
+                                      0.0
+
+
+
+
+                                            0            50   100   150        200           250         300
+
+                                                                    days
+
+
+
+                                                                                      Weibull Reliability Analysis—FWS-5/1999—53
+    Plotting Positions for Weibull Plots (Censored Case)
+
+
+
+• For complete samples we plotted (log[T(i)], log [− log(1 − pi)]) with
+                                                                         
+                i − .5 1  d       d
+                                              1 i i − 1
+           pi =       = F (T(i)) + F (T(i−1)) =  +    
+                  n    2                       2 n   n
+
+• For type I & II & multiply right censored samples
+                              ?
+    we plot in analogy (log[T(i) ], log [− log(1 − pi)]), where
+      ?              ?
+    T(1) < . . . < T(k) are the k distinct observed failure times and
+                            1 "d ?      d    ?
+                                                  #
+                        pi = F (T(i)) + F (T(i−1))
+                            2
+
+     d
+ and F (t) is the nonparametric MLE of F (t) for the censored sample
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—54
+Weibull Plot, Multiply Right Censored Sample n = 50
+
+
+
+
+                   .990
+                   .900
+                                                                       •
+                                                                      •
+                                                                     •
+                    .632
+                                                                 •
+                                                                 • ••
+                   .500                                         •
+                                                           ••••
+                                                          ••
+                   .200                              ••••
+     probability
+
+
+
+
+                                                 • ••
+                   .100                         •
+                                            •
+                                        •
+                                    •
+
+                   .010         •                         true model, Weibull( 100 , 3 )
+                                                          m.l.e. model, Weibull( 96.27 , 2.641 ) n = 50
+                                                          least squares model, Weibull( 96.3 , 2.541 ) n = 50
+
+
+
+                   .001
+
+
+                           10   20               50              100          200                500            1000
+
+
+                                                         cycles/hours
+
+
+
+
+                                                                                     Weibull Reliability Analysis—FWS-5/1999—55
+            Confidence Bounds for Censored Data
+
+• For complete & type II censored data RAP computes exact coverage
+  confidence bounds for α, β, tp, and P (T ≤ t).
+• WEIBREG and commercial software (Weibull++, WeibullSMITH,
+  common statistical packages) compute approximate confidence
+  bounds for above targets, based on large sample m.l.e. theory
+• RAP & WEIBREG are Boeing code, runs within DOS mode
+  of Windows95 (interface clumsy, but job gets done), contact me
+• Boeing has a site license for Weibull++ Version 4
+  in the Puget Sound area
+  contact David Twigg (425) 717-1221, david.twigg@pss.boeing.com
+• There is a Weibull++ Version 5 out
+
+                                            Weibull Reliability Analysis—FWS-5/1999—56
+  Weibull Plot With Confidence Bound
+
+
+0.999
+
+0.990
+            alpha = 102.4 [ 82.52 , 143.8 ] 95 %
+0.900
+               beta = 2.524 [ 1.352 , 3.696 ] 95 %
+            n = 30 , r = 13
+                                                               •
+                                                              •
+0.500                                                        •
+                                                            •
+                                                            •
+                                                       ••
+                                                       •
+0.200
+                                                      •
+                                                     •
+0.100                                           •
+                                            •
+                             •
+
+
+0.010
+
+
+
+
+0.001
+
+
+
+        1      2   3     5       10    20       50             100       200       500   1000
+
+
+
+
+                                                                     Weibull Reliability Analysis—FWS-5/1999—57
+Weibull Plot With Confidence Bound (Variation)
+
+
+    0.999
+
+    0.990
+                alpha = 89.79 [ 77.4 , 109.4 ] 95 %
+    0.900
+                   beta = 3.674 [ 2.15 , 5.198 ] 95 %
+                n = 30 , r = 13
+                                                                               •
+                                                                           •
+    0.500
+                                                                           •
+                                                                       •
+                                                                       •
+                                                                      •
+                                                                  •
+    0.200                                                     •
+                                                              •
+                                                         •
+    0.100                                            •
+                                                     •
+                                                 •
+
+
+    0.010
+
+
+
+
+    0.001
+
+
+
+            1      2   3     5      10     20            50                    100       200       500   1000
+
+
+
+
+                                                                                     Weibull Reliability Analysis—FWS-5/1999—58
+             Weibull Regression Model & Analysis
+
+• Recall tp = α[− log(1 − p)]1/β or
+        log(tp) = log(α) + wp/β       with wp = log[− log(1 − p)]
+• Often we deal with failure data collected under different conditions
+  – different part types
+  – different environmental conditions
+  – different part users
+• Regression model on log(α) (multiplicative on α)
+                       log(αi) = b1Zi1 + . . . + bpZip
+ where Zi1, . . . , Zip are known covariates for ith unit
+• Now we have p + 1 unknown parameters β, b1, . . . , bp
+• parameter estimates & confidence bounds using MLEs
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—59
+         Accelerated Life Testing: Inverse Power Law
+
+• Units last too long under normal usage conditions
+• Increase “stress” to accelerate failure time
+• Increase voltage and accelerate life via inverse power law
+                                       c
+                                  Volt
+         T (Volt) = T (VoltU )        
+                                         , where usually c < 0
+                                  VoltU
+  this means                                       c
+                                              Volt
+                      α(Volt) = α (VoltU )        
+                                                    
+                                              VoltU
+    or   log [α(Volt)] = log [α (VoltU )] + c log (Volt) − c log (VoltU )
+
+                       = b1 + b2Z
+ with
+    b1 = log [α (VoltU )] − c log (VoltU ) , b2 = c, and Z = log (Volt)
+
+                                                 Weibull Reliability Analysis—FWS-5/1999—60
+          Accelerated Life Testing: Arrhenius Model
+
+• Another way of accelerating failure in processes involving
+  chemical reaction rates is to increase the temperature
+• Arrhenius proposed the following acceleration model with
+  temperature measured in Kelvin (tempK = temp◦C + 273.15)
+                                                      
+                                             κ     κ 
+               T (temp) = T (tempU ) exp        −    
+                                            temp tempU
+  or
+                                                  κ    κ
+           log [α(temp)] = log [α(tempU )] +        −
+                                                temp tempU
+
+                          = b1 + b2 Z
+  with
+                               κ
+      b1 = log [α(tempU )] −       ,    b2 = κ,      and Z = temp−1
+                             tempU
+
+                                                  Weibull Reliability Analysis—FWS-5/1999—61
+                     Pooling Data With Different α’s
+
+• Suppose we have three groups of failure data
+           T1, . . . , Tn1 ∼ W(α̃1, β),        Tn1+1, . . . , Tn1+n2 ∼ W(α̃2, β),
+                         Tn1+n2+1, . . . , Tn1+n2+n3 ∼ W(α̃3, β)
+• We can analyze the whole data set of N = n1 + n2 + n3 values jointly
+ using the following model for αj and dummy covariates Z1,j , Z2,j & Z3,j
+
+            log(αj ) = b1Z1,j + b2Z2,j + b3Z3,j ,                 j = 1, 2, . . . , N
+
+ where b1 = log(α̃1),           b2 = log(α̃2)−log(α̃1),            and b3 = log(α̃3)−log(α̃1)
+ Z1,j = 1 for j = 1, . . . , N , Z2,j = 1 for j = n1 + 1, . . . , n1 + n2, & Z2,j = 0 else,
+ and Z3,j = 1 for j = n1 + n2 + 1, . . . , N , & Z3,j = 0 else.
+• Advantage: Smaller estimation error
+
+                                                               Weibull Reliability Analysis—FWS-5/1999—62
+                         Pooling Data (continued)
+
+
+
+log(α1)       = b1 · 1 + b2 · 0 + b3 · 0 = log(α̃1)
+                 ..                         ..
+log(αn1 )     = b1 · 1 + b2 · 0 + b3 · 0 = log(α̃1)
+                  ..                         ..
+log(αn1+1)    = b1 · 1 + b2 · 1 + b3 · 0 = log(α̃1) + [log(α̃2) − log(α̃1)] = log(α̃2)
+              ..                         ..
+log(αn1+n2 ) = b1 · 1 + b2 · 1 + b3 · 0 = log(α̃1) + [log(α̃2) − log(α̃1)] = log(α̃2)
+               ..                         ..
+log(αn1+n2+1) = b1 · 1 + b2 · 0 + b3 · 1 = log(α̃1) + [log(α̃3) − log(α̃1)] = log(α̃3)
+                ..                         ..
+log(αN )      = b1 · 1 + b2 · 0 + b3 · 1 = log(α̃1) + [log(α̃3) − log(α̃1)] = log(α̃3)
+
+
+
+
+                                                     Weibull Reliability Analysis—FWS-5/1999—63
+                  Accelerated Life Testing: Model & Data
+
+
+
+
+                    200
+
+
+
+                    100
+thousand cycles
+
+
+
+
+                    50
+
+
+
+
+                    20
+
+
+
+                    10                                      •           •           •
+                                                                        •           ••
+                                •                                                    ••
+                     5
+                                                                        •
+
+                     2
+
+
+
+                     1
+
+
+
+                          50    100    150      200   250   300   350   400   450   500
+
+
+
+
+                                      Voltage
+
+
+
+
+                                                        Weibull Reliability Analysis—FWS-5/1999—64
+Accelerated Life Testing: Model, Data & MLEs
+
+
+
+
+                    200
+
+
+
+                    100
+  thousand cycles
+
+
+
+
+                    50         true li
+                                      ne
+                               mle lin
+                                       e
+
+                    20
+
+
+
+                    10                                                                    •           •           •
+                                                                                                      •           ••
+                                           • mle for .01-quantile                                                  ••
+                     5
+                                                                                                      •
+                                                 95% lower bound for .01-quantile
+
+                     2
+
+
+
+                     1
+
+
+
+                          50               100                  150           200   250   300   350   400   450   500
+
+
+
+
+                                                              Voltage
+
+
+
+
+                                                                                      Weibull Reliability Analysis—FWS-5/1999—65
+       Analysis for Data from Exponential Distribution
+
+
+• T ∼ E(θ) Exponential with mean θ, i.e., E(θ) = W(α = θ, β = 1)
+
+• It suffices to get confidence bounds for θ since all other quantities
+ of interest are explicit and monotone functions of θ
+
+                  Fθ (t0) = Pθ (T ≤ t0) = 1 − exp(−t0/θ)
+
+
+
+                    Rθ (t0) = Pθ (T > t0) = exp(−t0/θ)
+ and
+                          tp(θ) = θ [− log(1 − p)]
+
+
+
+
+                                                Weibull Reliability Analysis—FWS-5/1999—66
+    Complete & Type II Censored Exponential Samples
+
+
+• T ∼ E(θ) Exponential with mean θ, E(θ) = W(α = θ, β = 1)
+• For complete exponential samples T1, . . . , Tn ∼ E(θ)
+ or for a type II censored sample of this type,
+ i.e., with observed r lowest values T(1) ≤ . . . ≤ T(r), 1 ≤ r ≤ n,
+ one gets 100γ% lower confidence bounds for θ by computing
+                                     2 × TTT
+                             θ̂L,γ =          ,
+                                       χ22r,γ
+ where T T T = T(1) + · · · + T(r) + (n − r)T(r) = Total Time on Test,
+ and χ22r,γ = γ-quantile of the χ22r distribution
+ get this in Excel via = GAMMAINV(γ, r, 1) or = CHIINV(1 − γ, 2r)/2
+• These bounds have exact confidence coverage properties
+
+                                                  Weibull Reliability Analysis—FWS-5/1999—67
+          Multiply Right Censored Exponential Data
+
+
+• Here we define T T T = T1 + . . . + Tn as the total time on test
+ but now Ti is either the observed failure time of the ith part
+ or the observed right censoring time of the ith part
+ The number r of observed failures is random here, 0 ≤ r ≤ n
+
+• Approximate 100γ% lower confidence bounds for θ are computed as
+
+                                    2 × TTT
+                             θ̂L,γ = 2
+                                     χ2r+2,γ
+
+
+• This also holds for r = 0, i.e., no failures at all over exposure period
+
+
+
+                                                Weibull Reliability Analysis—FWS-5/1999—68
+            Weibull Shortcut Methods for Known β
+
+
+• T ∼ W(α, β) (Weibull) ⇒ T β ∼ E(θ) Exponential with mean θ = αβ
+
+• As 100γ% lower confidence bound for α compute
+                                               
+                                                 1/β
+                                
+                                
+                                 2 × T T T (β) 
+                         α̂L,γ =
+                                      2
+                                                
+                                                
+                                     χf,γ
+ where for complete or type II censored samples we take f = 2r and
+                            β              β             β
+                  T T T = T(1) + · · · + T(r) + (n − r)T(r)
+ and for multiply right censored data we take f = 2r + 2 and
+
+                         T T T = T1β + · · · + Tnβ .
+
+• Sensitivity should be studied by repeating analyses for several β’s
+
+                                                    Weibull Reliability Analysis—FWS-5/1999—69
+            A- and B-Allowables, ABVAL Program
+
+
+• My first Weibull work led to the program ABVAL (1983)
+      supporting Cecil Parsons and Ron Zabora w.r.t. MIL-HDBK-5
+• ABVAL computes A- and B-Allowables based on samples
+      from the 3-parameter Weibull distribution.
+  – The A-Allowable is a 95% lower confidence bound
+     for 99% of the population, i.e., for the .01-quantile.
+  – The B-Allowable is a 95% lower confidence bound
+     for 90% of the population, i.e., for the .10-quantile.
+• Hybrid approach of using Mann-Fertig threshold estimate
+  combined with maximum likelihood estimates for α and β,
+  took lot of simulation and tuning and is very specialized in its
+  capabilities
+• It is now a method in MIL-HDBK-5, I still maintain software
+
+                                               Weibull Reliability Analysis—FWS-5/1999—70
+                         Selected References
+
+ • Abernethy, R.B. (1996), The New Weibull Handbook, 2nd edition,
+   Reliability Analysis Center 800-526-4802
+ • Bain, L.J. (1978), Statistical Analysis of Reliability and Life-Testing
+   Models, Marcel Dekker, New York
+ • Kececioglu, D. (1993/4), Reliability & Life Testing Handbook Vol. 1
+   & 2, Prentice Hall PTR, Upper Saddle River, NJ.
+ • Lawless, J.F. (1982), Statistical Models and Methods for Lifetime
+   Data, John Wiley & Sons, New York
+ • Mann, N.R., Schafer, R.E., and Singpurwalla, N.D. (1974), Methods
+   for Statistical Analysis of Reliability and Life Data, John Wiley &
+   Sons, New York
+⇒ Meeker, W.Q. and Escobar, L.A. (1998), Statistical Methods for
+  Reliability Data, John Wiley & Sons, New York
+
+                                                Weibull Reliability Analysis—FWS-5/1999—71
+• Meeker, W.Q. and Hahn, G.J. (1985), Volume 10: How to Plan an
+  Accelerated Life Test—Some Practical Guidelines, American Society
+  for Quality Control
+• Nelson, W. (1982), Applied Life Data Analysis, John Wiley & Sons,
+  New York
+  — (1985), “Weibull analysis of reliability data with few or no
+  failures,” Journal of Quality Technology 17, 140-146
+  — (1990), Accelerated Testing, Statistical Models, Test Plans and
+  Data Analyses, John Wiley & Sons, New York
+• Scholz, F.W. (1994), “Weibull and Gumbel distribution exact
+  confidence bounds.” BCSTECH-94-019 (RAP)
+  — (1996) “Maximum likelihood estimation for type I censored
+  Weibull data including covariates.” ISSTECH-96-022
+  — (1997), “Confidence bounds for type I censored Weibull data
+  including covariates.” SSGTECH-97-025 (WEIBREG)
+  The Boeing Company, P.O. Box 3707, MS-7L-22, Seattle WA 98124-2207
+
+
+                                           Weibull Reliability Analysis—FWS-5/1999—72
+

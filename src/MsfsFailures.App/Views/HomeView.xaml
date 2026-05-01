@@ -42,8 +42,7 @@
                                   Text="Airframe editor — define component templates, MTBFs, wear curves, and L:Var bindings."/>
                 <vp:Placeholder   Visibility="{Binding IsBindings,    Converter={StaticResource BoolVis}}"
                                   Text="Bindings registry — map A/L/K vars per model_ref. 47 bindings across 4 model refs."/>
-                <vp:Placeholder   Visibility="{Binding IsLog,         Converter={StaticResource BoolVis}}"
-                                  Text="Application log — Serilog rolling file, last 24 h."/>
+                <vp:LogView       Visibility="{Binding IsLog,         Converter={StaticResource BoolVis}}"/>
             </Grid>
 
             <vp:DetailAside Grid.Column="1"/>

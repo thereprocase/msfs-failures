@@ -1,0 +1,158 @@
+SE Rev 2                                                                                                                                                                02/13/23
+
+                                                                    FINAL COMMENT LOG
+
+    Originating Office:                         Document Title/Description:                                         POC and Phone Number:                    Suspense Date:
+
+       MKC-AEG                    MMEL SE Rev 2, Single Engine Airplanes                                      Megan Sayre, 316-941-1234                       04/13/2023
+
+   Commenter
+                                        Line, Para,
+    Name and          Date     Page #                                 Comment                                Recommendation                               Response
+                                         or Item #
+   Organization
+   James Sapoznik   11/08/20    23-3    23-40-02-01      The repair category specified in PL-09   Recommend revising the repair category         Concur. Changed 23-40-02-01.
+      AFS-280          22                Passenger       Rev 12 is B or C and the repair          and remarks or exceptions for the              Cut and pasted applicable
+    NONCONCUR                             Address        category in the MMEL is D. The           Passenger Address System – Passenger           portion of PL-09 Cat C Relief
+                                         System –        MMEL is less restrictive than the        Configuration to bring it in line with PL-09   and added corresponding (O)
+                                         Passenger       policy letter.                           Rev 12.                                        Procedure.
+                                        Configuration
+   James Sapoznik   11/23/20    25-8     25-60-01-01     Policy Letter PL-132 contains reflief    Recommend adding in relief for the AED         No Change. Applicable portion
+      AFS-280          22                 Automated      for AEDs and/or associated               in accordance with PL-132.                     of PL-132 cut and pasted
+    NONCONCUR                              External      equipment. The relief for AEDs are                                                      verbatum. Additional relief
+                                         Defibrillator   Category A and the relief for            A–0                                            outlined in PL-109 more
+                                        (AED) and/or     associated equipment is category D.      (O) May be incomplete, inoperative, or         applicable to Large/Transport
+                                         Associated                                               removed provided:                              Aircraft.
+                                          Equipment      This MMEL only contains the relief for
+                                                         the associated equipment.              a) AED is labeled or placarded in a
+                                                                                                manner that will identify it as a unit that
+                                                                                                cannot be mistaken for a fully serviceable
+                                                                                                unit,
+
+                                                                                                  b) Location placarding is removed or
+                                                                                                  obscured, and
+
+                                                                                                  c) Repairs or replacements are made
+                                                                                                  within one flight.
+
+                                                                                                  NOTE: Medical equipment installed in the
+                                                                                                  aircraft as part of an Emergency Medical
+                                                                                                  Service (EMS) operation is not considered
+                                                                                                  part of the normal complement of
+                                                                                                  equipment. No MMEL relief applies to that
+                                                                                                  equipment and 14 CFR maintenance and
+                                                                                                  inspection requirements do not apply.
+
+
+
+
+                                                                                    1
+SE Rev 2                                                                                                                                                              02/13/23
+
+   Commenter
+                                        Line, Para,
+    Name and         Date      Page #                                 Comment                               Recommendation                              Response
+                                         or Item #
+   Organization
+   James Sapoznik   11/23/20    25-8     25-60-01-02     Policy Letter PL-132 contains reflief   Recommend adding in relief for the AED        No Change. Applicable portion
+      AFS-280          22                Emergency       for EMKs and/or associated              in accordance with PL-132.                    of PL-132 cut and pasted
+    NONCONCUR                            Medical Kit     equipment. The relief for EMKs are                                                    verbatum. Additional relief
+                                        (EMK) and/or     Category A and the relief for          (O) May be incomplete or removed               outlined in PL-109 more
+                                         Associated      associated equipment is category D.    provided:                                      applicable to Large/Transport
+                                          Equipment                                             a) EMK is labeled or placarded in a            Aircraft.
+                                                         This MMEL only contains the relief for manner that will identify it as a unit that
+                                                         the associated equipment.              cannot be mistaken for a fully serviceable
+                                                                                                unit,
+
+                                                                                                 b) Location placarding is removed or
+                                                                                                 obscured, and
+
+                                                                                                 c) Repairs or replacements are made
+                                                                                                 within one flight.
+
+                                                                                                 NOTE: Medical equipment installed in the
+                                                                                                 aircraft as part of an EMS operation is not
+                                                                                                 considered part of the normal complement
+                                                                                                 of equipment. No MMEL relief applies to
+                                                                                                 that equipment and 14 CFR maintenance
+                                                                                                 and inspection requirements do not apply.
+   James Sapoznik   11/23/20    25-8    25-60-01-03      Policy Letter PL-132 contains reflief   Recommend adding in relief for the AED        No Change. Applicable portion
+      AFS-280          22                First Aid Kit   for FAKs and/or associated              in accordance with PL-132.                    of PL-132 cut and pasted
+    NONCONCUR                           (FAK) and/or     equipment. The relief for FAKs are                                                    verbatum. Additional relief
+                                         Associated      Category A and the relief for           (O) If more than one is required by           outlined in PL-109 more
+                                         Equipment       associated equipment is category D.     14 CFR, only one of the required FAKs         applicable to Large/Transport
+                                                                                                 may be incomplete or removed provided:        Aircraft.
+                                                         This MMEL only contains the relief for
+                                                         the associated equipment.              a) The FAK is labeled or placarded in a
+                                                                                                manner that will identify it as a unit that
+                                                                                                cannot be mistaken for a fully serviceable
+                                                                                                unit,
+
+                                                                                                 b) Location placarding is removed or
+                                                                                                 obscured, and
+
+                                                                                                 c) Repairs or replacements are made
+                                                                                                 within one flight.
+
+                                                                                                 NOTE: Medical equipment installed in the
+                                                                                                 aircraft as part of an EMS operation is not
+                                                                                                 considered part of the normal complement
+                                                                                                 of equipment. No MMEL relief applies to
+                                                                                                 that equipment and 14 CFR maintenance
+                                                                                                 and inspection requirements do not apply.
+
+
+                                                                                    2
+SE Rev 2                                                                                                                                                                02/13/23
+
+   Commenter
+                                        Line, Para,
+    Name and         Date      Page #                                 Comment                                 Recommendation                             Response
+                                         or Item #
+   Organization
+   James Sapoznik   11/23/20    32-1      32-42-01     The Remarks or Exception column             Recommend adding (O) procedures if the      FOEB Char prefers to leave as
+      AFS-280          22                  Parking     has an (O) with no additional               parking brake is inoperative.               is – no change from Rev. 1. I
+    NONCONCUR                               Brake      instructions.                                                                           believe Inspector Sayre spoke
+                                                                                                                                               to Mr. Sapoznik and he had no
+                                                                                                                                               objection.
+
+   James Sapoznik   11/23/20    33-2    33-40-01-01 14 CFR 91.209(b) requires, in part,            Consider the following for the Category A   Concur. Although this relief has
+      AFS-280          22               Anti-Collision that no person may to operate an            deferral:                                   been in Rev. 1 since 2011, we
+    NONCONCUR                           Strobe Light aircraft that is equipped with an                                                         concur and will delete ALL 33-
+                                                       anticollision light system, unless it has   A–1-0                                       40-01-01 relief.
+                                                       lighted anticollision lights.               May be inoperative provided:
+                                                                                                   a) Position (NAV) Light System is           Per conversation with AFS-280,
+                                                       The Category A relief should include        OPERATIVE and LIGHTED,                      it has been determined to keep
+                                                       the requirement that the Position and       b) Beacon is OPERATIVE and LIGHTED,         this relief in the MMEL.
+                                                       Beacon lights be Operative and              and
+                                                       Lighted.                                    c) Repairs are made within 3 flight-days.
+
+                                                       The Category D relief is contrary to
+                                                       regulation and should be deleted or
+                                                       revised.
+    Rand Foster,    11/21/22    34-1       -16-02      The comments indicate the right side        Change the amount in column 3 to            Concur, made change.
+    AFS-340GA                                          altimeter may be inoperative but            indicate 1 is required for dispatch.
+                                                       column 3 does not indicate 1 is
+                                                       required for dispatch
+    Rand Foster,    11/21/22    34-2       -21-01      The comments indicate the right side        Change the amount in column 3 to            Concur, made change.
+    AFS-340GA                                          pitch & bank may be inoperative but         indicate 1 is required for dispatch.
+                                                       column 3 does not indicate 1 is
+                                                       required for dispatch
+    Rand Foster,    11/21/22    34-2       -22-01      The comments indicate the right side        Change the amount in column 3 to            Concur, made Change.
+    AFS-340GA                                          directional gyroscopic indicator may        indicate 1 is required for dispatch.
+                                                       be inoperative but column 3 does not
+                                                       indicate 1 is required for dispatch
+                                                       Some items that are listed in § 91.205 Suggest a quick review by the author of          Chair completed a
+                                                       Powered civil aircraft with standard   the MMEL to see if items that could have         comprehensive review of
+                                                       category U.S. airworthiness            more than one item installed should be           91.205 of relief and has
+                                                       certificates: Instrument and equipment placed on the list.                              addressed all necessary. No
+                                                       requirements were mentioned in the                                                      additional relief desired.
+                                                       MMEL and some were not.
+      AFS-800                                          No Comments.
+   Public Comment                                      No Comments.
+
+
+
+
+                                                                                    3
+

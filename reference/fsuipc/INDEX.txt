@@ -1,0 +1,34 @@
+FSUIPC7 REFERENCE MATERIAL COLLECTION
+======================================
+
+START HERE:
+1. README.md         - Overview and quick links
+2. QUICKSTART.md     - C# integration patterns with code
+3. MANIFEST.md       - Complete inventory and licensing
+
+EXAMPLE CODE:
+- portable-sim-panels/FSUIPC.cs       - 100+ offset definitions
+- portable-sim-panels/MainWindow.xaml.cs - Connect/disconnect loop + timer polling
+- fsuipc-helper/FSUIPCHelper/Global/Fsuipc.cs - Wrapper methods
+
+NuGet PACKAGE:
+- FSUIPCClientDLL v3.3.16 (command: dotnet add package FSUIPCClientDLL)
+- Targets .NET 5.0 and .NET Framework 4.6.2+
+
+DOCUMENTATION:
+- Official: https://www.fsuipc.com/ (purchase required)
+- Offsets: https://www.projectmagenta.com/all-fsuipc-offsets/
+- Forums: https://fsuipc.com/community/
+
+KEY PATTERN (Copy/Paste):
+  using FSUIPC;
+  
+  Offset<uint> Altitude = new Offset<uint>(0x3324);
+  
+  FSUIPCConnection.Open();
+  FSUIPCConnection.Process();     // Read/write
+  uint alt = Altitude.Value;
+  FSUIPCConnection.Close();
+
+TOTAL SIZE: 2 MB (no binaries; source + examples only)
+LICENSE: See MANIFEST.md for each component

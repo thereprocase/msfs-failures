@@ -1,0 +1,35 @@
+WPF Dense-Data UI Reference Library
+License Summary
+
+All libraries included in this reference collection are licensed under
+permissive open-source licenses suitable for proprietary projects:
+
+OxyPlot
+  File: oxyplot-src/LICENSE
+  License: MIT
+  Suitable for proprietary use: YES
+
+LiveCharts2
+  File: livecharts2-src/LICENSE
+  License: MIT
+  Suitable for proprietary use: YES
+
+InteractiveDataDisplay.WPF (Microsoft)
+  File: idd-wpf-src/LICENSE
+  License: MIT
+  Suitable for proprietary use: YES
+
+MaterialDesignInXAML
+  File: material-design-src/LICENSE
+  License: MIT
+  Suitable for proprietary use: YES
+
+WPF UI (wpfui)
+  File: wpfui-src/LICENSE
+  License: MIT
+  Suitable for proprietary use: YES
+
+Summary: All MIT. No GPL. No copyleft obligations. All suitable for
+proprietary aviation software without source disclosure.
+
+See MANIFEST.md for detailed per-library notes.

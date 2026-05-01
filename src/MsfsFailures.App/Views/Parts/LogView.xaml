@@ -1,0 +1,77 @@
+<UserControl x:Class="MsfsFailures.App.Views.Parts.LogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:log="clr-namespace:MsfsFailures.App.Logging"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+    <UserControl.Resources>
+        <!-- Level-to-brush converter lives in code-behind as a static resource -->
+        <log:LogLevelToBrushConverter x:Key="LevelBrush"/>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource BgBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header bar -->
+        <Border Grid.Row="0" Background="{DynamicResource TabBgBrush}"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
+                Padding="14,8">
+            <TextBlock Text="// APPLICATION LOG" Style="{StaticResource BlockHeading}"/>
+        </Border>
+
+        <!-- Log lines -->
+        <ScrollViewer Grid.Row="1"
+                      x:Name="Scroller"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Background="{DynamicResource PanelBrush}">
+            <ItemsControl x:Name="LogItems"
+                          ItemsSource="{Binding Lines}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type log:LogLineVm}">
+                        <Grid Margin="0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="36"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Timestamp -->
+                            <TextBlock Grid.Column="0"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource FaintBrush}"
+                                       Text="{Binding Timestamp, StringFormat=HH:mm:ss.fff}"
+                                       Padding="14,2,4,2"
+                                       VerticalAlignment="Top"/>
+
+                            <!-- Level -->
+                            <TextBlock Grid.Column="1"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{Binding Level, Converter={StaticResource LevelBrush}}"
+                                       Text="{Binding Level, Converter={StaticResource LevelBrush}, ConverterParameter=abbrev}"
+                                       Padding="0,2,4,2"
+                                       VerticalAlignment="Top"/>
+
+                            <!-- Message -->
+                            <TextBlock Grid.Column="2"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextBrush}"
+                                       Text="{Binding Message}"
+                                       TextWrapping="Wrap"
+                                       Padding="0,2,14,2"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

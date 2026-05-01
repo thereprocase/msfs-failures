@@ -1,0 +1,508 @@
+using System.ComponentModel;
+using System.Windows.Media;
+using MaterialDesignThemes.Wpf.Internal;
+
+
+namespace MaterialDesignThemes.UITests.WPF.TabControls;
+
+public class TabControlTests : TestBase
+{
+    [Test]
+    [Description("Issue 2602")]
+    public async Task OnLoad_ThemeBrushesSet()
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(@"
+<TabControl 
+        materialDesign:ColorZoneAssist.Mode=""PrimaryMid""
+        Style=""{StaticResource MaterialDesignFilledTabControl}"">
+    <TabItem Header=""TAB 1"">
+        <TextBlock Margin=""8"" Text=""PrimaryMid Tab 1"" />
+    </TabItem>
+    <TabItem Header=""TAB 2"">
+        <TextBlock Margin=""8"" Text=""PrimaryMid Tab 2"" />
+    </TabItem>
+</TabControl>");
+
+        IVisualElement<TextBlock> textBlock = await tabControl.GetElement<TextBlock>(@"/TabItem[0]/TextBlock[0]");
+        IVisualElement<Border> selectedTabBorder = await tabControl.GetElement<Border>(@"/TabItem[0]~SelectionHighlightBorder");
+
+        //Act
+        Color? foreground = await textBlock.GetForegroundColor();
+        Color? background = await textBlock.GetEffectiveBackground();
+        Color? selectedTabUnderline = await selectedTabBorder.GetBorderBrushColor();
+
+        //Assert
+        await Assert.That(foreground).IsNotNull();
+        await Assert.That(background).IsNotNull();
+
+        await MaterialDesignSpec.AssertContrastRatio(foreground.Value, background.Value, MaterialDesignSpec.MinimumContrastSmallText);
+
+        await Assert.That(selectedTabUnderline).IsEqualTo(foreground);
+
+        recorder.Success();
+    }
+
+    [Description("Issue 2983")]
+    [Test]
+    [Arguments("Center", true)]
+    [Arguments("Center", false)]
+    [Arguments("Left", true)]
+    [Arguments("Left", false)]
+    [Arguments("Right", true)]
+    [Arguments("Right", false)]
+    [Arguments("Stretch", true)]
+    [Arguments("Stretch", false)]
+    [Arguments("", true)]
+    [Arguments("", false)]
+    public async Task TabItem_ShouldKeepDataContext_WhenContextMenuOpens(string horizontalContentAlignment, bool hasUniformTabWidth)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        string alignment = string.Empty;
+        if (!string.IsNullOrEmpty(horizontalContentAlignment))
+        {
+            alignment = $"HorizontalContentAlignment=\"{horizontalContentAlignment}\"";
+        }
+
+        //Arrange
+        IVisualElement<StackPanel> stackPanel = await LoadXaml<StackPanel>(@$"
+<StackPanel Orientation=""Vertical"">
+  <TabControl
+          {alignment}
+          materialDesign:TabAssist.HasUniformTabWidth=""{hasUniformTabWidth}""
+          materialDesign:ColorZoneAssist.Mode=""PrimaryMid""
+          Style=""{{StaticResource MaterialDesignFilledTabControl}}"">
+    <system:String>aaaa</system:String>
+    <system:String>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</system:String>
+    <TabControl.ItemTemplate>
+      <DataTemplate DataType=""system:String"">
+        <TextBlock Text=""{{Binding}}"" />
+      </DataTemplate>
+    </TabControl.ItemTemplate>
+    <TabControl.ContentTemplate>
+      <DataTemplate DataType=""system:String"">
+        <TextBlock Text=""{{Binding}}"" />
+      </DataTemplate>
+    </TabControl.ContentTemplate>
+  </TabControl>
+  <Button Margin=""50"" Width=""200"" Content=""Button with context menu"">
+    <Button.ContextMenu>
+      <ContextMenu>
+        <MenuItem Header=""Menu item"" />
+      </ContextMenu>
+    </Button.ContextMenu>
+  </Button>
+</StackPanel>", ("system", typeof(string)));
+
+        IVisualElement<TabControl> tabControl = await stackPanel.GetElement<TabControl>();
+        IVisualElement<Button> button = await stackPanel.GetElement<Button>();
+
+        // Assert initial data context
+        IVisualElement<TabItem> tabItem = await tabControl.GetElement<TabItem>();
+        object? dataContext = await tabItem.GetDataContext();
+        await Assert.That(dataContext).IsEqualTo("aaaa");
+
+        // Act
+        await button.MoveCursorTo();
+        await button.RightClick();
+        await tabControl.MoveCursorTo();
+        await tabControl.LeftClick(Position.TopLeft);
+        await Task.Delay(50, TestContext.Current!.CancellationToken); // allow a little time for the disconnect to occur
+        
+        // Assert data context still present
+        tabItem = await tabControl.GetElement<TabItem>();
+        dataContext = await tabItem.GetDataContext();
+        await Assert.That(dataContext).IsEqualTo("aaaa");
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Description("Issue 3271")]
+    public async Task TabControl_ShouldRespectSelectedContentTemplate_WhenSetDirectlyOnTabItem()
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>("""
+            <TabControl materialDesign:ColorZoneAssist.Mode="PrimaryMid"
+                        Style="{StaticResource MaterialDesignFilledTabControl}">
+              <TabControl.Resources>
+                <DataTemplate x:Key="CustomContentTemplate">
+                  <Border Background="Fuchsia" Padding="10" Margin="10" CornerRadius="10">
+                    <TextBlock Text="{Binding .}" />
+                  </Border>
+                </DataTemplate>
+              </TabControl.Resources>
+              <TabItem Content="Tab content string" ContentTemplate="{StaticResource CustomContentTemplate}" />
+            </TabControl>
+            """);
+
+        IVisualElement<Border> selectedContentBorder = await tabControl.GetElement<Border>("PART_BorderSelectedContent");
+
+        //Act
+        var customContentBorder = await selectedContentBorder.GetElement<Border>("/Border");
+        IVisualElement<TextBlock> customContent = await customContentBorder.GetElement<TextBlock>(@"/TextBlock");
+
+        //Assert
+        await Assert.That(await customContentBorder.GetBackgroundColor()).IsEqualTo(Colors.Fuchsia);
+        await Assert.That(await customContent.GetText()).IsEqualTo("Tab content string");
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("")]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"")]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithMoreTabsThanScreenRealEstate_ShouldAddLeftAndRightMarginToHeaderPanel(string additionalProperties)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        const int numTabs = 20;
+        StringBuilder xaml = new($"<TabControl {additionalProperties}>");
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<PaddedBringIntoViewStackPanel> headerPanel = await tabControl.GetElement<PaddedBringIntoViewStackPanel>();
+        double offsetWhenOverflowingWidth = await headerPanel.GetHeaderPadding();
+
+        //Act
+        Thickness margin = await headerPanel.GetMargin();
+
+        // Assert
+        await Assert.That(offsetWhenOverflowingWidth).IsGreaterThan(0);
+        await Assert.That(margin.Left).IsEqualTo(offsetWhenOverflowingWidth);
+        await Assert.That(margin.Right).IsEqualTo(offsetWhenOverflowingWidth);
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("")]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"")]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithLessTabsThanScreenRealEstate_ShouldNotAddLeftAndRightMarginToHeaderPanel(string additionalProperties)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        const int numTabs = 5;
+        StringBuilder xaml = new($"<TabControl {additionalProperties}>");
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<PaddedBringIntoViewStackPanel> headerPanel = await tabControl.GetElement<PaddedBringIntoViewStackPanel>();
+        double offsetWhenOverflowingWidth = await headerPanel.GetHeaderPadding();
+
+        //Act
+        Thickness margin = await headerPanel.GetMargin();
+
+        // Assert
+        await Assert.That(offsetWhenOverflowingWidth).IsGreaterThan(0);
+        await Assert.That(margin.Left).IsEqualTo(0);
+        await Assert.That(margin.Right).IsEqualTo(0);
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("", 5, false)]                                     // UniformGrid style
+    [Arguments("", 20, true)]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"", 5, false)]  // VirtualizingStackPanel style
+    [Arguments("HorizontalContentAlignment=\"Left\"", 20, true)]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithNavigationPanels_ShouldCorrectlySetIsOverflowingAndNavigationPanelVisibility(string additionalProperties, int numberOfTabs, bool expectedToOverflow)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        StringBuilder xaml = new($"""
+            <TabControl materialDesign:TabAssist.UseNavigationPanel="True" {additionalProperties}>
+            """);
+            
+        for (int i = 1; i <= numberOfTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<StackPanel> navigationPanelLeft = await (await tabControl.GetElement<Grid>("NavigationPanelLeft")).GetElement<StackPanel>();
+        IVisualElement<StackPanel> navigationPanelRight = await tabControl.GetElement<StackPanel>("NavigationPanelRight");
+
+        static bool GetIsOverflowing(TabControl tc) => TabAssist.GetIsOverflowing(tc);
+
+        //Act
+        bool isOverflowing = await tabControl.RemoteExecute(GetIsOverflowing);
+        Visibility navigationPanelLeftVisibility = await navigationPanelLeft.GetVisibility();
+        Visibility navigationPanelRightVisibility = await navigationPanelRight.GetVisibility();
+
+        // Assert
+        await Assert.That(isOverflowing).IsEqualTo(expectedToOverflow);
+        await Assert.That(navigationPanelLeftVisibility).IsEqualTo(expectedToOverflow ? Visibility.Visible : Visibility.Collapsed);
+        await Assert.That(navigationPanelRightVisibility).IsEqualTo(expectedToOverflow ? Visibility.Visible : Visibility.Collapsed);
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("")]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"")]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithNavigationPanelLeft_ShouldCorrectlySetIsOverflowingAndNavigationPanelLeftVisibility(string additionalProperties)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        StringBuilder xaml = new($"""
+            <TabControl materialDesign:TabAssist.UseNavigationPanel="True" materialDesign:TabAssist.NavigationPanelPlacement="Left" {additionalProperties}>
+            """);
+
+        const int numTabs = 20;
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<StackPanel> navigationPanel = await (await tabControl.GetElement<Grid>("NavigationPanelLeft")).GetElement<StackPanel>();
+
+        static bool GetIsOverflowing(TabControl tc) => TabAssist.GetIsOverflowing(tc);
+
+        //Act
+        bool isOverflowing = await tabControl.RemoteExecute(GetIsOverflowing);
+        Visibility navigationPanelVisibility = await navigationPanel.GetVisibility();
+
+        // Assert
+        await Assert.That(isOverflowing).IsEqualTo(true);
+        await Assert.That(navigationPanelVisibility).IsEqualTo(Visibility.Visible);
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("")]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"")]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithNavigationPanelRight_ShouldCorrectlySetIsOverflowingAndNavigationPanelLeftVisibility(string additionalProperties)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        StringBuilder xaml = new($"""
+            <TabControl materialDesign:TabAssist.UseNavigationPanel="True" materialDesign:TabAssist.NavigationPanelPlacement="Right" {additionalProperties}>
+            """);
+
+        const int numTabs = 20;
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<StackPanel> navigationPanel = await tabControl.GetElement<StackPanel>("NavigationPanelRight");
+
+        static bool GetIsOverflowing(TabControl tc) => TabAssist.GetIsOverflowing(tc);
+
+        //Act
+        bool isOverflowing = await tabControl.RemoteExecute(GetIsOverflowing);
+        Visibility navigationPanelVisibility = await navigationPanel.GetVisibility();
+
+        // Assert
+        await Assert.That(isOverflowing).IsEqualTo(true);
+        await Assert.That(navigationPanelVisibility).IsEqualTo(Visibility.Visible);
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("")]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"")]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithNavigationPanelAndSelectBehavior_ShouldChangeSelectedTabWhenClicked(string additionalProperties)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        StringBuilder xaml = new($"""
+            <TabControl materialDesign:TabAssist.UseNavigationPanel="True" materialDesign:TabAssist.NavigationPanelBehavior="Select" {additionalProperties}>
+            """);
+
+        const int numTabs = 20;
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<ScrollViewer> scrollViewer = await tabControl.GetElement<ScrollViewer>();
+        IVisualElement<StackPanel> navigationPanel = await tabControl.GetElement<StackPanel>("NavigationPanelRight");
+        IVisualElement<Button> rightNextButton = await navigationPanel.GetElement<Button>("RightNextButton");
+
+        static bool GetIsOverflowing(TabControl tc) => TabAssist.GetIsOverflowing(tc);
+
+        //Act
+        await Wait.For(async () => await tabControl.RemoteExecute(GetIsOverflowing));
+        await Wait.For(async () => await rightNextButton.GetIsEnabled());
+        await Wait.For(async () =>
+        {
+            await rightNextButton.LeftClick();
+            return await tabControl.GetSelectedIndex() > 0;
+        }, new Retry(10, TimeSpan.FromSeconds(5)));
+
+        // Assert
+        await Assert.That(await tabControl.GetSelectedIndex()).IsGreaterThanOrEqualTo(1);
+        await Assert.That(await scrollViewer.GetContentHorizontalOffset()).IsEqualTo(0);
+
+        recorder.Success();
+    }
+
+    [Test]
+    [Arguments("")]                                     // UniformGrid style
+    [Arguments("HorizontalContentAlignment=\"Left\"")]  // VirtualizingStackPanel style
+    public async Task ScrollingTabs_WithNavigationPanelAndScrollBehavior_ShouldScrollWhenClicked(string additionalProperties)
+    {
+        await using var recorder = new TestRecorder(App);
+
+        //Arrange
+        StringBuilder xaml = new($"""
+            <TabControl materialDesign:TabAssist.UseNavigationPanel="True" materialDesign:TabAssist.NavigationPanelBehavior="Scroll" {additionalProperties}>
+            """);
+
+        const int numTabs = 20;
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+                <TabItem Header="TAB {i}">
+                  <TextBlock Margin="8" Text="Tab {i}" />
+                </TabItem>
+                """);
+        }
+        xaml.Append("</TabControl>");
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<ScrollViewer> scrollViewer = await tabControl.GetElement<ScrollViewer>();
+        IVisualElement<StackPanel> navigationPanel = await tabControl.GetElement<StackPanel>("NavigationPanelRight");
+        IVisualElement<Button> rightNextButton = await navigationPanel.GetElement<Button>("RightNextButton");
+
+        static bool GetIsOverflowing(TabControl tc) => TabAssist.GetIsOverflowing(tc);
+
+        //Act
+        await Wait.For(async () => await tabControl.RemoteExecute(GetIsOverflowing));
+        await Wait.For(async() => await rightNextButton.GetIsEnabled());
+        await Wait.For(async () =>
+        {
+            await rightNextButton.LeftClick();
+            return await scrollViewer.GetContentHorizontalOffset() > 0;
+        }, new Retry(10, TimeSpan.FromSeconds(5)));
+
+        // Assert
+        await Assert.That(await tabControl.GetSelectedIndex()).IsEqualTo(0);
+        await Assert.That(await scrollViewer.GetContentHorizontalOffset()).IsGreaterThan(0);
+
+        recorder.Success();
+    }
+
+    [Test]
+    public async Task ScrollingTabs_NavigationPanel_ScrollsAndBringsSelectedTabIntoView()
+    {
+        await using var recorder = new TestRecorder(App);
+
+        // Arrange
+        const int numTabs = 20;
+        StringBuilder xaml = new($"<TabControl Width=\"504\" materialDesign:TabAssist.HeaderBehavior=\"Scrolling\" materialDesign:TabAssist.UseNavigationPanel=\"True\" materialDesign:TabAssist.NavigationPanelPlacement=\"Right\">");
+        for (int i = 1; i <= numTabs; i++)
+        {
+            xaml.Append($"""
+            <TabItem Header="TAB {i}">
+              <TextBlock Margin="8" Text="Tab {i}" />
+            </TabItem>
+            """);
+        }
+        xaml.Append("</TabControl>");
+
+        IVisualElement<TabControl> tabControl = await LoadXaml<TabControl>(xaml.ToString());
+        IVisualElement<PaddedBringIntoViewStackPanel> headerPanel = await tabControl.GetElement<PaddedBringIntoViewStackPanel>();
+        IVisualElement<ScrollViewer> scrollViewer = await tabControl.GetElement<ScrollViewer>();
+        IVisualElement<StackPanel> navigationPanel = await tabControl.GetElement<StackPanel>("NavigationPanelRight");
+        IVisualElement<Button> rightNextButton = await navigationPanel.GetElement<Button>("RightNextButton");
+        IVisualElement<Button> rightPreviousButton = await navigationPanel.GetElement<Button>("RightPreviousButton");
+
+        static bool GetIsOverflowing(TabControl tc) => TabAssist.GetIsOverflowing(tc);
+        var retry = new Retry(10, TimeSpan.FromSeconds(5));
+
+        // Act
+        // Wait for layout to complete and overflow to be detected
+        await Wait.For(async () => await tabControl.RemoteExecute(GetIsOverflowing));
+
+        // Scroll right once
+        double offsetBefore = await scrollViewer.GetContentHorizontalOffset();
+        await Wait.For(async () => await rightNextButton.GetIsEnabled());
+        await Task.Delay(200);
+        await rightNextButton.LeftClick();
+        await Wait.For(async () => await scrollViewer.GetContentHorizontalOffset() > offsetBefore, retry);
+
+        // Select an arbitrary tab (index 8)
+        IVisualElement<TabItem> someTab = await tabControl.GetElement<TabItem>("/TabItem[8]");
+        await someTab.LeftClick();
+        await Wait.For(async () => await tabControl.GetSelectedIndex() == 8, retry);
+
+        // Scroll back to the left
+        double offsetAfterScrollRight = await scrollViewer.GetContentHorizontalOffset();
+        await Wait.For(async () => await rightPreviousButton.GetIsEnabled());
+        await rightPreviousButton.LeftClick();
+        await Wait.For(async () => await scrollViewer.GetContentHorizontalOffset() < offsetAfterScrollRight, retry);
+
+        // Select the last visible tab
+        // NB: The last visible tab is "hardcoded" to always be index 4 due to the fixed Width of 504 on the TabControl
+        IVisualElement<TabItem> lastVisibleTab = await tabControl.GetElement<TabItem>($"/TabItem[4]");
+        await lastVisibleTab.LeftClick();
+        await Wait.For(async () => await tabControl.GetSelectedIndex() == 4, retry);
+
+        // Assert
+        int selectedTabIndex = await tabControl.GetSelectedIndex();
+        await Assert.That(selectedTabIndex).IsEqualTo(4);
+
+        double offsetWhenOverflowingWidth = await headerPanel.GetHeaderPadding();
+        Thickness margin = await headerPanel.GetMargin();
+
+        await Assert.That(offsetWhenOverflowingWidth).IsGreaterThan(0);
+        await Assert.That(margin.Left).IsEqualTo(offsetWhenOverflowingWidth);
+
+        static Thickness GetNavigationPanelMargin(TabControl tc) => TabAssist.GetNavigationPanelMargin(tc);
+
+        Thickness navigationPanelMargin = await tabControl.RemoteExecute(GetNavigationPanelMargin);
+        double navigationPanelActualWidth = await navigationPanel.GetActualWidth() + navigationPanelMargin.Left + navigationPanelMargin.Right;
+
+        await Assert.That(margin.Right).IsEqualTo(offsetWhenOverflowingWidth + navigationPanelActualWidth);
+
+        recorder.Success();
+    }
+}
