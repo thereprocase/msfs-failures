@@ -204,23 +204,61 @@ dashboard. Honesty is a feature.
 
 ---
 
-## Roadmap
+## Submodel dictionaries (A&P granularity)
 
-Coming next in this same folder (parallel agent work in flight):
+The v1 component table above is the **rolled-up** view used to drive in-sim
+failure injection. The submodel files are what an A&P would actually log
+against — real units, jargon names, Fermi-accurate service limits. Total:
+**625 submodels** across 9 shards.
 
-- `submodels-powerplant.json` — full A&P-vocabulary submodel dictionary for
-  the O-320 (ring end gaps, valve guide clearances, mag timing drift, cam
-  lobe wear, etc., with real units and Fermi-accurate service limits).
-- `submodels-airframe.json` — landing gear, brakes, tires, controls, wings,
-  fuselage at A&P granularity (oleo extension, pad lining thickness, hinge
-  bushing slop, strut back-set).
-- `submodels-electrical-avionics.json` — battery internal resistance,
-  alternator brush length, voltage regulator setpoint drift, G1000 cooling
-  fan hours, static system leak rate, etc.
-- `submodels-coupling-recipes.json` — the glue: physical coupling graph
-  between submodels, named recipe library, stress-event detectors,
-  inspection schedule (100-hour, annual, 25h oil change, 500h mag IRAN,
-  pitot-static cert, ELT battery, TBO).
+### Powerplant — 210 submodels
 
-The v1 component table above is the **rolled-up** view. The submodel files
-are what an A&P would actually log against.
+| file                                                      | rows | scope                                                                 |
+|-----------------------------------------------------------|------|-----------------------------------------------------------------------|
+| [`submodels-powerplant-bottom-top.json`](./submodels-powerplant-bottom-top.json)                       | 89   | mains/rod bearings, journals, cam lobes, lifters, rings, pistons, valves, guides, springs |
+| [`submodels-powerplant-ignition-induction.json`](./submodels-powerplant-ignition-induction.json)       | 60   | both magnetos, 8 spark plugs, harness, carburetor internals, intake, primer |
+| [`submodels-powerplant-oil-cool-exh-acc-prop.json`](./submodels-powerplant-oil-cool-exh-acc-prop.json) | 61   | oil pump/cooler/seals, baffles, exhaust risers, alt/starter brushes, prop, mount, oil SOAP |
+
+### Airframe — 241 submodels
+
+| file                                                          | rows | scope                                                              |
+|---------------------------------------------------------------|------|--------------------------------------------------------------------|
+| [`submodels-airframe-gear-brakes-tires.json`](./submodels-airframe-gear-brakes-tires.json)   | 94   | main spring/nose oleo, wheel bearings, tire tread/cord/pressure, Cleveland disc + caliper + master cyl |
+| [`submodels-airframe-controls-flaps.json`](./submodels-airframe-controls-flaps.json)         | 79   | aileron/elevator/rudder hinges, cable tensions, pulleys, flap track rollers, trim drum |
+| [`submodels-airframe-structure.json`](./submodels-airframe-structure.json)                   | 68   | wing struts, tank sealant, firewall, mount isolators, doors/seals, exterior corrosion |
+
+### Electrical / Avionics / Environmental — 174 submodels
+
+| file                                                            | rows | scope                                                            |
+|-----------------------------------------------------------------|------|------------------------------------------------------------------|
+| [`submodels-electrical-fuel-power.json`](./submodels-electrical-fuel-power.json)             | 71   | wet-wing tanks + sumps, fuel selector/lines, alternator internals, Concorde RG-35 SoH/IR/cycles, bus bars, contactors, ground bonds |
+| [`submodels-electrical-avionics.json`](./submodels-electrical-avionics.json)                 | 49   | G1000 PFD/MFD/GIA/GRS/GMU/GDC/GEA, COM/NAV, GTX33, GFC700 servos, ELT, analog standby instruments |
+| [`submodels-electrical-environmental.json`](./submodels-electrical-environmental.json)       | 54   | landing/taxi/position/strobe/beacon, pitot heat + static leak, vacuum (legacy/N/A), cabin heat + CO, antennas, annunciators |
+
+### Glue layer — coupling, recipes, events, inspections
+
+[`submodels-coupling-recipes.json`](./submodels-coupling-recipes.json):
+
+- **64 couplings** — directed edges between submodels with `amplifies` /
+  `triggers` / `consumes` / `masks` / `induces_failure` semantics. Example
+  chains: ring end gap → blow-by → oil consumption → bearing starvation;
+  voltage regulator drift → battery overcharge → SoH loss; oleo seal leak →
+  spring landings → spring back-set.
+- **20 recipes** — the math kernels: `power_pct`, `bsfc_estimate`,
+  `valve_thermal_load`, `ring_blowby_proxy`, `mag_timing_drift_proxy`,
+  `brake_thermal_pulse`, `oleo_compression_event`, `crosswind_side_load`,
+  `corrosion_index`, `alternator_load_factor`, `bus_voltage_dip`, etc.
+- **32 events** — edge detectors with debounce/cooldown: `hot_start`,
+  `shock_cooling`, `lean_of_peak`, `hard_landing`, `wheel_landing`,
+  `bounced_landing`, `flat_spot_brake`, `mag_check_drop_excess`,
+  `prop_strike_proxy`, `parked_outdoors_24h`, etc.
+- **12 inspections** — the A&P calendar: 25h oil-and-filter, 50h alternative,
+  100-hour, annual, 500h magneto IRAN, 1000h prop, ELT battery, pitot-static
+  cert (FAR 91.411), transponder cert (FAR 91.413), brake fluid 5yr, battery
+  capacity test (annual), engine TBO 2000h.
+
+Each submodel row carries `drivers` (which telemetry signals/events
+accelerate its wear), `couples` (ids of neighbours it physically affects),
+`manifestsAs` (which cockpit-visible failures it induces past `failureValue`),
+and `inspectionMethod` (how an A&P would actually measure it — diff
+compression, SOAP, megger, leak test, borescope, hydrometer).
