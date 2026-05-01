@@ -79,4 +79,35 @@ public interface IFleetRepository
     /// Returns null if no airframe is found for the given ModelRefId.
     /// </summary>
     Task<Entities.Airframe?> GetAirframeByModelRefAsync(Guid modelRefId, CancellationToken ct = default);
+
+    // ── Squawk write operations ──────────────────────────────────────────────
+
+    /// <summary>Opens a new squawk against an airframe and returns its new Guid.</summary>
+    Task<Guid> AddSquawkAsync(
+        Guid airframeId,
+        string component,
+        string summary,
+        int severity,
+        bool melDeferrable,
+        string notes,
+        double hoursAtOpen,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Partially updates a squawk. Only non-null parameters are applied.
+    /// </summary>
+    Task UpdateSquawkAsync(
+        Guid squawkId,
+        string? component,
+        string? summary,
+        string? notes,
+        int? status,
+        DateTimeOffset? deferredUntil,
+        CancellationToken ct = default);
+
+    /// <summary>Hard-deletes a squawk record.</summary>
+    Task DeleteSquawkAsync(Guid squawkId, CancellationToken ct = default);
+
+    /// <summary>Gets all squawks across all airframes (including their Airframe nav property).</summary>
+    Task<IReadOnlyList<Entities.Squawk>> GetAllSquawksAsync(CancellationToken ct = default);
 }

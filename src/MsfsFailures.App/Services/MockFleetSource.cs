@@ -93,7 +93,7 @@ public sealed class MockFleetSource : IFleetSource
     [
         new SquawkVm
         {
-            Id = "SQ-1042", Tail = "N812RP",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1042", Tail = "N812RP",
             Component = "#2 Magneto",
             Summary = "Rough on runup, ~75 RPM drop on right mag, intermittent miss.",
             Severity = SquawkSeverity.Open, MelDeferrable = true,
@@ -102,7 +102,7 @@ public sealed class MockFleetSource : IFleetSource
         },
         new SquawkVm
         {
-            Id = "SQ-1043", Tail = "N812RP",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1043", Tail = "N812RP",
             Component = "Right Brake",
             Summary = "Soft pedal feel, slight pull right on heavy braking.",
             Severity = SquawkSeverity.Deferred, MelDeferrable = true,
@@ -111,7 +111,7 @@ public sealed class MockFleetSource : IFleetSource
         },
         new SquawkVm
         {
-            Id = "SQ-1044", Tail = "N350KA",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1044", Tail = "N350KA",
             Component = "Cabin Pressurization",
             Summary = "Slow climb to scheduled differential, +12 sec vs nominal.",
             Severity = SquawkSeverity.Deferred, MelDeferrable = true,
@@ -120,7 +120,7 @@ public sealed class MockFleetSource : IFleetSource
         },
         new SquawkVm
         {
-            Id = "SQ-1045", Tail = "N58BS",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1045", Tail = "N58BS",
             Component = "L Engine — Cyl #4 CHT",
             Summary = "CHT exceeded 420°F twice during climb out of KSEZ.",
             Severity = SquawkSeverity.Open, MelDeferrable = false,
@@ -129,7 +129,7 @@ public sealed class MockFleetSource : IFleetSource
         },
         new SquawkVm
         {
-            Id = "SQ-1046", Tail = "N210BS",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1046", Tail = "N210BS",
             Component = "Main Tires (both)",
             Summary = "Tread at 18% — below replacement threshold.",
             Severity = SquawkSeverity.Grounding, MelDeferrable = false,
@@ -138,7 +138,7 @@ public sealed class MockFleetSource : IFleetSource
         },
         new SquawkVm
         {
-            Id = "SQ-1047", Tail = "N210BS",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1047", Tail = "N210BS",
             Component = "Battery SOH",
             Summary = "State-of-health 44% — slow cranking, two deep-discharge events.",
             Severity = SquawkSeverity.Grounding, MelDeferrable = false,
@@ -147,7 +147,7 @@ public sealed class MockFleetSource : IFleetSource
         },
         new SquawkVm
         {
-            Id = "SQ-1048", Tail = "N210BS",
+            SquawkGuid = Guid.NewGuid(), Id = "SQ-1048", Tail = "N210BS",
             Component = "Vacuum Pump",
             Summary = "Suction reading 4.2 inHg, below 4.5 minimum.",
             Severity = SquawkSeverity.Grounding, MelDeferrable = false,

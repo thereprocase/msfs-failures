@@ -22,15 +22,62 @@
         <Style x:Key="DimCell" TargetType="TextBlock" BasedOn="{StaticResource Cell}">
             <Setter Property="Foreground" Value="{DynamicResource DimBrush}"/>
         </Style>
+        <!-- Tiny ghost button for inline row actions -->
+        <Style x:Key="RowAction" TargetType="Button" BasedOn="{StaticResource GhostButton}">
+            <Setter Property="FontSize" Value="8"/>
+            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+        <!-- Label style for the editor form -->
+        <Style x:Key="EdLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="{DynamicResource AmberBrush}"/>
+            <Setter Property="Margin" Value="0,10,0,3"/>
+        </Style>
+        <!-- TextBox style matching V4 terminal aesthetic -->
+        <Style x:Key="EdBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Background" Value="#1AFFFFFF"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AmberBrush}"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource AmberBrush}"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- column header -->
+            <RowDefinition Height="Auto"/>
+            <!-- table action bar or editor heading -->
             <RowDefinition Height="*"/>
+            <!-- table scroll OR editor form -->
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="{DynamicResource TabBgBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+        <!-- ══ TABLE VIEW (visible when not editing) ══ -->
+
+        <!-- Toolbar: [+ NEW SQUAWK] on the right -->
+        <Border Grid.Row="0" Background="{DynamicResource TabBgBrush}"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
+                Visibility="{Binding IsEditing, Converter={StaticResource BoolVisInv}, FallbackValue=Visible}">
+            <DockPanel Margin="14,6">
+                <TextBlock DockPanel.Dock="Left" Text="SQUAWKS" Style="{StaticResource MonoTiny}"
+                           VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <Button DockPanel.Dock="Right" Style="{StaticResource GhostButton}"
+                        Content="+ NEW SQUAWK" Command="{Binding NewSquawkCommand}"
+                        HorizontalAlignment="Right"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Column header row -->
+        <Border Grid.Row="1" Background="{DynamicResource TabBgBrush}"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
+                Visibility="{Binding IsEditing, Converter={StaticResource BoolVisInv}, FallbackValue=Visible}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="S0"/>
@@ -41,6 +88,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="S5"/>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="S6"/>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="S7"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="S8"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Style="{StaticResource ColHead}" Text="ID"/>
                 <TextBlock Grid.Column="1" Style="{StaticResource ColHead}" Text="OPENED"/>
@@ -50,10 +98,12 @@
                 <TextBlock Grid.Column="5" Style="{StaticResource ColHead}" Text="SEV"/>
                 <TextBlock Grid.Column="6" Style="{StaticResource ColHead}" Text="MEL"/>
                 <TextBlock Grid.Column="7" Style="{StaticResource ColHead}" Text="AGE"/>
+                <TextBlock Grid.Column="8" Style="{StaticResource ColHead}" Text=""/>
             </Grid>
         </Border>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Visibility="{Binding IsEditing, Converter={StaticResource BoolVisInv}, FallbackValue=Visible}">
             <ItemsControl ItemsSource="{Binding Squawks}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:SquawkVm}">
@@ -68,6 +118,7 @@
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="S5"/>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="S6"/>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="S7"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="S8"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Style="{StaticResource Cell}" Foreground="{DynamicResource FaintBrush}" Text="{Binding Id}"/>
                                 <TextBlock Grid.Column="1" Style="{StaticResource DimCell}" Text="{Binding Opened}"/>
@@ -81,11 +132,72 @@
                                            Text="{Binding MelLabel}"
                                            Foreground="{Binding MelDeferrable, Converter={StaticResource MelBrush}}"/>
                                 <TextBlock Grid.Column="7" Style="{StaticResource DimCell}" Text="—"/>
+                                <!-- Inline row actions -->
+                                <StackPanel Grid.Column="8" Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+                                    <Button Style="{StaticResource RowAction}" Content="EDIT"
+                                            Command="{Binding DataContext.EditSquawkCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Style="{StaticResource RowAction}" Content="DEFER"
+                                            Command="{Binding DataContext.DeferSquawkCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Style="{StaticResource RowAction}" Content="CLOSE"
+                                            Command="{Binding DataContext.CloseSquawkCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <!-- ══ EDITOR PANEL (replaces table when IsEditing=true) ══ -->
+        <Border Grid.Row="0" Grid.RowSpan="3"
+                Background="{DynamicResource BgBrush}"
+                Visibility="{Binding IsEditing, Converter={StaticResource BoolVis}, FallbackValue=Collapsed}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="24,16" MaxWidth="620" HorizontalAlignment="Left"
+                            DataContext="{Binding EditingSquawk}">
+                    <TextBlock Text="[SQUAWK EDITOR]" Style="{StaticResource BlockHeading}" Margin="0,0,0,12"/>
+
+                    <TextBlock Style="{StaticResource EdLabel}" Text="COMPONENT"/>
+                    <TextBox Style="{StaticResource EdBox}" Text="{Binding Component, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Style="{StaticResource EdLabel}" Text="SUMMARY"/>
+                    <TextBox Style="{StaticResource EdBox}" Text="{Binding Summary, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Style="{StaticResource EdLabel}" Text="NOTES"/>
+                    <TextBox Style="{StaticResource EdBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                             TextWrapping="Wrap" AcceptsReturn="True" MinLines="3" MaxLines="6"/>
+
+                    <TextBlock Style="{StaticResource EdLabel}" Text="SEVERITY"/>
+                    <ComboBox FontFamily="{StaticResource MonoFont}" FontSize="11"
+                              Background="#1AFFFFFF" Foreground="{DynamicResource TextBrush}"
+                              BorderBrush="{DynamicResource BorderBrush}"
+                              SelectedValue="{Binding Severity}"
+                              SelectedValuePath="Tag" Padding="8,6">
+                        <ComboBoxItem Tag="{x:Static vm:SquawkSeverity.Open}" Content="OPEN"/>
+                        <ComboBoxItem Tag="{x:Static vm:SquawkSeverity.Deferred}" Content="DEFERRED"/>
+                        <ComboBoxItem Tag="{x:Static vm:SquawkSeverity.Grounding}" Content="GROUNDING"/>
+                    </ComboBox>
+
+                    <CheckBox Margin="0,12,0,0"
+                              FontFamily="{StaticResource MonoFont}" FontSize="11"
+                              Foreground="{DynamicResource TextBrush}"
+                              IsChecked="{Binding MelDeferrable}"
+                              Content="MEL DEFERRABLE"/>
+
+                    <!-- Action buttons — DataContext must reach HomeViewModel -->
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0"
+                                DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}">
+                        <Button Style="{StaticResource GhostButton}" Content="SAVE"
+                                Command="{Binding SaveSquawkCommand}"
+                                Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource GhostButton}" Content="CANCEL"
+                                Command="{Binding CancelEditCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>

@@ -25,6 +25,16 @@ public sealed class TickHost : BackgroundService
     // Batch every N ticks before writing to SQLite (~5 s at 4 Hz).
     private const int BatchFlushThresholdTicks = 20;
 
+    // Airframe snapshot cache — invalidated on airframe change or periodic refresh.
+    private sealed record AirframeSnapshot(
+        Guid AirframeId,
+        Core.Airframe Airframe,
+        IReadOnlyList<Core.Component> Components,
+        IReadOnlyList<Core.ComponentTemplate> Templates,
+        IReadOnlyList<Core.FailureMode> FailureModes,
+        IReadOnlyList<Core.Accelerator> Accelerators,
+        IReadOnlyList<Core.Consumable> Consumables);
+
     private readonly ISimBus _bus;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<TickHost> _log;
@@ -39,6 +49,10 @@ public sealed class TickHost : BackgroundService
     private double _maxG = 1.0;
     private int _hardLandings;
     private bool _airframeWarnedMissing;
+
+    // Airframe snapshot cache — volatile to ensure fresh reads across invalidations.
+    private volatile AirframeSnapshot? _snapshot;
+    private DateTime _lastCacheRefresh = DateTime.MinValue;
 
     // Batch accumulator fields — guarded by sequential reactive subscription.
     private int _batchTickCount;
@@ -61,6 +75,13 @@ public sealed class TickHost : BackgroundService
         _wear              = wear;
         _failure           = failure;
         _airframeProvider  = airframeProvider;
+
+        // Subscribe to airframe changes to invalidate cache.
+        _airframeProvider.ActiveAirframeChanged += (s, id) =>
+        {
+            _snapshot = null;
+            _log.LogDebug("TickHost: cache invalidated for airframe change.");
+        };
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -193,20 +214,8 @@ public sealed class TickHost : BackgroundService
     {
         try
         {
-            // TODO: derive airframe from sim aircraft detection (TITLE/ATC_MODEL)
-            using var scope = _scopeFactory.CreateScope();
-            var repo = scope.ServiceProvider.GetRequiredService<IFleetRepository>();
-
-            // TODO: derive airframe from sim aircraft detection (TITLE/ATC_MODEL)
-            // v1 fallback: try well-known demo tail, then take first airframe in DB.
-            var airframe = await repo.GetAirframeByTailAsync("N208RC", ct);
-            if (airframe is null)
-            {
-                var all = await repo.GetAllAirframesAsync(ct);
-                airframe = all.Count > 0 ? all[0] : null;
-            }
-
-            if (airframe is null)
+            var currentAirframeId = await ResolveAirframeIdAsync(ct);
+            if (currentAirframeId is null)
             {
                 if (!_airframeWarnedMissing)
                 {
@@ -218,27 +227,27 @@ public sealed class TickHost : BackgroundService
             }
             _airframeWarnedMissing = false;
 
-            // Build Core-domain objects from Data entities for the engine calls.
-            var components  = await repo.GetComponentsForAirframeAsync(airframe.Id, ct);
-            var consumables = await repo.GetConsumablesForAirframeAsync(airframe.Id, ct);
-            var templates   = await repo.GetTemplatesForModelAsync(airframe.ModelRefId, ct);
-            var templateIds = templates.Select(t => t.Id).ToList();
-            var modes       = await repo.GetFailureModesForTemplatesAsync(templateIds, ct);
-            var accelerators = await repo.GetAcceleratorsAsync(ct);
+            // Load or refresh snapshot if needed (airframe changed, invalidated, or safety-net refresh).
+            var now = DateTime.UtcNow;
+            var snapshot = _snapshot;
+            if (snapshot == null || snapshot.AirframeId != currentAirframeId ||
+                (now - _lastCacheRefresh).TotalSeconds > 30)
+            {
+                snapshot = await LoadAirframeSnapshotAsync(currentAirframeId.Value, ct);
+                if (snapshot is null)
+                    return;
 
-            var coreAirframe    = MapAirframe(airframe);
-            var coreComponents  = components.Select(MapComponent).ToList();
-            var coreConsumables = consumables.Select(MapConsumable).ToList();
-            var coreTemplates   = templates.Select(MapTemplate).ToList();
-            var coreModes       = modes.Select(MapFailureMode).ToList();
-            var coreAccelerators = accelerators.Select(MapAccelerator).ToList();
+                _snapshot = snapshot;
+                _lastCacheRefresh = now;
+                _log.LogInformation("TickHost: cache loaded for airframe {AirframeId}.", currentAirframeId.Value);
+            }
 
-            // Run wear engine.
+            // Run wear engine using cached snapshot.
             var wearResult = _wear.Tick(
-                coreAirframe,
-                coreComponents,
-                coreConsumables,
-                coreAccelerators,
+                snapshot.Airframe,
+                snapshot.Components,
+                snapshot.Consumables,
+                snapshot.Accelerators,
                 sample,
                 TickDt);
 
@@ -253,11 +262,11 @@ public sealed class TickHost : BackgroundService
 
             // Run failure engine (roll — results logged but not yet persisted as squawks in v1).
             var failureResult = _failure.Roll(
-                coreAirframe,
-                coreComponents,
-                coreTemplates,
-                coreModes,
-                coreAccelerators,
+                snapshot.Airframe,
+                snapshot.Components,
+                snapshot.Templates,
+                snapshot.FailureModes,
+                snapshot.Accelerators,
                 sampleVars,
                 TickDt);
 
@@ -278,6 +287,8 @@ public sealed class TickHost : BackgroundService
             if (_batchTickCount >= BatchFlushThresholdTicks)
             {
                 await FlushBatchAsync(ct).ConfigureAwait(false);
+                // Invalidate snapshot after flush so wear deltas are reflected in next tick.
+                _snapshot = null;
             }
         }
         catch (OperationCanceledException)
@@ -346,12 +357,56 @@ public sealed class TickHost : BackgroundService
         }
     }
 
-    // ── Airframe resolution ──────────────────────────────────────────────────
+    // ── Airframe resolution & snapshot loading ───────────────────────────────
 
     private async Task<Guid?> ResolveAirframeIdAsync(CancellationToken ct)
     {
         // Delegate to the provider.
         return await _airframeProvider.GetActiveAirframeIdAsync(ct);
+    }
+
+    private async Task<AirframeSnapshot?> LoadAirframeSnapshotAsync(Guid airframeId, CancellationToken ct)
+    {
+        try
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var repo = scope.ServiceProvider.GetRequiredService<IFleetRepository>();
+
+            // Load all six data sets in parallel where possible.
+            var airframe    = await repo.GetAirframeAsync(airframeId, ct);
+            if (airframe is null)
+                return null;
+
+            var components  = await repo.GetComponentsForAirframeAsync(airframeId, ct);
+            var consumables = await repo.GetConsumablesForAirframeAsync(airframeId, ct);
+            var templates   = await repo.GetTemplatesForModelAsync(airframe.ModelRefId, ct);
+            var accelerators = await repo.GetAcceleratorsAsync(ct);
+
+            var templateIds = templates.Select(t => t.Id).ToList();
+            var modes       = await repo.GetFailureModesForTemplatesAsync(templateIds, ct);
+
+            // Map to core domain.
+            var coreAirframe    = MapAirframe(airframe);
+            var coreComponents  = components.Select(MapComponent).ToList();
+            var coreConsumables = consumables.Select(MapConsumable).ToList();
+            var coreTemplates   = templates.Select(MapTemplate).ToList();
+            var coreModes       = modes.Select(MapFailureMode).ToList();
+            var coreAccelerators = accelerators.Select(MapAccelerator).ToList();
+
+            return new AirframeSnapshot(
+                airframeId,
+                coreAirframe,
+                coreComponents,
+                coreTemplates,
+                coreModes,
+                coreAccelerators,
+                coreConsumables);
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "TickHost: failed to load airframe snapshot for {AirframeId}.", airframeId);
+            return null;
+        }
     }
 
     // ── Data → Core mapping ──────────────────────────────────────────────────

@@ -199,7 +199,7 @@ public sealed class RepositoryFleetSource : IFleetSource
             Hydraulic: Get(4));
     }
 
-    private static SquawkVm MapSquawk(Entities.Squawk s)
+    internal static SquawkVm MapSquawk(Entities.Squawk s)
     {
         // Until the Squawk entity gains Component + Summary columns, we read
         // these from the Notes field where the seeder packed them.
@@ -221,16 +221,17 @@ public sealed class RepositoryFleetSource : IFleetSource
 
         return new SquawkVm
         {
-            Id           = s.Id.ToString()[..8].ToUpperInvariant(),  // short display ID
-            Tail         = s.Airframe?.Tail ?? string.Empty,
-            Component    = component,
-            Summary      = notes.Length > 80 ? notes[..80] + "…" : notes,
-            Severity     = severity,
+            SquawkGuid    = s.Id,
+            Id            = s.Id.ToString()[..8].ToUpperInvariant(),  // short display ID
+            Tail          = s.Airframe?.Tail ?? string.Empty,
+            Component     = component,
+            Summary       = notes.Length > 80 ? notes[..80] + "…" : notes,
+            Severity      = severity,
             MelDeferrable = melDef,
-            Opened       = s.Opened.ToString("yyyy-MM-dd"),
-            HoursAtOpen  = s.HoursAtOpen,
+            Opened        = s.Opened.ToString("yyyy-MM-dd"),
+            HoursAtOpen   = s.HoursAtOpen,
             DeferredUntil = s.DeferredUntil?.ToString("yyyy-MM-dd"),
-            Notes        = notes,
+            Notes         = notes,
         };
     }
 

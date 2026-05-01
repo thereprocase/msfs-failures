@@ -150,8 +150,9 @@
                     DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}">
                     <TextBlock Text="[ACTIONS]" Style="{StaticResource BlockHeading}" Margin="0,0,0,6"/>
                     <UniformGrid Columns="2" Rows="3">
-                        <Button Style="{StaticResource GhostButton}" Content="+ NEW SQUAWK"        Command="{Binding NewSquawkCommand}"        Margin="0,0,4,4"/>
-                        <Button Style="{StaticResource GhostButton}" Content="↳ DEFER (MEL)"       Command="{Binding DeferSquawkCommand}"      Margin="4,0,0,4"/>
+                        <Button Style="{StaticResource GhostButton}" Content="+ NEW SQUAWK"        Command="{Binding NewSquawkCommand}"              Margin="0,0,4,4"/>
+                        <Button Style="{StaticResource GhostButton}" Content="↳ DEFER (MEL)"       Command="{Binding DeferLatestSquawkCommand}"
+                                IsEnabled="{Binding HasOpenSquawkForSelected}"                                                                  Margin="4,0,0,4"/>
                         <Button Style="{StaticResource GhostButton}" Content="✓ SERVICE COMPONENT" Command="{Binding ServiceComponentCommand}" Margin="0,0,4,4"/>
                         <Button Style="{StaticResource GhostButton}" Content="! OPEN AIRFRAME"     Command="{Binding OpenAirframeCommand}"     Margin="4,0,0,4"/>
                         <Button Style="{StaticResource GhostButton}" Content="↻ RESET CYCLE"       Command="{Binding ResetCycleCommand}"       Margin="0,0,4,0"/>

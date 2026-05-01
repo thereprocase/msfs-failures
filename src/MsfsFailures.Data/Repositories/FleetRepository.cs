@@ -252,4 +252,132 @@ public sealed class FleetRepository : IFleetRepository
             .OrderByDescending(a => a.TotalHobbsHours)
             .FirstOrDefaultAsync(ct);
     }
+
+    // ── Squawk write operations ──────────────────────────────────────────────
+
+    public async Task<Guid> AddSquawkAsync(
+        Guid airframeId,
+        string component,
+        string summary,
+        int severity,
+        bool melDeferrable,
+        string notes,
+        double hoursAtOpen,
+        CancellationToken ct = default)
+    {
+        // Pack component/MEL info into the Notes field (same format as seeder).
+        var packed = BuildPackedNotes(summary, component, melDeferrable, notes);
+
+        var squawk = new Entities.Squawk
+        {
+            Id          = Guid.NewGuid(),
+            AirframeId  = airframeId,
+            Opened      = DateTimeOffset.UtcNow,
+            Status      = severity,
+            Notes       = packed,
+            HoursAtOpen = hoursAtOpen,
+        };
+        _db.Squawks.Add(squawk);
+        await _db.SaveChangesAsync(ct);
+        return squawk.Id;
+    }
+
+    public async Task UpdateSquawkAsync(
+        Guid squawkId,
+        string? component,
+        string? summary,
+        string? notes,
+        int? status,
+        DateTimeOffset? deferredUntil,
+        CancellationToken ct = default)
+    {
+        var squawk = await _db.Squawks.FindAsync([squawkId], ct);
+        if (squawk is null) return;
+
+        // Reconstruct packed notes when any field changes.
+        if (component != null || summary != null || notes != null)
+        {
+            // Unpack existing values to fill any unchanged fields.
+            var existingComponent = UnpackTag(squawk.Notes, "Component") ?? string.Empty;
+            var existingMelStr    = UnpackTag(squawk.Notes, "MEL-deferrable");
+            var existingMel       = existingMelStr?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+            var existingNotes     = StripPackedTags(squawk.Notes);
+
+            var newComponent = component ?? existingComponent;
+            var newNotes     = notes     ?? existingNotes;
+            var newSummary   = summary   ?? existingNotes; // summary lives as the first sentence
+
+            squawk.Notes = BuildPackedNotes(newSummary, newComponent, existingMel, newNotes);
+        }
+
+        if (status != null)
+            squawk.Status = status.Value;
+
+        if (deferredUntil != null)
+            squawk.DeferredUntil = deferredUntil.Value;
+
+        _db.Squawks.Update(squawk);
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task DeleteSquawkAsync(Guid squawkId, CancellationToken ct = default)
+    {
+        var squawk = await _db.Squawks.FindAsync([squawkId], ct);
+        if (squawk is null) return;
+        _db.Squawks.Remove(squawk);
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Entities.Squawk>> GetAllSquawksAsync(CancellationToken ct = default)
+    {
+        return await _db.Squawks
+            .Include(s => s.Airframe)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    // ── Private pack/unpack helpers ──────────────────────────────────────────
+
+    private static string BuildPackedNotes(string summary, string component, bool melDeferrable, string notes)
+    {
+        // Format: "<summary>. Component: <component>. <notes>. MEL-deferrable: <true|false>"
+        var sb = new System.Text.StringBuilder();
+        sb.Append(summary.TrimEnd('.'));
+        sb.Append(". Component: ");
+        sb.Append(component);
+        sb.Append(". ");
+        sb.Append(notes.TrimEnd('.'));
+        sb.Append(". MEL-deferrable: ");
+        sb.Append(melDeferrable ? "true" : "false");
+        return sb.ToString();
+    }
+
+    private static string? UnpackTag(string notes, string tag)
+    {
+        if (tag == "Component")
+        {
+            var idx = notes.IndexOf("Component: ", StringComparison.Ordinal);
+            if (idx < 0) return null;
+            var start = idx + "Component: ".Length;
+            var end   = notes.IndexOf('.', start);
+            return end > start ? notes[start..end].Trim() : null;
+        }
+        if (tag == "MEL-deferrable")
+        {
+            var idx = notes.IndexOf("MEL-deferrable: ", StringComparison.Ordinal);
+            if (idx < 0) return null;
+            var start = idx + "MEL-deferrable: ".Length;
+            return notes[start..].Trim();
+        }
+        return null;
+    }
+
+    private static string StripPackedTags(string notes)
+    {
+        var melIdx = notes.IndexOf(" MEL-deferrable:", StringComparison.Ordinal);
+        if (melIdx > 0) notes = notes[..melIdx].Trim();
+        var compIdx = notes.IndexOf(" Component:", StringComparison.Ordinal);
+        if (compIdx > 0) notes = notes[..compIdx].Trim();
+        return notes.TrimEnd('.').Trim();
+    }
 }

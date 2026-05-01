@@ -14,6 +14,25 @@ public static class SeedIfEmpty
     // Consumable.Kind int mapping (mirrors future Core.ConsumableKind enum):
     //  0 = Oil, 1 = Tires, 2 = Brakes, 3 = Battery, 4 = Hydraulic
 
+    // ComponentCategory int mapping (Core.ComponentCategory enum):
+    //  0=Engine, 1=HotSection, 2=Compressor, 3=OilSystem, 4=FuelSystem,
+    //  5=Propeller, 6=GearBrakes, 7=Tires, 8=Battery, 9=Hydraulic, 10=Avionics, 11=Other
+    private static class Cat
+    {
+        public const int Engine     = 0;
+        public const int HotSection = 1;
+        public const int Compressor = 2;
+        public const int OilSystem  = 3;
+        public const int FuelSystem = 4;
+        public const int Propeller  = 5;
+        public const int GearBrakes = 6;
+        public const int Tires      = 7;
+        public const int Battery    = 8;
+        public const int Hydraulic  = 9;
+        public const int Avionics   = 10;
+        public const int Other      = 11;
+    }
+
     public static async Task ApplyAsync(
         FleetDbContext db,
         ILogger logger,
@@ -22,6 +41,10 @@ public static class SeedIfEmpty
         // Backfill SimMatchRulesJson on existing ModelRef rows (idempotent — only updates
         // rows where the field is null/empty, so safe to run on every startup).
         await BackfillMatchRulesAsync(db, logger, ct);
+
+        // Backfill ComponentTemplates + Components (idempotent — skips if already seeded).
+        // Called here for the existing-DB case (airframes present, no templates yet).
+        await BackfillComponentsAsync(db, logger, ct);
 
         if (await db.Airframes.AnyAsync(ct))
         {
@@ -143,7 +166,12 @@ public static class SeedIfEmpty
         logger.LogInformation("Seeding 7 squawks…");
 
         await db.SaveChangesAsync(ct);
-        logger.LogInformation("Seed complete — 5 airframes, 7 squawks written to database.");
+
+        // Fresh-seed path: airframes were just written; now seed templates + components.
+        // BackfillComponentsAsync will find the newly-saved rows.
+        await BackfillComponentsAsync(db, logger, ct);
+
+        logger.LogInformation("Seed complete — 5 airframes, 7 squawks, templates and components written to database.");
     }
 
     // ── SimMatchRulesJson backfill ────────────────────────────────────────────
@@ -197,6 +225,231 @@ public static class SeedIfEmpty
         }
     }
 
+    // ── ComponentTemplate + Component backfill ────────────────────────────────
+
+    /// <summary>
+    /// Seeds ComponentTemplate rows for each ModelRef and Component rows for each Airframe.
+    /// Idempotent: skips entirely if ComponentTemplates table is non-empty.
+    /// MTBF values and Weibull parameters are sourced from NASA CR-2001-210647 via
+    /// WeibullDefaults in MsfsFailures.Core.
+    /// </summary>
+    private static async Task BackfillComponentsAsync(
+        FleetDbContext db,
+        ILogger logger,
+        CancellationToken ct)
+    {
+        if (await db.ComponentTemplates.AnyAsync(ct)) return;
+
+        var modelRefs = await db.ModelRefs.ToListAsync(ct);
+        var airframes = await db.Airframes.ToListAsync(ct);
+
+        if (modelRefs.Count == 0 || airframes.Count == 0) return;
+
+        // Locate each model ref by name substring.
+        ModelRef? FindRef(string substring) =>
+            modelRefs.FirstOrDefault(r => r.Name.Contains(substring, StringComparison.OrdinalIgnoreCase));
+
+        var refC172  = FindRef("172");
+        var refPa28  = FindRef("PA-28");
+        var refBe350 = FindRef("King Air");
+        var refBe58  = FindRef("Baron");
+        var refC210  = FindRef("Cessna 210");
+        // Fallback: Baron and 210 share "Cessna" — use "210" directly if above fails.
+        if (refC210 == null)
+            refC210 = FindRef("210");
+
+        // WearCurveJson helper — encodes Weibull parameters as JSON blob.
+        static string WearJson(double beta, double alpha, double? oilQtPerHour = null)
+        {
+            var oil = oilQtPerHour.HasValue
+                ? $",\"oilQtPerHourBase\":{oilQtPerHour.Value}"
+                : string.Empty;
+            return $"{{\"weibullBeta\":{beta},\"weibullAlphaHours\":{alpha}{oil}}}";
+        }
+
+        // Template factory.
+        static ComponentTemplate T(
+            ModelRef mr,
+            string name,
+            int cat,
+            double mtbf,
+            double beta,
+            double alpha,
+            double? oilQtPerHour = null,
+            double? replaceHours = null,
+            int? replaceCycles = null) =>
+            new ComponentTemplate
+            {
+                Id                    = Guid.NewGuid(),
+                ModelRefId            = mr.Id,
+                Name                  = name,
+                Category              = cat,
+                MtbfHours             = mtbf,
+                WearCurveJson         = WearJson(beta, alpha, oilQtPerHour),
+                ConsumableKind        = 0,
+                ReplaceIntervalHours  = replaceHours,
+                ReplaceIntervalCycles = replaceCycles,
+            };
+
+        var templates = new List<ComponentTemplate>();
+
+        // ── C172 (Lycoming O-320, fixed gear) ──────────────────────────────
+        // Piston: no compressor section. Hot section = cylinder/exhaust assembly.
+        if (refC172 != null)
+        {
+            templates.AddRange(new[]
+            {
+                T(refC172, "Engine",        Cat.Engine,     2000, 1.58, 2000, oilQtPerHour: 0.08, replaceHours: 2000),
+                T(refC172, "Hot Section",   Cat.HotSection, 3500, 1.80, 3500),
+                T(refC172, "Oil System",    Cat.OilSystem,  4000, 1.14, 3977),
+                T(refC172, "Fuel System",   Cat.FuelSystem, 5130, 1.44, 5130, oilQtPerHour: 0.08),
+                T(refC172, "Propeller",     Cat.Propeller,  2400, 1.63, 2400, replaceHours: 2400),
+                T(refC172, "Gear & Brakes", Cat.GearBrakes, 1500, 0.92, 1500),
+                T(refC172, "Battery",       Cat.Battery,    1500, 0.90, 4000),
+                T(refC172, "Avionics",      Cat.Avionics,   4950, 1.67, 4950),
+            });
+        }
+
+        // ── PA-28 (Lycoming O-360, fixed gear) — same shape as C172 ────────
+        if (refPa28 != null)
+        {
+            templates.AddRange(new[]
+            {
+                T(refPa28, "Engine",        Cat.Engine,     2000, 1.58, 2000, oilQtPerHour: 0.08, replaceHours: 2000),
+                T(refPa28, "Hot Section",   Cat.HotSection, 3500, 1.80, 3500),
+                T(refPa28, "Oil System",    Cat.OilSystem,  4000, 1.14, 3977),
+                T(refPa28, "Fuel System",   Cat.FuelSystem, 5130, 1.44, 5130, oilQtPerHour: 0.08),
+                T(refPa28, "Propeller",     Cat.Propeller,  2400, 1.63, 2400, replaceHours: 2400),
+                T(refPa28, "Gear & Brakes", Cat.GearBrakes, 1500, 0.92, 1500),
+                T(refPa28, "Battery",       Cat.Battery,    1500, 0.90, 4000),
+                T(refPa28, "Avionics",      Cat.Avionics,   4950, 1.67, 4950),
+            });
+        }
+
+        // ── BE350 (PT6A turboprop, retractable gear) ────────────────────────
+        // Turbine: full hot-section + compressor sections; hydraulic system.
+        if (refBe350 != null)
+        {
+            templates.AddRange(new[]
+            {
+                T(refBe350, "Engine",        Cat.Engine,     3500, 1.58, 3500, oilQtPerHour: 0.10, replaceHours: 3500),
+                T(refBe350, "Hot Section",   Cat.HotSection, 1800, 1.80, 1800, replaceHours: 1800),
+                T(refBe350, "Compressor",    Cat.Compressor, 2200, 1.60, 2200, oilQtPerHour: 0.10),
+                T(refBe350, "Oil System",    Cat.OilSystem,  3000, 1.14, 3977),
+                T(refBe350, "Fuel System",   Cat.FuelSystem, 5000, 1.44, 5130),
+                T(refBe350, "Propeller",     Cat.Propeller,  2400, 1.63, 2400, replaceHours: 2400),
+                T(refBe350, "Gear & Brakes", Cat.GearBrakes, 1500, 0.92, 1500),
+                T(refBe350, "Battery",       Cat.Battery,    1500, 0.90, 4000),
+                T(refBe350, "Avionics",      Cat.Avionics,   4950, 1.67, 4950),
+                T(refBe350, "Hydraulic",     Cat.Hydraulic,  3977, 1.14, 3977),
+            });
+        }
+
+        // ── BE58 Baron (twin piston) ────────────────────────────────────────
+        // Two engines + two props modeled separately. MTBFs slightly more aggressive.
+        if (refBe58 != null)
+        {
+            templates.AddRange(new[]
+            {
+                T(refBe58, "L Engine",      Cat.Engine,     1800, 1.58, 1800, oilQtPerHour: 0.09, replaceHours: 1800),
+                T(refBe58, "R Engine",      Cat.Engine,     1800, 1.58, 1800, oilQtPerHour: 0.09, replaceHours: 1800),
+                T(refBe58, "Hot Section",   Cat.HotSection, 3200, 1.80, 3200),
+                T(refBe58, "Oil System",    Cat.OilSystem,  3600, 1.14, 3977),
+                T(refBe58, "Fuel System",   Cat.FuelSystem, 4800, 1.44, 5130, oilQtPerHour: 0.08),
+                T(refBe58, "L Propeller",   Cat.Propeller,  2400, 1.63, 2400, replaceHours: 2400),
+                T(refBe58, "R Propeller",   Cat.Propeller,  2400, 1.63, 2400, replaceHours: 2400),
+                T(refBe58, "Gear & Brakes", Cat.GearBrakes, 1500, 0.92, 1500),
+                T(refBe58, "Battery",       Cat.Battery,    1500, 0.90, 4000),
+                T(refBe58, "Avionics",      Cat.Avionics,   4950, 1.67, 4950),
+            });
+        }
+
+        // ── C210 (Continental IO-520, retractable gear) ─────────────────────
+        // Similar to C172 but IO-520 TBO is 1700 hr; hydraulic retract gear.
+        if (refC210 != null)
+        {
+            templates.AddRange(new[]
+            {
+                T(refC210, "Engine",        Cat.Engine,     1700, 1.58, 1700, oilQtPerHour: 0.08, replaceHours: 1700),
+                T(refC210, "Hot Section",   Cat.HotSection, 3200, 1.80, 3200),
+                T(refC210, "Oil System",    Cat.OilSystem,  3800, 1.14, 3977),
+                T(refC210, "Fuel System",   Cat.FuelSystem, 5130, 1.44, 5130, oilQtPerHour: 0.08),
+                T(refC210, "Propeller",     Cat.Propeller,  2400, 1.63, 2400, replaceHours: 2400),
+                T(refC210, "Gear & Brakes", Cat.GearBrakes, 1500, 0.92, 1500),
+                T(refC210, "Battery",       Cat.Battery,    1500, 0.90, 4000),
+                T(refC210, "Avionics",      Cat.Avionics,   4950, 1.67, 4950),
+                T(refC210, "Hydraulic",     Cat.Hydraulic,  3977, 1.14, 3977),
+            });
+        }
+
+        if (templates.Count == 0) return;
+
+        db.ComponentTemplates.AddRange(templates);
+
+        // ── Component rows per airframe ─────────────────────────────────────
+        // Group templates by the ModelRef they belong to.
+        var templatesByRef = templates
+            .GroupBy(t => t.ModelRefId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var components = new List<Component>();
+
+        foreach (var af in airframes)
+        {
+            if (!templatesByRef.TryGetValue(af.ModelRefId, out var afTemplates))
+                continue;
+
+            var isN172AB = af.Tail.Equals("N172AB", StringComparison.OrdinalIgnoreCase);
+
+            foreach (var tmpl in afTemplates)
+            {
+                double wear;
+                if (isN172AB)
+                {
+                    // Nuanced wear for the primary demo airframe to make the dashboard
+                    // look interesting on first launch.
+                    wear = tmpl.Category switch
+                    {
+                        Cat.Engine     => 0.35,   // approaching mid-life
+                        Cat.Battery    => 0.55,   // getting old
+                        Cat.Tires      => 0.62,   // matches consumable
+                        Cat.GearBrakes => 0.55,   // matches consumable
+                        _              => 0.20,
+                    };
+                }
+                else
+                {
+                    // Generic heuristic: wear = clamp(Hobbs / (MTBF * 2), 0, 0.85)
+                    wear = Math.Clamp(af.TotalHobbsHours / (tmpl.MtbfHours * 2.0), 0.0, 0.85);
+                }
+
+                components.Add(new Component
+                {
+                    Id             = Guid.NewGuid(),
+                    AirframeId     = af.Id,
+                    TemplateId     = tmpl.Id,
+                    Hours          = af.TotalHobbsHours,
+                    Cycles         = af.TotalCycles,
+                    Wear           = wear,
+                    Condition      = "nominal",
+                    LastServicedAt = af.CreatedAt,
+                    InstalledAt    = af.CreatedAt,
+                });
+            }
+        }
+
+        db.Components.AddRange(components);
+        await db.SaveChangesAsync(ct);
+
+        var refCount = templates.Select(t => t.ModelRefId).Distinct().Count();
+        logger.LogInformation(
+            "BackfillComponents: seeded {TemplateCount} templates across {RefCount} model refs.",
+            templates.Count, refCount);
+        logger.LogInformation(
+            "BackfillComponents: seeded {ComponentCount} components across {AirframeCount} airframes.",
+            components.Count, airframes.Count);
+    }
+
     private static void AddConsumables(
         FleetDbContext db,
         Airframe airframe,
@@ -208,11 +461,11 @@ public static class SeedIfEmpty
         double hyd)
     {
         db.Consumables.AddRange(
-            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 0, Level = oil,    Capacity = 1.0, LastTopUpAt = now },
-            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 1, Level = tires,  Capacity = 1.0, LastTopUpAt = now },
-            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 2, Level = brakes, Capacity = 1.0, LastTopUpAt = now },
-            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 3, Level = battery,Capacity = 1.0, LastTopUpAt = now },
-            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 4, Level = hyd,    Capacity = 1.0, LastTopUpAt = now }
+            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 0, Level = oil,     Capacity = 1.0, LastTopUpAt = now },
+            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 1, Level = tires,   Capacity = 1.0, LastTopUpAt = now },
+            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 2, Level = brakes,  Capacity = 1.0, LastTopUpAt = now },
+            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 3, Level = battery, Capacity = 1.0, LastTopUpAt = now },
+            new Consumable { Id = Guid.NewGuid(), Airframe = airframe, Kind = 4, Level = hyd,     Capacity = 1.0, LastTopUpAt = now }
         );
     }
 }
